@@ -1,20 +1,22 @@
 import classNames from "classnames/bind";
-import styles from "./DefaultLayout.module.scss";
-
+import styles from "./CartLayout.module.scss";
 import Header from "~/components/Layout/components/Header";
-import Sidebar from "~/components/Layout/components/Sidebar";
+import Filter from "~/components/Layout/components/Filter";
 import Content from "~/components/Layout/components/Content";
+import Sidebar from "~/components/Layout/components/Sidebar";
+
 const cx = classNames.bind(styles);
-function DefaultLayout() {
+function CartLayout() {
   return (
     <div className={cx("wrapper")}>
-      <Header />
+        <Header/>
+        <Filter/>
       <div className={cx("container")}>
-        <Sidebar></Sidebar>
         <Content></Content>
+        <Sidebar></Sidebar>
       </div>
     </div>
   );
 }
 
-export default DefaultLayout;
+export default CartLayout;
