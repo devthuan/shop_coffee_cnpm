@@ -5,6 +5,7 @@ const cx = classNames.bind(styles)
 function Header() {
     return ( <header className={cx('wrapper')}>
             <div className={cx('content')}>content</div>
+            <div className={cx('content')}>content</div>
      </header> );
 }
 
