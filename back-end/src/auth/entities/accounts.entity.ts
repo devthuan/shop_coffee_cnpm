@@ -1,6 +1,6 @@
 import { BaseEntity } from "src/common/base.entity";
+import { Roles } from "src/role-permission/entities/roles.entity";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
-import { Roles } from "./roles.entity";
 
 @Entity({name: "accounts"})
 export class Accounts extends BaseEntity {

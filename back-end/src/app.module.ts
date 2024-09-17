@@ -5,13 +5,24 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailModule } from './mail/mail.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import { RolePermissionModule } from './role-permission/role-permission.module';
+import * as redisStore from 'cache-manager-ioredis';
+
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env'
     }),
-
+    CacheModule.register({
+      store: redisStore,
+      host: process.env.REDIS_HOST,
+      port: parseInt(process.env.REDIS_PORT),
+      ttl: 600, // seconds
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DATABASE_HOST,
@@ -27,7 +38,10 @@ import { MailModule } from './mail/mail.module';
     AuthModule,
 
 
-    MailModule],
+    MailModule,
+
+
+    RolePermissionModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -1,7 +1,7 @@
 import { BaseEntity } from "src/common/base.entity";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
-import { Accounts } from "./accounts.entity";
 import { RoleHasFunctions } from "./roles_has_functions.entity";
+import { Accounts } from "src/auth/entities/accounts.entity";
 
 
 @Entity({name: "roles"})

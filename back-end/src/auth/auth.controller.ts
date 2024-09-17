@@ -1,8 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/register.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 import {  VerifyOtpDto } from './dto/verify-otp.dto';
+import { EmailDto } from './dto/email.dto';
+import { LoginDto } from './dto/login.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -13,32 +16,38 @@ export class AuthController {
     if(createAuthDto.password !== createAuthDto.confirmPassword){
       throw new Error('Passwords do not match');
     }
-    return this.authService.create(createAuthDto);
+    return this.authService.create(createAuthDto);  
+  }
+  @Post('login')
+  login(@Body() loginDto: LoginDto) {
+    return this.authService.login(loginDto);
   }
   
   @Post('verify-otp')
   verifyOtp(@Body() verifyOtpDto: VerifyOtpDto) {
-    
     return this.authService.verifyOTP(verifyOtpDto.email, verifyOtpDto.otp);
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
+  @Post('send-otp')
+  sendOtp(@Body() emailDto: EmailDto) {
+    return this.authService.sendOTP(emailDto.email);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
+  @UseGuards(AuthGuard)
+  @Post('change-password')
+  changePassword(@Body() changePasswordDto: ChangePasswordDto) {
+    if(changePasswordDto.newPassword !== changePasswordDto.newPasswordConfirm){
+      return {
+        message: 'Passwords do not match'
+      }
+    }
+    return this.authService.changePassword(changePasswordDto);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
+  @Post('forgot-password')
+  forgotPassword(@Body() emailDto: EmailDto) {
+    return this.authService.forgotPassword(emailDto.email);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
-  }
+ 
 }

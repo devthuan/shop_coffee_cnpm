@@ -1,12 +1,15 @@
-import { IsEmail, IsIP, IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsIP, IsNotEmpty, IsString, MaxLength, MinLength, ValidateIf } from "class-validator";
 
 
-export class CreateAuthDto {
+export class LoginDto {
    
-    // @IsEmail()
-    // email: string;
+    @ValidateIf(o => !o.username)  // Nếu không có username thì email là bắt buộc
+    @IsEmail({}, { message: 'Invalid email format' })
+    email: string;
 
+    @ValidateIf(o => !o.email)     // Nếu không có email thì username là bắt buộc
     @IsString()
+    @MinLength(3, { message: 'Username must be at least 3 characters long' })
     username: string;
 
     @IsString()
@@ -14,9 +17,9 @@ export class CreateAuthDto {
     password: string;
 
     @IsIP()
+    @IsString()
     ip: string;
 
- 
 
     
 }
