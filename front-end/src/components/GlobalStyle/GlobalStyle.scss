@@ -1,8 +1,24 @@
 @import 'normalize.css';
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Bạn có thể thêm các kiểu SCSS tùy chỉnh ở đây */
 
 :root {
+   --primary-color-text: #1a162e;
+   --primary-color-background-1: #c1c1c1;
+   --primary-color-background-2: #eeeeee;
+   --primary-color-hover: #77DAE6;
+   
 }
+.dark {
+    --primary-color-text: #ffffff;
+    --primary-color-background-1: #171c28;
+    --primary-color-background-2: #292e39;
+    --primary-color-hover: #77DAE6;
+  }
 * {
     box-sizing: border-box;
     margin: 0;
