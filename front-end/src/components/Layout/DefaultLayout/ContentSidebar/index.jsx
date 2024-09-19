@@ -30,6 +30,20 @@ function ContentSaidbar() {
                     <p className={cx("item_name")}>Starburk</p>
                     <img src={item_cf} className={cx("item_img")}/>
                 </li>
+                <li  className={cx("item")}>
+                    <p className={cx("item_name")}>Starburk</p>
+                    <img src={item_cf} className={cx("item_img")}/>
+                </li>
+                <li  className={cx("item")}>
+                    <p className={cx("item_name")}>Starburk</p>
+                    <img src={item_cf} className={cx("item_img")}/>
+                </li>
+                <li  className={cx("item")}>
+                    <p className={cx("item_name")}>Starburk</p>
+                    <img src={item_cf} className={cx("item_img")}/>
+                </li>
+             
+                
               
             
             </ul>

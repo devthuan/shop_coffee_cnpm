@@ -1,6 +1,7 @@
 // src/components/ThemeToggle.js
 import React, { useEffect, useState } from 'react';
 
+
 const ThemeToggle = () => {
   const [theme, setTheme] = useState('light');
 
@@ -38,7 +39,7 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      className="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 border border-gray-300 rounded-lg "
     >
       {theme === 'light' ? (
         // Icon Dark Mode (Ví dụ: Moon)

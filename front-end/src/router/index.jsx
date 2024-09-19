@@ -10,7 +10,7 @@ import { ProductLayout, CartLayout } from "~/components/Layout"
 const publicRoutes = [
     { path: '/', component: Home },
     {path: '/register', component: Register, layout: null},
-    {path: '/profile', component: Profile},
+    {path: '/profile', component: Profile, layout: null},
     {path: '/product', component: Product, layout: ProductLayout},
     {path: '/cart', component: Cart, layout: CartLayout}
 ]
