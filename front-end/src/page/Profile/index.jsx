@@ -1,5 +1,5 @@
 function Profile() {
-    return (<div></div>);
+    return ( <></> );
 }
 
 export default Profile;

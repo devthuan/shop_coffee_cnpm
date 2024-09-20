@@ -1,3 +1,5 @@
-export { default as DefaultLayout} from './DefaultLayout'
-export { default as ProductLayout} from './ProductLayout'
-export { default as CartLayout} from './CartLayout'
+export { default as DefaultLayout } from './DefaultLayout'
+export { default as ProductLayout } from './ProductLayout'
+export { default as CartLayout } from './CartLayout'
+export { default as Registerlayout } from './Registerlayout'
+export { default as SignLayout } from './SignLayout'

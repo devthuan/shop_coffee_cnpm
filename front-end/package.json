@@ -1,5 +1,5 @@
 {
-  "name": "front-end",
+  "name": "fron-tend",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -16,7 +16,10 @@
     "react-router-dom": "^6.26.2",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
+
+    
   },
+  
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
@@ -45,4 +48,6 @@
     "babel-plugin-module-resolver": "^5.0.2",
     "sass": "^1.78.0"
   }
+  
+   
 }

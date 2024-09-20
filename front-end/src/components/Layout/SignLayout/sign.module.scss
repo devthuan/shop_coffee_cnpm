@@ -1,0 +1,273 @@
+
+  
+  
+  
+  
+  
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; // Đảm bảo container chiếm toàn bộ chiều cao của viewport
+    min-width: 150vh;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: var(--secondary-color-secondary-6);
+  }
+  
+  .ar-register {
+    display: flex;
+    justify-content: flex-end;
+    padding: 30px;
+    min-height: 80vh;
+    background-color: var(--secondary-color-secondary-5);
+    width: 50%;
+    position: relative;
+  }
+  
+  .register {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    align-items: center;
+    position: relative;
+  
+    form {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+      gap: 30px;
+      position: relative;
+    }
+  
+    a {
+      color: #0071DC;
+      display: flex;
+      justify-content: flex-end;
+    }
+    input:not(.checkbox-container input) {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      gap: 20px;
+      padding-left: 10px;
+      height: 40px;
+      border-radius: 5px;
+      border: 1px solid #9E9DA8;
+      box-sizing: border-box;
+    }
+  }
+  .input-email{
+      position: relative;
+      width: 100%;
+      
+    }
+  
+  .icon-email {   
+    position: absolute;
+    right: 10px; /* Căn icon cách viền trái */
+    top: 50%;
+    transform: translateY(-50%); /* Đảm bảo icon nằm giữa theo chiều dọc */
+    display: flex;
+    align-items: center;
+      svg{
+        width: 18px;
+        height: 15px;
+      }
+  }
+  .input-pass{
+    position: relative;
+    width: 100%;
+    
+  }
+
+.icon-pws {   
+  position: absolute;
+  right: 10px; /* Căn icon cách viền trái */
+  top: 50%;
+  transform: translateY(-50%); /* Đảm bảo icon nằm giữa theo chiều dọc */
+  display: flex;
+  align-items: center;
+    svg{
+      width: 18px;
+        height: 16px;
+    }
+}
+.input-confirmPassword{
+  position: relative;
+  width: 100%;
+  
+}
+
+.icon-pws2 {   
+position: absolute;
+right: 10px; /* Căn icon cách viền trái */
+top: 50%;
+transform: translateY(-50%); /* Đảm bảo icon nằm giữa theo chiều dọc */
+display: flex;
+align-items: center;
+
+  svg{
+    width: 18px;
+    height: 16px;
+  }
+}
+   
+  
+  
+  .title {
+    display: flex;
+    flex-direction: column; /* Xếp các phần tử theo cột */
+    justify-content: center; /* Căn giữa theo chiều dọc (nếu cần) */
+    align-items: center; /* Căn giữa theo chiều ngang */
+    text-align: center; /* Căn giữa văn bản */
+    gap:10px;
+    
+  
+    h2 {
+      align-items: center;
+      height: 40px;
+      font-size: 30px;
+      padding: 5px;
+      color: var(--Secondary-Color-Secondary-1, rgb(24, 0, 112));
+      font-family: #1A162E;
+    }
+    p{
+      color: var(--Secondary-Color-Secondary-2, #9E9DA8);
+
+    }
+  }
+  
+  .checkbox-container {
+    display: flex; 
+    align-items: center;
+    
+     
+    ul {
+       width: 100%;
+       justify-content: space-between;
+       display: flex;
+      
+       
+    }
+        li{
+            list-style: none;
+           &:nth-child(1){
+            justify-content: flex-start;
+            color: #9E9DA8;
+            padding: 2.75px;
+            
+           
+            
+           
+           } 
+           &:nth-child(2){
+            justify-content: flex-end;
+           }
+        }
+    a {
+      color: #0071DC; /* Màu chữ của link */   
+    } 
+    .title-bot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center; // căn giữa theo chiều dọc nếu cần
+  
+      li {
+        list-style: none; // bỏ dấu chấm đầu dòng cho thẻ li
+      }
+  
+      a {
+        text-decoration: none; // bỏ gạch chân của link
+      }
+    }
+  }
+  
+  .show-logo {
+    display: flex;
+    justify-content: flex-start;
+    width: 50%;
+    color: #1A162E;
+    
+  }
+  .name-shop{
+    color: var(--Secondary-Color-Secondary-1, rgb(24, 0, 112));
+    font-family: Gordita;
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 32px; /* 145.455% */
+    justify-content:space-between ;
+    display: flex;
+    gap:10px
+  }
+  .but-bot{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap:20px;
+    border-radius: 5px;
+   
+  } 
+    .but-regis{
+    display: flex;
+    width: 100%;
+    padding: 5px;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 30px;
+    background-color: #FFB700;
+    border-radius: 5px;
+    height: 35px;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    } 
+    .but-sign{
+      display: flex;
+      width: 100%;
+      padding: 12px 114px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;;
+      font-size: 20px;
+      height: 35px;
+      border:0.5px solid #D2D1D6;
+      cursor: pointer;
+      border-radius: 5px;
+      position: relative;
+          
+        svg{
+          position: absolute;
+          justify-content: space-between;
+          left: 90px;
+          top:5px;
+    
+          font-size: 20px ;
+        }   
+        }
+.bot-content{
+  position: relative;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  color: var(--Secondary-Color-Secondary-2, #9E9DA8);
+  
+
+}
+.show-logo{
+  width: 422px;
+height: 261px;
+background-color: none;
+flex-direction: column;
+gap:10px;
+color: var(--Secondary-Color-Secondary-2);
+}
+
+
+  
+
+  

@@ -9,7 +9,7 @@ function ProductLayout() {
   return (
     <div className={cx("wrapper")}>
       <Header />
-        <Filter/>
+      <Filter />
       <div className={cx("container")}>
         <Content></Content>
       </div>
