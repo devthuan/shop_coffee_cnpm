@@ -11,6 +11,7 @@ import { ProductModule } from './product/product.module';
 
 import * as redisStore from 'cache-manager-ioredis';
 import { CloudinaryModule } from 'nestjs-cloudinary';
+import { AttributeModule } from './attribute/attribute.module';
 
 
 @Module({
@@ -49,7 +50,8 @@ import { CloudinaryModule } from 'nestjs-cloudinary';
     AuthModule,
     MailModule,
     RolePermissionModule,
-    ProductModule,],
+    ProductModule,
+    AttributeModule,],
   controllers: [AppController],
   providers: [AppService],
 })

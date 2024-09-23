@@ -1,50 +1,54 @@
-import { Repository } from 'typeorm';
+import { DeepPartial, DeleteResult, Repository } from 'typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { RespondInterfacePOST } from './interface';
+import { BaseEntity } from './base.entity';
 
-@Injectable()
-export class BaseService<T> {
-  constructor(private readonly repository: Repository<T>) {}
+export class BaseService<T extends BaseEntity> {
+  constructor(
+    private readonly repository: Repository<T>, // Inject repository for any entity T
+  ) {}
 
-  async findAll(): Promise<RespondInterfacePOST> {
-    try {
-      return {
-        statusCode: 200,
-        status: 'success',
-        message: 'Data fetched successfully',
-        data: await this.repository.find(),
-      }      
-    } catch (error) {
-      return {
-        statusCode: 500,
-        status: 'error',
-        message: 'Failed to fetch data',
-        data: null,
-      }
-    }
+  async create(createDto: DeepPartial<T>): Promise<T> {
+    const entity = this.repository.create(createDto);
+    return await this.repository.save(entity);
   }
 
-  // async findOne(id: number): Promise<RespondInterfacePOST> {
-  //   const entity = await this.repository.findOne({ where: { id } });
-  //   if (!entity) {
-  //     throw new NotFoundException(`Entity with ID ${id} not found`);
-  //   }
-  //   return entity;
+  async findAll(): Promise<T[]> {
+    return await this.repository.find();
+  }
+
+  // async findOne(id: string): Promise<T> {
+  //   return await this.repository.findOne({where: {id}});
   // }
 
-  // async create(data: any): Promise<T> {
-  //   const entity = this.repository.create(data);
-  //   return this.repository.save(entity);
-  // }
+  async update(id: string, partialEntity: QueryDeepPartialEntity<T>) {
+   return await this.repository.update(id, partialEntity);
+  }
 
-  // async update(id: number, data: any): Promise<T> {
-  //   const entity = await this.findOne(id);
-  //   Object.assign(entity, data);
-  //   return this.repository.save(entity);
-  // }
+  async deleteSoft(id: string): Promise<object> {
+    try {
+      
+      const data = await this.repository.findOne({
+        where: { 
+          id: id as any,
+          deletedAt: null
+         } as any,
+      })
 
-  // async remove(id: number): Promise<void> {
-  //   const entity = await this.findOne(id);
-  //   await this.repository.remove(entity);
-  // }
+
+      if (!data) {
+        throw new Error('Data not found')
+      }
+      
+      data.deletedAt = new Date();
+       await this.repository.save(data);
+
+      return { message: 'Delete success' }
+
+
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
 }

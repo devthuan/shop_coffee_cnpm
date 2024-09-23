@@ -6,11 +6,11 @@ import { RespondInterfaceGET, RespondInterfaceGETALL, RespondInterfacePOST } fro
 import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Products } from './entities/products.entity';
-import { Attributes } from './entities/attributes.entity';
 import { Categories } from './entities/category.entity';
 import { ProductAttributes } from './entities/product_attributes.entity';
 import { ProductDiscount } from './entities/product_discount.entity';
 import { Images } from './entities/images.entity';
+import { Attributes } from 'src/attribute/entities/attributes.entity';
 
 @Injectable()
 export class ProductService {

@@ -1,6 +1,6 @@
 import { BaseEntity } from "src/common/base.entity";
+import { ProductAttributes } from "src/product/entities/product_attributes.entity";
 import {  Column, Entity, ManyToOne, OneToMany } from "typeorm";
-import { ProductAttributes } from "./product_attributes.entity";
 
 @Entity({name: "attributes"})
 export class Attributes extends BaseEntity {
