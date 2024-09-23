@@ -17,7 +17,7 @@ export class Functions extends BaseEntity {
     @Column()
     description: string;
 
-    @Column()
+    @Column({default: "1"})
     isActive: boolean;
 
     @OneToMany(() => RoleHasFunctions, roleHasFunctions => roleHasFunctions.functions)

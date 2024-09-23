@@ -1,4 +1,5 @@
 import { BaseEntity } from "src/common/base.entity";
+import { Reviews } from "src/product/entities/review.entity";
 import { Roles } from "src/role-permission/entities/roles.entity";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 
@@ -36,5 +37,7 @@ export class Accounts extends BaseEntity {
     @ManyToOne(() => Roles, roles => roles.accounts)
     role: Roles;
 
+    @OneToMany(() => Reviews, reviews => reviews.accounts)
+    reviews : Reviews
     
 }

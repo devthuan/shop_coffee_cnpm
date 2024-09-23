@@ -6,7 +6,7 @@ import { Functions } from "./functions.entity";
 @Entity({name: "roleHasFunctions"})
 export class RoleHasFunctions extends BaseEntity {
     
-    @Column()
+    @Column({default: "1"})
     isActive: boolean;
 
     @ManyToOne(() => Roles, roles => roles.roleHasFunctions)

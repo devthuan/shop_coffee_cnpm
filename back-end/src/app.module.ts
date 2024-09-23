@@ -7,7 +7,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailModule } from './mail/mail.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { RolePermissionModule } from './role-permission/role-permission.module';
+import { ProductModule } from './product/product.module';
+
 import * as redisStore from 'cache-manager-ioredis';
+import { CloudinaryModule } from 'nestjs-cloudinary';
 
 
 @Module({
@@ -33,15 +36,20 @@ import * as redisStore from 'cache-manager-ioredis';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
+    CloudinaryModule.forRoot(
+      {
+      isGlobal: true,
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    }
+    ),
 
 
     AuthModule,
-
-
     MailModule,
-
-
-    RolePermissionModule],
+    RolePermissionModule,
+    ProductModule,],
   controllers: [AppController],
   providers: [AppService],
 })
