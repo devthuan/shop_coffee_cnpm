@@ -7,7 +7,7 @@ import { Categories } from './entities/category.entity';
 import { Images } from './entities/images.entity';
 import { Reviews } from './entities/review.entity';
 import { ProductAttributes } from './entities/product_attributes.entity';
-import { ProductDiscount } from './entities/product_discount.entity';
+import { ProductDiscount } from '../discount/entities/product_discount.entity';
 import { Attributes } from 'src/attribute/entities/attributes.entity';
 
 @Module({

@@ -1,15 +1,15 @@
 import { BaseEntity } from "src/common/base.entity";
 import {  Column, Entity, ManyToOne, OneToMany } from "typeorm";
-import { Products } from "./products.entity";
+import { Products } from "../../product/entities/products.entity";
 
 @Entity({name: "productDiscount"})
 export class ProductDiscount extends BaseEntity {
 
     @Column()
-    discountName: string;
+    name: string;
 
     @Column()
-    discountCode: string;
+    code: string;
 
     @Column()
     quantity: number;
@@ -25,7 +25,7 @@ export class ProductDiscount extends BaseEntity {
 
 
     @ManyToOne(() => Products, products => products.productDiscount)
-    products: Products[];
+    products: Products;
 
    
 

@@ -2,7 +2,7 @@ import { BaseEntity } from "src/common/base.entity";
 import {  Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { Images } from "./images.entity";
 import { Categories } from "./category.entity";
-import { ProductDiscount } from "./product_discount.entity";
+import { ProductDiscount } from "../../discount/entities/product_discount.entity";
 import { ProductAttributes } from "./product_attributes.entity";
 import { Reviews } from "./review.entity";
 

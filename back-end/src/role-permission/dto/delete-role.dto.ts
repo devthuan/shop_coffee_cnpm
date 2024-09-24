@@ -4,7 +4,7 @@ import { IsEmail, IsNotEmpty, IsString, MaxLength, Min, minLength, MinLength } f
 export class DeleteRoleDto {
 
     @IsString()
-    nameCode: string;
+    id: string;
 
    
 

@@ -1,15 +1,13 @@
-import { DeepPartial, DeleteResult, FindOptionsWhere, IsNull, Like, Repository } from 'typeorm';
-import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { DeepPartial, Repository } from 'typeorm';
+import { BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
-import { RespondInterfacePOST } from './interface';
 import { BaseEntity } from './base.entity';
-import { skip } from 'node:test';
 import { CommonException } from './exception';
 
 export class BaseService<T extends BaseEntity> {
   constructor(
     
-    private readonly repository: Repository<T>, // Inject repository for any entity T
+    private readonly repository: Repository<T>, 
   ) {}
 
   async create(createDto: DeepPartial<T>): Promise<T> {
@@ -17,12 +15,12 @@ export class BaseService<T extends BaseEntity> {
       if(createDto['name'] ){
         
         const existingEntity = await this.repository.createQueryBuilder('entity')
-          .where('entity.name = :name', {name: createDto['name']})
+          .where('entity.name = :name OR entity.code = :code', {name: createDto['name'], code: createDto['code']})
           .andWhere('entity.deletedAt is null')
           .getOne();
         
         if(existingEntity ) {
-          throw new ConflictException('Name is already taken')
+          throw new ConflictException('Name or code is already taken')
         }
   
       }
@@ -75,6 +73,7 @@ export class BaseService<T extends BaseEntity> {
       CommonException.handle(error)
     }
   }
+
   async findAllDeleted(
       search: string,
       page : number = 1,
@@ -147,12 +146,12 @@ export class BaseService<T extends BaseEntity> {
       if(partialEntity['name']) {
       
       const existingEntity = await this.repository.createQueryBuilder('entity')
-        .where('entity.name = :name ', {name:  partialEntity['name']} )
+        .where('entity.name = :name OR entity.code = :code', {name: partialEntity['name'], code: partialEntity['code']})
         .andWhere('entity.deletedAt is null')
         .getOne();
 
       if(existingEntity ) {
-        throw new ConflictException('Name is already taken')
+        throw new ConflictException('Name or code is already taken')
       }
     }
     // Thêm updatedAt vào partialEntity với ép kiểu
@@ -177,7 +176,7 @@ export class BaseService<T extends BaseEntity> {
       .where('entity.id = :id', {id})
       .andWhere('entity.deletedAt IS NULL')
       .getOne();
-      
+
       if (!data) {
         throw new NotFoundException('Data not found')
       }

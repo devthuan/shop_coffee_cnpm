@@ -12,6 +12,7 @@ import { ProductModule } from './product/product.module';
 import * as redisStore from 'cache-manager-ioredis';
 import { CloudinaryModule } from 'nestjs-cloudinary';
 import { AttributeModule } from './attribute/attribute.module';
+import { DiscountModule } from './discount/discount.module';
 
 
 @Module({
@@ -51,7 +52,8 @@ import { AttributeModule } from './attribute/attribute.module';
     MailModule,
     RolePermissionModule,
     ProductModule,
-    AttributeModule,],
+    AttributeModule,
+    DiscountModule,],
   controllers: [AppController],
   providers: [AppService],
 })
