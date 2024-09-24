@@ -15,9 +15,11 @@ export class BaseService<T extends BaseEntity> {
   async create(createDto: DeepPartial<T>): Promise<T> {
     try {
       if(createDto['name'] ){
-        const existingEntity = await this.repository.findOne({
-          where: { name: createDto['name'] } as FindOptionsWhere<T>
-        });
+        
+        const existingEntity = await this.repository.createQueryBuilder('entity')
+          .where('entity.name = :name', {name: createDto['name']})
+          .andWhere('entity.deletedAt is null')
+          .getOne();
         
         if(existingEntity ) {
           throw new ConflictException('Name is already taken')
@@ -132,9 +134,16 @@ export class BaseService<T extends BaseEntity> {
     }
   }
 
-
   async update(id: string, partialEntity: QueryDeepPartialEntity<T>) :Promise<any> {
     try {
+      const findData = await this.repository.createQueryBuilder('entity')
+        .where('entity.id = :id', {id})
+        .getOne()
+
+      if(!findData){
+        throw new NotFoundException('Data not found')
+      }
+
       if(partialEntity['name']) {
       
       const existingEntity = await this.repository.createQueryBuilder('entity')
@@ -146,16 +155,16 @@ export class BaseService<T extends BaseEntity> {
         throw new ConflictException('Name is already taken')
       }
     }
-  
+    // Thêm updatedAt vào partialEntity với ép kiểu
+    (partialEntity as any).updatedAt = new Date();
+
     const {affected } = await this.repository.update(id, partialEntity);
-    console.log(affected);
     if(affected > 0) {
         return {message: 'Updated successfully.'}
       
       }else {
           throw new BadRequestException()
         }
-      //  return await this.repository.update(id, partialEntity);
 
     } catch (error) {
       CommonException.handle(error)
@@ -167,8 +176,8 @@ export class BaseService<T extends BaseEntity> {
       const data = await this.repository.createQueryBuilder('entity')
       .where('entity.id = :id', {id})
       .andWhere('entity.deletedAt IS NULL')
-      .getOne()
-      console.log(data)
+      .getOne();
+      
       if (!data) {
         throw new NotFoundException('Data not found')
       }
@@ -189,7 +198,7 @@ export class BaseService<T extends BaseEntity> {
       const data = await this.repository.createQueryBuilder('entity')
         .where('entity.id = :id', {id})
         .andWhere('entity.deletedAt is not null')
-        .getOne()
+        .getOne();
       
         if(!data) {
           throw new NotFoundException('Data not found')
