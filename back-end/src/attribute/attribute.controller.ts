@@ -24,9 +24,22 @@ export class AttributeController {
     @Query('sortOrder') sortOrder: 'ASC' | 'DESC'  =  'ASC'
   
   ) {
+    limit > 100 ? limit = 100 : limit;
     const responseDate = this.attributeService.findAll(search, page, limit, sortBy, sortOrder);
 
     return plainToInstance(Attributes, responseDate)
+  }
+  @Get('deleted')
+  findAllDeleted(
+    @Query('search') search: string,
+    @Query('page') page: number ,
+    @Query('limit') limit: number ,
+    @Query('sortBy') sortBy: string ,
+    @Query('sortOrder') sortOrder: 'ASC' | 'DESC'  =  'ASC'
+  
+  ) {
+    limit > 100 ? limit = 100 : limit;
+    return this.attributeService.findAllDeleted(search, page, limit, sortBy, sortOrder);
   }
 
   @Get(':id')
@@ -40,8 +53,15 @@ export class AttributeController {
     return this.attributeService.update(id, updateAttributeDto);
   }
 
+  @Patch('recover/:id')
+  recover(@Param('id') id: string) {
+    return this.attributeService.recover(id);
+  }
+
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  deletedSoft(@Param('id') id: string) {
     return this.attributeService.deleteSoft(id);
   }
+
+  
 }
