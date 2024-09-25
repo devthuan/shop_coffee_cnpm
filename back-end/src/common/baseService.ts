@@ -14,12 +14,20 @@ export class BaseService<T extends BaseEntity> {
     try {
       if(createDto['name'] ){
         
-        const existingEntity = await this.repository.createQueryBuilder('entity')
-          .where('entity.name = :name OR entity.code = :code', {name: createDto['name'], code: createDto['code']})
-          .andWhere('entity.deletedAt is null')
-          .getOne();
+        const queryBuilder = this.repository.createQueryBuilder('entity')
+          if (createDto['name']) {
+            queryBuilder.where('entity.name = :name', { name: createDto['name'] })
+          }
+
+          if (createDto['code']) {
+            queryBuilder.orWhere('entity.code = :code', { code: createDto['code'] })
+          }
+
+          queryBuilder.andWhere('entity.deletedAt is null')
+          
+          const existingEntity = await queryBuilder.getOne()
         
-        if(existingEntity ) {
+        if(existingEntity) {
           throw new ConflictException('Name or code is already taken')
         }
   
@@ -145,11 +153,16 @@ export class BaseService<T extends BaseEntity> {
 
       if(partialEntity['name']) {
       
-      const existingEntity = await this.repository.createQueryBuilder('entity')
-        .where('entity.name = :name OR entity.code = :code', {name: partialEntity['name'], code: partialEntity['code']})
-        .andWhere('entity.deletedAt is null')
-        .getOne();
+      const queryBuilder = this.repository.createQueryBuilder('entity')
+        if (partialEntity['name']) {
+          queryBuilder.where('entity.name = :name', { name: partialEntity['name'] })
+        }
+        if (partialEntity['code']) {
+          queryBuilder.orWhere('entity.code = :code', { code: partialEntity['code'] })
+        }
+        queryBuilder.andWhere('entity.deletedAt is null')
 
+        const existingEntity = await queryBuilder.getOne();
       if(existingEntity ) {
         throw new ConflictException('Name or code is already taken')
       }

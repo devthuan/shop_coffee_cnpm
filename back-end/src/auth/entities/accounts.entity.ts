@@ -1,5 +1,6 @@
+import { Exclude, Expose } from "class-transformer";
 import { BaseEntity } from "src/common/base.entity";
-import { Reviews } from "src/product/entities/review.entity";
+import { Reviews } from "src/reviews/entities/review.entity";
 import { Roles } from "src/role-permission/entities/roles.entity";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 
@@ -13,6 +14,7 @@ export class Accounts extends BaseEntity {
     email: string;
 
     @Column()
+    @Exclude()
     password: string;
     
     @Column({default: 0})

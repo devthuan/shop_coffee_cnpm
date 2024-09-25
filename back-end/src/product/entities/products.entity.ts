@@ -1,10 +1,10 @@
 import { BaseEntity } from "src/common/base.entity";
 import {  Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { Images } from "./images.entity";
-import { Categories } from "./category.entity";
 import { ProductDiscount } from "../../discount/entities/product_discount.entity";
 import { ProductAttributes } from "./product_attributes.entity";
-import { Reviews } from "./review.entity";
+import { Reviews } from "../../reviews/entities/review.entity";
+import { Categories } from "src/categories/entities/category.entity";
 
 @Entity({name: "products"})
 export class Products extends BaseEntity {
