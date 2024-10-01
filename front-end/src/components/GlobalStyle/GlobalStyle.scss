@@ -11,6 +11,7 @@
     --primary-color-background-1:#EEEEEE;
     --primary-color-background-2:#FFFFFF;
     --primary-color-hover:#77DAE6;
+    --default-layout-width: 1280px;
 }
 .dark {
     --primary-color-text:#FFFFFF;
@@ -29,7 +30,9 @@ html {
 body {
     font-family: "Source Sans 3", sans-serif;
     font-size: 1.6rem;
-    display: flex;
-    justify-content: center;
+    margin: 0;
+    padding: 0;
+    // display: flex;
+    // justify-content: center;
     background-color: var(--primary-color-background-2);
 }
