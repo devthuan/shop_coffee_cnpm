@@ -126,13 +126,17 @@ export class BaseService<T extends BaseEntity> {
 
   async findOne(id: string): Promise<T> {
   try {
+     const entityName = this.repository.target instanceof Function 
+      ? this.repository.target.name 
+      : this.repository.target;
+
       const data = await this.repository.createQueryBuilder('entity')
         .where('entity.id = :id', { id }) // Kiểm tra ID
         .andWhere('entity.deletedAt IS NULL') // Kiểm tra deletedAt là null
         .getOne();
 
       if (!data) {
-        throw new NotFoundException('Data not found');
+        throw new NotFoundException(`${entityName} not found`);
       }
 
       return data;

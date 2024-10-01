@@ -15,6 +15,10 @@ import { AttributeModule } from './attribute/attribute.module';
 import { DiscountModule } from './discount/discount.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { SupplierModule } from './supplier/supplier.module';
+import { NotificationModule } from './notification/notification.module';
+import { SubAttributeModule } from './sub-attribute/sub-attribute.module';
+import { CartModule } from './cart/cart.module';
 
 
 @Module({
@@ -57,7 +61,11 @@ import { ReviewsModule } from './reviews/reviews.module';
     AttributeModule,
     DiscountModule,
     CategoriesModule,
-    ReviewsModule,],
+    ReviewsModule,
+    SupplierModule,
+    NotificationModule,
+    SubAttributeModule,
+    CartModule,],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -1,10 +1,12 @@
 import { IsString } from "class-validator";
 
-export class CreateAttributeDto {
+
+export class CreateNotificationDto {
     
     @IsString()
-    name: string;
-    
+    title: string;
+
     @IsString()
-    description: string;
+    content: string;
+    
 }

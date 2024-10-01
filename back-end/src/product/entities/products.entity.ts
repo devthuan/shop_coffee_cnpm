@@ -2,7 +2,7 @@ import { BaseEntity } from "src/common/base.entity";
 import {  Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { Images } from "./images.entity";
 import { ProductDiscount } from "../../discount/entities/product_discount.entity";
-import { ProductAttributes } from "./product_attributes.entity";
+import {  ProductAttributeValue } from "./product_attribute_values.entity";
 import { Reviews } from "../../reviews/entities/review.entity";
 import { Categories } from "src/categories/entities/category.entity";
 
@@ -11,12 +11,6 @@ export class Products extends BaseEntity {
 
     @Column()
     name: string;
-
-    @Column()
-    sellPrice: number;
-
-    @Column()
-    buyPrice: number;
 
     @Column()
     description: string;
@@ -34,8 +28,8 @@ export class Products extends BaseEntity {
     @OneToMany(() => ProductDiscount, productDiscount => productDiscount.products)
     productDiscount: ProductDiscount;
 
-    @OneToMany(() => ProductAttributes, productAttributes => productAttributes.products)
-    productAttributes: ProductAttributes;
+    @OneToMany(() => ProductAttributeValue, productAttributeValue => productAttributeValue.products)
+    productAttributeValue: ProductAttributeValue;
 
 }
 

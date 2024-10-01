@@ -5,8 +5,6 @@ export class GetAttributesDto {
     
     id: string;
 
-    @IsString()
-    code: string;
     
     @IsString()
     name: string;

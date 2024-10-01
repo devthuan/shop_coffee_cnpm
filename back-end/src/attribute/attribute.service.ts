@@ -15,7 +15,6 @@ export class AttributeService extends  BaseService<Attributes> {
   ){
     super(attributeRepository);
 
-    
   }
 
 }

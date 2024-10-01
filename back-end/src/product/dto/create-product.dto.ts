@@ -2,9 +2,26 @@ import { Type } from "class-transformer";
 import { IsArray, IsNumber, IsString, ValidateNested } from "class-validator";
 
 
-export class AttributeValues {
+export class SubAttributeDto{
     @IsString()
-    value: string;
+    name: string;
+
+    @IsNumber()
+    price: number;
+
+    quantity: number;
+
+ 
+}
+
+export class AttributeDto {
+    @IsString()
+    attributesId: string;
+
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => SubAttributeDto)
+    subAttribute: SubAttributeDto[];
 
 }
 
@@ -18,14 +35,11 @@ export class CreateProductDto {
     description: string;
 
     @IsString()
-    price: string;
-
-    @IsString()
-    category: string;
+    categoryId: string;
 
     @IsArray()
     @ValidateNested({each: true})
-    @Type(() => AttributeValues)
-    attributes: AttributeValues[];
+    @Type(() => AttributeDto)
+    attributes: AttributeDto[];
 
 }

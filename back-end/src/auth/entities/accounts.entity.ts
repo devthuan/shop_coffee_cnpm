@@ -1,5 +1,7 @@
 import { Exclude, Expose } from "class-transformer";
+import { Cart } from "src/cart/entities/cart.entity";
 import { BaseEntity } from "src/common/base.entity";
+import { NotificationAccounts } from "src/notification/entities/notification-account.entity";
 import { Reviews } from "src/reviews/entities/review.entity";
 import { Roles } from "src/role-permission/entities/roles.entity";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
@@ -41,5 +43,13 @@ export class Accounts extends BaseEntity {
 
     @OneToMany(() => Reviews, reviews => reviews.accounts)
     reviews : Reviews
+    
+    @OneToMany(() => NotificationAccounts, notificationAccounts => notificationAccounts.accounts)
+    notificationAccounts : NotificationAccounts
+
+    @OneToMany(() => Cart, cart => cart.accounts)
+    cart : Cart
+
+    
     
 }
