@@ -5,6 +5,7 @@
     align-items: center;
     min-height: 100vh; // Đảm bảo container chiếm toàn bộ chiều cao của viewport
     min-width: 150vh;
+    width: 1200px;
     padding: 20px;
     box-sizing: border-box;
     background-color: var(--secondary-color-secondary-6);
@@ -27,6 +28,7 @@
     padding: 20px;
     align-items: center;
     position: relative;
+    width: 50%;
   
     form {
       display: flex;
@@ -211,7 +213,7 @@ align-items: center;
     width: 100%;
     padding: 5px;
     justify-content: center;
-    align-items: flex-start;
+    
     gap: 30px;
     background-color: #FFB700;
     border-radius: 5px;
@@ -263,6 +265,47 @@ color: var(--Secondary-Color-Secondary-2);
 justify-content: center;
 align-items: center;
 }
+
+@media screen and (min-width: 46.25em) and (max-width: 63.9375em) {
+  
+  .register {
+    flex-direction: column; // Ensure both elements stay side by side
+    width: 25%; // Use the full width of the screen
+    
+    justify-content: space-between; // Spread out elements evenly
+    align-items: center; // Align items vertically if needed
+    
+    
+
+    
+  }
+  .but-sign{
+    display: flex;
+    width: 100%;
+    
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    font-size: 20px;
+    height: 35px;
+    border:0.5px solid #D2D1D6;
+    cursor: pointer;
+    border-radius: 5px;
+    position: relative;
+  }
+  
+  .show-logo {
+    display: block;
+    width: 25%; // Adjust this if needed to balance proportions
+    align-items: center;
+    justify-content: center;
+  
+   
+  }
+}
+
+
 
 
   

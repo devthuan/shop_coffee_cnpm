@@ -1,0 +1,122 @@
+.background {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    background-color: var(--primary-color-hover);
+    height: 374px;
+    border-radius: 20px;
+}
+
+.title {
+    font-size: 42px;
+    color: var(--primary-color-text);
+    font-weight: 500;
+    line-height: 60px;
+    width: 418px;
+    padding-left: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.photo {
+    position: relative;
+}
+
+.photo_1 {
+    position: absolute;
+    width: 438px;
+    height: 281px;
+    right: 0;
+    bottom: -188px;
+}
+
+.photo_2 {
+    position: absolute;
+    width: 211px;
+    height: 269px;
+    right: 120px;
+    bottom: -110px;
+}
+
+.photo_3 {
+    position: absolute;
+    width: 211px;
+    height: 269px;
+    right: -50px;
+    bottom: -240px;
+}
+
+.info_product {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.info_product_title {
+    color: var(--primary-color-text);
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 34px;
+}
+
+.info_product_filter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: 104px;
+    height: 36px;
+    background-color: var(--primary-color-background-1);
+    border-radius: 6px;
+}
+
+.info_product_filter_title {
+    color: var(--primary-color-text);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+
+}
+
+.list_product {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.item_product {
+    padding: 16px;
+    background-color: var(--primary-color-background-1);
+    border-radius: 20px;
+    
+}
+
+.img_product {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.name_product {
+    color: var(--primary-color-text);
+    margin-top: 16px;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+}
+
+.lazada{
+    color: #9E9DA8;
+    margin: 16px 0;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 22px;
+}
+.img_price{
+    color: var(--primary-color-text);
+}

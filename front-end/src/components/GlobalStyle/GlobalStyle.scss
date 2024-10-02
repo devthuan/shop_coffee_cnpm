@@ -1,11 +1,23 @@
 @import 'normalize.css';
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
 
 :root {
-    --secondary-color-secondary-6: #FAFAFD;
-    --secondary-color-secondary-5: #FFF;
-    --Secondary-Color-Secondary-1: rgb(24, 0, 112);
-    --Secondary-Color-Secondary-2: #9E9DA8;
+    --primary-color-text:#1A162E;
+    --primary-color-background-1:#EEEEEE;
+    --primary-color-background-2:#FFFFFF;
+    --primary-color-hover:#77DAE6;
+}
+.dark {
+    --primary-color-text:#FFFFFF;
+    --primary-color-background-1:#171C28;
+    --primary-color-background-2:#292E39;
+    --primary-color-hover:#77DAE6;
 }
 * {
     box-sizing: border-box;
@@ -20,4 +32,5 @@ body {
     font-size: 1.6rem;
     display: flex;
     justify-content: center;
+    background-color: var(--primary-color-background-2);
 }

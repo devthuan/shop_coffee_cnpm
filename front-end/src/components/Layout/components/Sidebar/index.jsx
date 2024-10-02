@@ -6,7 +6,6 @@ function Sidebar({ children }) {
   return (
     <div className={cx("wrapper")}>
       <div className={cx("container")}>
-        
         {children}
       </div>
     </div>
