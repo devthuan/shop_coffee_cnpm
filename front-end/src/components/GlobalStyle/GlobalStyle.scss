@@ -1,0 +1,38 @@
+@import 'normalize.css';
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Bạn có thể thêm các kiểu SCSS tùy chỉnh ở đây */
+
+:root {
+    --primary-color-text:#1A162E;
+    --primary-color-background-1:#EEEEEE;
+    --primary-color-background-2:#FFFFFF;
+    --primary-color-hover:#77DAE6;
+    --default-layout-width: 1280px;
+}
+.dark {
+    --primary-color-text:#FFFFFF;
+    --primary-color-background-1:#171C28;
+    --primary-color-background-2:#292E39;
+    --primary-color-hover:#77DAE6;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+html {
+    font-size: 62.5%;
+}
+body {
+    font-family: "Source Sans 3", sans-serif;
+    font-size: 1.6rem;
+    margin: 0;
+    padding: 0;
+    // display: flex;
+    // justify-content: center;
+    background-color: var(--primary-color-background-2);
+}
