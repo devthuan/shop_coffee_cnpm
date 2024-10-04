@@ -2,9 +2,70 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { MailModule } from './mail/mail.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import { RolePermissionModule } from './role-permission/role-permission.module';
+import { ProductModule } from './product/product.module';
+
+import * as redisStore from 'cache-manager-ioredis';
+import { CloudinaryModule } from 'nestjs-cloudinary';
+import { AttributeModule } from './attribute/attribute.module';
+import { DiscountModule } from './discount/discount.module';
+import { CategoriesModule } from './categories/categories.module';
+import { ReviewsModule } from './reviews/reviews.module';
+import { SupplierModule } from './supplier/supplier.module';
+import { NotificationModule } from './notification/notification.module';
+import { SubAttributeModule } from './sub-attribute/sub-attribute.module';
+import { CartModule } from './cart/cart.module';
+
 
 @Module({
-  imports: [AuthModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env'
+    }),
+    CacheModule.register({
+      store: redisStore,
+      host: process.env.REDIS_HOST,
+      port: parseInt(process.env.REDIS_PORT),
+      ttl: 600, // seconds
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: process.env.DATABASE_HOST,
+      port: parseInt(process.env.DATABASE_PORT),
+      username: process.env.DATABASE_USERNAME,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME,
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      synchronize: true,
+    }),
+    CloudinaryModule.forRoot(
+      {
+      isGlobal: true,
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    }
+    ),
+
+
+    AuthModule,
+    MailModule,
+    RolePermissionModule,
+    ProductModule,
+    AttributeModule,
+    DiscountModule,
+    CategoriesModule,
+    ReviewsModule,
+    SupplierModule,
+    NotificationModule,
+    SubAttributeModule,
+    CartModule,],
   controllers: [AppController],
   providers: [AppService],
 })
