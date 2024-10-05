@@ -17,7 +17,6 @@ import { CategoriesModule } from './categories/categories.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { SupplierModule } from './supplier/supplier.module';
 import { NotificationModule } from './notification/notification.module';
-import { SubAttributeModule } from './sub-attribute/sub-attribute.module';
 import { CartModule } from './cart/cart.module';
 
 
@@ -64,7 +63,6 @@ import { CartModule } from './cart/cart.module';
     ReviewsModule,
     SupplierModule,
     NotificationModule,
-    SubAttributeModule,
     CartModule,],
   controllers: [AppController],
   providers: [AppService],

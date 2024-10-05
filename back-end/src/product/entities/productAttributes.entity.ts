@@ -2,11 +2,10 @@ import { BaseEntity } from "src/common/base.entity";
 import {  Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { Products } from "./products.entity";
 import { Attributes } from "src/attribute/entities/attributes.entity";
-import { SubAttributes } from "src/sub-attribute/entities/sub-attribute.entity";
 import { Cart } from "src/cart/entities/cart.entity";
 
-@Entity({name: "productAttributeValue"})
-export class ProductAttributeValue extends BaseEntity {
+@Entity({name: "productAttributes"})
+export class ProductAttributes extends BaseEntity {
 
     @Column()
     sellPrice: number
@@ -18,13 +17,14 @@ export class ProductAttributeValue extends BaseEntity {
     quantity: number
 
  
-    @ManyToOne(() => Products, products => products.productAttributeValue)
+    @ManyToOne(() => Products, products => products.productAttributes)
     products: Products;
+ 
+    @ManyToOne(() => Attributes, attributes => attributes.productAttributes)
+    attributes: Attributes;
 
-    @ManyToOne(() => SubAttributes, subAttributes => subAttributes.productAttributeValue)
-    subAttributes: SubAttributes;
 
-    @OneToMany(() => Cart, cart => cart.productAttributeValue)
+    @OneToMany(() => Cart, cart => cart.productAttributes)
     cart: Cart;
 }
 

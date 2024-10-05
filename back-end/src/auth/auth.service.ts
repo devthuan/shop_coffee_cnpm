@@ -49,7 +49,7 @@ export class AuthService {
         device: 'web',
         typeLogin: 'system',
         lastLogin: null,
-        isActive: true,
+        isActive: false,
         role: await this.rolesRepository.findOne({where: {id: '1'}})
       })
       await this.accountsRepository.save(new_user)
