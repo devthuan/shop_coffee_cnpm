@@ -18,6 +18,9 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { SupplierModule } from './supplier/supplier.module';
 import { NotificationModule } from './notification/notification.module';
 import { CartModule } from './cart/cart.module';
+import { BillModule } from './bill/bill.module';
+import { PaymentModule } from './payment/payment.module';
+import { VoucherModule } from './voucher/voucher.module';
 
 
 @Module({
@@ -63,7 +66,10 @@ import { CartModule } from './cart/cart.module';
     ReviewsModule,
     SupplierModule,
     NotificationModule,
-    CartModule,],
+    CartModule,
+    BillModule,
+    PaymentModule,
+    VoucherModule,],
   controllers: [AppController],
   providers: [AppService],
 })

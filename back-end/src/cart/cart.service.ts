@@ -187,6 +187,56 @@ export class CartService  {
     }
   }
 
+  
+  async updateQuantity(idCart: string, updateCartDto: UpdateCartDto): Promise<{message: string}> {
+    try {
+
+      const checkAccount = await this.AccountsRepository.createQueryBuilder('accounts')
+        .where('accounts.id = :id', {id: updateCartDto.accountsId})
+        .andWhere('accounts.deletedAt is null')
+        .andWhere('accounts.isActive = :isActive', {isActive: true})
+        .getOne();
+      if (!checkAccount){
+        throw new NotFoundException('Account not found')
+      }   
+      
+      const checkCart = await this.cartRepository.createQueryBuilder('cart')
+        .leftJoinAndSelect('cart.productAttributes', 'productAttributes')
+        .where('cart.deletedAt is null')
+        .andWhere('cart.id = :id', {id: idCart})
+        .getOne();
+        
+      if(!checkCart){
+        throw new NotFoundException('Cart not found') 
+      }
+
+      const checkProductAttribute = await this.productAttributesRepository.createQueryBuilder('productAttributes')
+        .where('productAttributes.id = :id', {id: checkCart.productAttributes.id})
+        .andWhere('productAttributes.deletedAt is null')
+        .getOne();
+
+      if(!checkProductAttribute){
+       throw new NotFoundException('Product not found')
+      }
+
+      // check quantity attribute
+     if(checkProductAttribute.quantity < updateCartDto.quantity){
+        throw new NotFoundException('Quantity not enough')
+      }
+
+      checkCart.quantity = updateCartDto.quantity;
+      await this.cartRepository.save(checkCart);
+  
+      return {
+        message: 'Cart updated quantity successfully'
+      };
+      
+    } catch (error) {
+      CommonException.handle(error);
+    }
+  }
+
+
   async findAll(
     search: string,
     page: number,

@@ -1,9 +1,11 @@
 import { Exclude, Expose } from "class-transformer";
+import { Bills } from "src/bill/entities/bill.entity";
 import { Cart } from "src/cart/entities/cart.entity";
 import { BaseEntity } from "src/common/base.entity";
 import { NotificationAccounts } from "src/notification/entities/notification-account.entity";
 import { Reviews } from "src/reviews/entities/review.entity";
 import { Roles } from "src/role-permission/entities/roles.entity";
+import { UseVouchers } from "src/voucher/entities/use-voucher.entity";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 
 @Entity({name: "accounts"})
@@ -49,6 +51,12 @@ export class Accounts extends BaseEntity {
 
     @OneToMany(() => Cart, cart => cart.accounts)
     cart : Cart
+
+    @OneToMany(() => Bills, bills => bills.account)
+    bills : Bills
+
+    @OneToMany(() => UseVouchers, useVouchers => useVouchers.accounts)
+    useVouchers : UseVouchers
 
     
     
