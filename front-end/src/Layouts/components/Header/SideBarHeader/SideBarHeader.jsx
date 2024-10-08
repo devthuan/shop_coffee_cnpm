@@ -11,6 +11,7 @@ function SideBarHeader({handleClickToggle}) {
         <div  className={cx("wrapper")} onClick={handleClickToggle}/>
         <div className={cx("container")}>
             <FontAwesomeIcon icon={faArrowLeft} onClick={handleClickToggle} className={cx("color_icon")}/>
+            <input type="text" className={cx("search")} placeholder="search"/>
             <Link to={'/cart'} className={cx("btn_cart")}>
               <FontAwesomeIcon icon={faCartShopping} className={cx("color_icon")}/>
               <div className={cx("text_card")}>Card</div>

@@ -1,9 +1,19 @@
+@keyframes changeColor {
+  0% {
+      background-color: var(--primary-color-background-1)
+  }
+
+  100% {
+      background-color: #77DAE6;
+  }
+}
 .wrapper {
   display: flex;
   flex-direction: column;
   align-items: start;
   justify-content: center;
 }
+
 
 .item {
   display: flex;
@@ -19,7 +29,7 @@
 }
 
 .item:hover {
-  background-color: var(--primary-color-hover);
+  animation: changeColor 2s forwards;
   cursor: pointer;
 }
 

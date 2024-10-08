@@ -27,7 +27,7 @@ function Header() {
   }
   return (
     <header className={cx("wrapper", "sm:h-[110px] h-[82px]")}>
-      {sideBarHeader && <div className={cx("sidebarheader")}><SideBarHeader handleClickToggle={handleClickToggle} /></div>}
+      {sideBarHeader && <div className={cx("sidebarheader" , "sm:hidden")}><SideBarHeader handleClickToggle={handleClickToggle} /></div>}
       {toggleSearch && <InputSearch handleCLickSearch={handleCLickSearch} />}
       <div className={cx("container")}>
         <FontAwesomeIcon icon={faBars} className={cx("icon_bars", "sm:hidden")} onClick={handleClickToggle} />

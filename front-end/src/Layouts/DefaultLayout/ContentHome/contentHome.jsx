@@ -4,6 +4,8 @@ import icon_under from '~/assets/images/icon_img_main.svg'
 import icon_2 from '~/assets/images/icon_2.png'
 import icon_3 from '~/assets/images/icon_3.png'
 import img_product from '~/assets/images/img_product.png'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
 
 const cx = classNames.bind(styles)
 function ContentHome() {
@@ -23,7 +25,7 @@ function ContentHome() {
             <div className={cx('info_product_title')}>Total LavAzza 1320</div>
             <div className={cx('info_product_filter')}>
                 <p className={cx('info_product_filter_title')}>filter</p>
-                <img src="s"/>
+                <FontAwesomeIcon icon={faFilter} className={cx('filter')}/> 
             </div>
         </div>
         <ul className={cx('list_product')}>

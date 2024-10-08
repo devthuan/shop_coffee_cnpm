@@ -39,3 +39,14 @@
     line-height: 22px;
     cursor: pointer;
 }
+.search {
+   background-color: var(--primary-color-background-2);
+   border-bottom: 1px solid #000;
+   outline: none;
+   color: var(--primary-color-text);
+   width: 100%;
+   
+}
+.search::placeholder{
+    color: var(--primary-color-text);
+}
