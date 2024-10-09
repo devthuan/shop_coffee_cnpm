@@ -28,10 +28,10 @@ export class CreateBillDto {
     fullName: string;
 
     @IsString()
-    deliveryAddress: string;
+    deliverAddress: string;
     
     @IsString()
-    deliveryPhone: string;
+    deliverPhone: string;
 
     @IsString()
     shippingMethod: string;
@@ -46,6 +46,8 @@ export class CreateBillDto {
     @ValidateNested({each: true})
     @Type(() => BillDetailDto)
     products: BillDetailDto[]
+
+    accountId: string;
 
 
 }

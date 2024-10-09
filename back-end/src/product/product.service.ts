@@ -249,6 +249,37 @@ export class ProductService extends BaseService<Products> {
     }
   }
 
+  async checkExistingProductAttribute(productAttributeId: string): Promise<ProductAttributes> {
+
+    try {
+      
+      const productAttribute = await this.productAttributesRepository.createQueryBuilder('productAttributes')
+        .leftJoinAndSelect('productAttributes.products', 'products')
+        .leftJoinAndSelect('products.productDiscount', 'productDiscount')
+        .where('productAttributes.id = :id', { id: productAttributeId })
+        .andWhere('productAttributes.deletedAt IS NULL')
+        .getOne();
+
+      if(!productAttribute) {
+        throw new NotFoundException('Product attribute not found');
+      }
+
+      if(productAttribute.quantity === 0){
+        throw new BadRequestException('Product attribute is out of stock');
+      }
+      
+     
+     
+      
+      return productAttribute;
+
+      
+    } catch (error) {
+      CommonException.handle(error);
+    }
+  }
+
+
   async uploadFileCloudinary(file : Express.Multer.File): Promise<any>{
     return this.cloudinaryService.uploadFile(file)
   }

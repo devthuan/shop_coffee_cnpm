@@ -17,5 +17,6 @@ import { AttributeModule } from 'src/attribute/attribute.module';
   ],
   controllers: [ProductController],
   providers: [ProductService],
+  exports:[ProductService]
 })
 export class ProductModule {}

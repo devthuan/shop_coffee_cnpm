@@ -12,6 +12,9 @@ export class BillDetails extends BaseEntity {
     @Column()
     price: number
 
+    @Column()
+    discount: number
+
     @ManyToOne(() => Bills, bills => bills.billDetails)
     bills: Bills;
 

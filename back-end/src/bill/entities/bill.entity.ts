@@ -3,6 +3,7 @@ import { BaseEntity } from "src/common/base.entity";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { BillDetails } from "./bill-detail.entity";
 import { Payments } from "src/payment/entities/payment.entity";
+import { Vouchers } from "src/voucher/entities/vouchers.entity";
 
 @Entity({name: "bills"})
 export class Bills extends BaseEntity{
@@ -12,9 +13,12 @@ export class Bills extends BaseEntity{
 
     @Column()
     total: number;
- 
+
     @Column()
-    voucher: number;   
+    totalDiscount: number
+    
+    @Column()
+    totalPayment: number;
     
     @Column()
     fullName: string
@@ -37,8 +41,11 @@ export class Bills extends BaseEntity{
     @ManyToOne(() => Payments, payments => payments.bills)
     payments: Payments;
 
+    @ManyToOne(() => Vouchers, vouchers => vouchers.bills)
+    vouchers: Vouchers;
+
     @OneToMany(()=> BillDetails, billDetails => billDetails.bills)
-    billDetails: BillDetails[]
+    billDetails: BillDetails
 
 
    
