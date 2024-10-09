@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateBillDto } from './dto/create-bill.dto';
-import { UpdateBillDto } from './dto/update-bill.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Bills } from './entities/bill.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -11,9 +10,10 @@ import { VoucherService } from 'src/voucher/voucher.service';
 import { Accounts } from 'src/auth/entities/accounts.entity';
 import { ProductService } from 'src/product/product.service';
 import { PaymentService } from 'src/payment/payment.service';
+import { BaseService } from 'src/common/baseService';
 
 @Injectable()
-export class BillService {
+export class BillService extends BaseService<Bills> {
   constructor(
     @InjectRepository(Bills)
     private readonly billsRepository: Repository<Bills>,
@@ -28,7 +28,9 @@ export class BillService {
     private readonly productService: ProductService,
     private readonly paymentService: PaymentService,
     private readonly dataSource: DataSource
-  ){}
+  ){
+    super(billsRepository)
+  }
 
 
   async create(createBillDto: CreateBillDto) : Promise<any> {
@@ -138,19 +140,66 @@ export class BillService {
     }
   }
 
-  findAll() {
-    return `This action returns all bill`;
+  async findOne(id: string): Promise<Bills> {
+      try {
+        const bill = await this.billsRepository.createQueryBuilder('bills')
+        .where('bills.id = :id', { id })
+        .andWhere('bills.deletedAt IS NULL')
+        .innerJoinAndSelect('bills.payments', 'payments')
+        .innerJoinAndSelect('bills.vouchers', 'vouchers')
+        .innerJoinAndSelect('bills.account', 'account')
+        .innerJoinAndSelect('bills.billDetails', 'billDetails')
+        .innerJoinAndSelect('billDetails.productAttributes', 'productAttributes')
+        .innerJoinAndSelect('productAttributes.products', 'products')
+        .innerJoinAndSelect('productAttributes.attributes', 'attributes')
+        .innerJoinAndSelect('products.productDiscount', 'productDiscount')
+        .getOne();
+        if(!bill){
+          throw new BadRequestException('Bill not found')
+        }
+        return bill;
+        
+      } catch (error) {
+        CommonException.handle(error)
+      }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} bill`;
+  async updateStatus(billId: string, status: string): Promise<{message: string}>{
+    try {
+      const bill = await this.billsRepository.createQueryBuilder('bills')
+        .where('bills.id = :id', { id: billId })
+        .andWhere('bills.deletedAt IS NULL')
+        .getOne();
+
+        if(!bill){
+          throw new BadRequestException('Bill not found')
+        }
+
+        // ['pending', 'delivery', 'success', 'failed', 'cancelled']
+
+        if (bill.status === 'success') {
+            throw new BadRequestException('Bill has been paid');
+        } else if (bill.status === 'cancelled') {
+            throw new BadRequestException('Bill has been cancelled');
+        } else if (bill.status === 'failed') {
+          throw new BadRequestException('Bill has been failed');
+        } 
+        else if (bill.status === 'pending' && status === 'cancelled' || status === 'delivery') {
+          bill.status = status
+        } 
+        else if (bill.status === 'delivery' && status === 'failed' || status === 'success') { 
+          bill.status = status
+        }else {
+          throw new BadRequestException('Invalid status for this bill');
+        }
+
+        await this.billsRepository.save(bill);
+        return { message: 'Bill status updated successfully' }
+        
+    } catch (error) {
+      CommonException.handle(error)
+    }
   }
 
-  update(id: number, updateBillDto: UpdateBillDto) {
-    return `This action updates a #${id} bill`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} bill`;
-  }
+  
 }

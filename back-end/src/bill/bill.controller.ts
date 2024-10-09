@@ -1,10 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards, Query, Put } from '@nestjs/common';
 import { BillService } from './bill.service';
 import { CreateBillDto } from './dto/create-bill.dto';
-import { UpdateBillDto } from './dto/update-bill.dto';
+import { UpdateBillDto, UpdateStatusDto } from './dto/update-bill.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { plainToInstance } from 'class-transformer';
+import { Bills } from './entities/bill.entity';
+import { CommonException } from 'src/common/exception';
 
-@Controller('bill')
+@Controller('bills')
 export class BillController {
   constructor(private readonly billService: BillService) {}
 
@@ -20,22 +23,34 @@ export class BillController {
   }
 
   @Get()
-  findAll() {
-    return this.billService.findAll();
+  findAll(
+    @Query('search') search : string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('sortBy') sortBy: string = 'id',
+    @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC'
+  ) {
+    let data = this.billService.findAll(search, page, limit, sortBy, sortOrder);
+    return plainToInstance(Bills, data)
   }
-
+  
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.billService.findOne(+id);
+    let data = this.billService.findOne(id);
+    return plainToInstance(Bills, data)
+    
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBillDto: UpdateBillDto) {
-    return this.billService.update(+id, updateBillDto);
+
+  
+
+  @Patch('update-status/:id')
+  update(@Param('id') id: string,@Body() updateStatusDto :UpdateStatusDto ) {
+    return this.billService.updateStatus(id, updateStatusDto.status);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.billService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.billService.(id);
+  // }
 }
