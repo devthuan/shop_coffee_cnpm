@@ -21,10 +21,10 @@ export class BillService {
     private readonly dataSource: DataSource
   ){}
   async create(createBillDto: CreateBillDto) : Promise<any> {
-    // const queryRunner = this.dataSource.createQueryRunner()
+    const queryRunner = this.dataSource.createQueryRunner()
     try {
-    //   await queryRunner.connect()
-    //   await queryRunner.startTransaction()
+      await queryRunner.connect()
+      await queryRunner.startTransaction()
       
     //   // check information
     //   if (!createBillDto.products.length) {
