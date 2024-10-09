@@ -33,6 +33,7 @@ import { CartModule } from './cart/cart.module';
       port: parseInt(process.env.REDIS_PORT),
       ttl: 600, // seconds
       isGlobal: true,
+      connectTimeout: 10000
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
