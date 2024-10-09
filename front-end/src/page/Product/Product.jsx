@@ -6,7 +6,7 @@ export const Product = () => {
   return (
     <div className="">
       <div className={cx("mb-7")}>
-        <div className={cx("grid lg:grid-cols-11 max-sm:gap-7")}>
+        <div className={cx("grid lg:grid-cols-11 max-sm:gap-7 ")}>
           <div className={cx("lg:col-span-5")}>image product</div>
           <div className={cx("lg:col-span-6")}>information product</div>
         </div>
@@ -21,7 +21,7 @@ export const Product = () => {
           <div className={cx("")}>option 4</div>
         </div>
         <div className={cx("my-7")}>title</div>
-        <div className={cx("grid lg:grid-cols-3 gap-7 max-sm:grid-cols-1 ")}>
+        <div className={cx("grid lg:grid-cols-3 gap-7 max-sm:grid-cols-1  ")}>
           <div className={cx("")}>review 1</div>
           <div className={cx("")}>review 1</div>
           <div className={cx("")}>review 1</div>
