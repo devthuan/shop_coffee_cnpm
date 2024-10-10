@@ -38,7 +38,7 @@ function Header() {
         </Link>
         <div className={cx("element_right")}>
           {Login ? <div className={cx("header_btn")}>
-            <Link to="./register" className={cx("btn_login_text")}>log in</Link>
+            <Link to="/login" className={cx("btn_login_text")}>log in</Link>
             <ThemeToggle />
           </div> : <div className={cx("content")} >
             <div className={cx("btn_search")} onClick={handleCLickSearch}>

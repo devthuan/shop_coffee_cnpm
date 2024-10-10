@@ -123,10 +123,9 @@ export const Register = () => {
             <div className={cx("bot-title")}>
               <p className={cx("text-sm mt-6  ")}>
               <span>You have an account yet?</span> 
-               <Link to="/register" className={cx("text-blue-500")}>Sign In</Link>
+               <Link to="/login" className={cx("text-blue-500")}>Sign In</Link>
               </p>
             </div>
-
           </div>
         </div>
       </div>

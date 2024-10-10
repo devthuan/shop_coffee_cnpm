@@ -9,6 +9,8 @@ function ProfileSidebar() {
 
     const [imgUser, setImgUser] = []
 
+    
+
     return (<div className={cx("wrapper")}>
         <div className={cx("avatar")}>
             <div className={cx("avatar_content")}>

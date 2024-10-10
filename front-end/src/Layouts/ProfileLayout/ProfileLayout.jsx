@@ -20,9 +20,8 @@ function ProfileLayout({children}) {
         <div className="lg:col-span-3 grid gap-y-7">
           <ProfileSidebar/>
         </div>
-        <div className="lg:col-span-9 p-7">{children}</div>
+        <div className="lg:col-span-9">{children}</div>
       </div>
-      <div className={cx("mt-7")}>footer</div>
     </div>
   );
 }
