@@ -7,7 +7,7 @@ const cx = classNames.bind(styles);
 
 function DefaultLayout({children}) {
   return (
-    <div className={cx("max-w-[1280px] mx-auto text-center p-[22px]")}>
+    <div className={cx("max-w-[1280px] mx-auto text-center max-sm:p-[22px]")}>
       <div className="grid grid-cols-1"><Header/></div>
       <div className={cx("lg:w-11/12 grid grid-cols-12 gap-x-7  mx-auto sm:mt-[30px]")}>
         <div className={cx("lg:col-span-3 max-sm:col-span-12 ")}><SidebarHome/></div>
