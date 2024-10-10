@@ -168,7 +168,9 @@ export class BaseService<T extends BaseEntity> {
         queryBuilder.andWhere('entity.deletedAt is null')
 
         const existingEntity = await queryBuilder.getOne();
+
       if(existingEntity ) {
+        
         throw new ConflictException('Name or code is already taken')
       }
     }
@@ -254,6 +256,23 @@ export class BaseService<T extends BaseEntity> {
       if (!data.name && !data.code && !data.code) {
         return false;
       }
+      const check = await query.getOne();
+       
+       return!!check;
+    } catch (error) {
+      CommonException.handle(error)
+      return false;
+    }
+  }
+  async checkExistingCommon(data: { column?: string, value: string,  id?: string }): Promise<boolean> {
+    try {
+      const query =  this.repository.createQueryBuilder('entity')
+      .where('entity.deletedAt is null');
+      if (data.column) {
+        query.andWhere(`entity.${data.column} = :value `, { value: data.value})
+      }
+      
+    
       const check = await query.getOne();
        
        return!!check;

@@ -33,6 +33,20 @@ export class BillController {
     let data = this.billService.findAll(search, page, limit, sortBy, sortOrder);
     return plainToInstance(Bills, data)
   }
+  @UseGuards(AuthGuard)
+  @Get('account')
+  findAllByAccount(
+    @Req() request: Request,
+    @Query('search') search : string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('sortBy') sortBy: string = 'id',
+    @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC'
+  ) {
+    let accountId = request['user'].id;  // get accountId from token
+    let data = this.billService.getBillByAccount(accountId,search, page, limit, sortBy, sortOrder);
+    return plainToInstance(Bills, data)
+  }
   
   @Get(':id')
   findOne(@Param('id') id: string) {

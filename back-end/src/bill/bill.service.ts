@@ -140,6 +140,51 @@ export class BillService extends BaseService<Bills> {
     }
   }
 
+  async getBillByAccount(
+    accountId: string,
+    search: string,
+    page : number = 1,
+    limit : number = 10,
+    sortBy : string = 'createdAt',
+    sortOrder: 'ASC' | 'DESC' = 'ASC'
+    ): Promise<{ message: string; total: number;  currentPage: number; totalPage: number; limit : number; data: Bills[]}>
+    {
+
+      try {
+        const bills = await this.billsRepository.createQueryBuilder('bills')
+        .where('bills.accountId = :accountId', {accountId: accountId })
+        .andWhere('bills.deletedAt IS NULL');
+
+        
+
+        // count total
+      const total = await bills.getCount();
+
+      // pagination page
+      const data = await bills
+        .skip((page - 1) * limit) // Bỏ qua các bản ghi đã được hiển thị
+        .take(limit) // Giới hạn số bản ghi trả về
+        .orderBy(`bills.${sortBy}`, sortOrder) // Sắp xếp theo trường chỉ định
+        .getMany(); // Lấy danh sách bản ghi
+
+
+      const totalPage = Math.ceil(total / limit);
+
+        
+
+        return {
+          message: 'Get bill by account successfully',
+          total,
+          currentPage: page,
+          totalPage,
+          limit,
+          data: data
+        }
+      } catch (error) {
+        CommonException.handle(error)
+      }
+  }
+
   async findOne(id: string): Promise<Bills> {
       try {
         const bill = await this.billsRepository.createQueryBuilder('bills')
@@ -200,6 +245,8 @@ export class BillService extends BaseService<Bills> {
       CommonException.handle(error)
     }
   }
+
+  
 
   
 }
