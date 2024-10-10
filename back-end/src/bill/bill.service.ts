@@ -1,8 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreateBillDto } from './dto/create-bill.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Bills } from './entities/bill.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { BillDetails } from './entities/bill-detail.entity';
 import { CommonException } from 'src/common/exception';
 import { ProductAttributes } from 'src/product/entities/productAttributes.entity';
@@ -25,7 +25,10 @@ export class BillService extends BaseService<Bills> {
     private readonly accountsRepository: Repository<Accounts>,
 
     private readonly voucherService: VoucherService,
-    private readonly productService: ProductService,
+
+    @Inject(forwardRef(() =>ProductService))
+    private  productService: ProductService,
+
     private readonly paymentService: PaymentService,
     private readonly dataSource: DataSource
   ){
@@ -190,14 +193,14 @@ export class BillService extends BaseService<Bills> {
         const bill = await this.billsRepository.createQueryBuilder('bills')
         .where('bills.id = :id', { id })
         .andWhere('bills.deletedAt IS NULL')
-        .innerJoinAndSelect('bills.payments', 'payments')
-        .innerJoinAndSelect('bills.vouchers', 'vouchers')
-        .innerJoinAndSelect('bills.account', 'account')
-        .innerJoinAndSelect('bills.billDetails', 'billDetails')
-        .innerJoinAndSelect('billDetails.productAttributes', 'productAttributes')
-        .innerJoinAndSelect('productAttributes.products', 'products')
-        .innerJoinAndSelect('productAttributes.attributes', 'attributes')
-        .innerJoinAndSelect('products.productDiscount', 'productDiscount')
+        .leftJoinAndSelect('bills.payments', 'payments')
+        .leftJoinAndSelect('bills.vouchers', 'vouchers')
+        .leftJoinAndSelect('bills.account', 'account')
+        .leftJoinAndSelect('bills.billDetails', 'billDetails')
+        .leftJoinAndSelect('billDetails.productAttributes', 'productAttributes')
+        .leftJoinAndSelect('productAttributes.products', 'products')
+        .leftJoinAndSelect('productAttributes.attributes', 'attributes')
+        .leftJoinAndSelect('products.productDiscount', 'productDiscount')
         .getOne();
         if(!bill){
           throw new BadRequestException('Bill not found')
@@ -210,8 +213,13 @@ export class BillService extends BaseService<Bills> {
   }
 
   async updateStatus(billId: string, status: string): Promise<{message: string}>{
+    const queryRunner = this.dataSource.createQueryRunner()
     try {
+      await queryRunner.connect()
+      await queryRunner.startTransaction()
       const bill = await this.billsRepository.createQueryBuilder('bills')
+        .leftJoinAndSelect('bills.billDetails', 'billDetails')
+        .leftJoinAndSelect('billDetails.productAttributes', 'productAttributes')
         .where('bills.id = :id', { id: billId })
         .andWhere('bills.deletedAt IS NULL')
         .getOne();
@@ -221,24 +229,43 @@ export class BillService extends BaseService<Bills> {
         }
 
         // ['pending', 'delivery', 'success', 'failed', 'cancelled']
-
         if (bill.status === 'success') {
             throw new BadRequestException('Bill has been paid');
-        } else if (bill.status === 'cancelled') {
+        }
+        if (bill.status === 'cancelled') {
             throw new BadRequestException('Bill has been cancelled');
-        } else if (bill.status === 'failed') {
+        } 
+        if (bill.status === 'failed') {
           throw new BadRequestException('Bill has been failed');
         } 
-        else if (bill.status === 'pending' && status === 'cancelled' || status === 'delivery') {
-          bill.status = status
-        } 
-        else if (bill.status === 'delivery' && status === 'failed' || status === 'success') { 
-          bill.status = status
-        }else {
-          throw new BadRequestException('Invalid status for this bill');
-        }
 
-        await this.billsRepository.save(bill);
+        switch (bill.status) {
+          case 'pending':
+            if (status === 'delivery') {
+              bill.status = status;
+            } else if (status === 'cancelled') {
+              bill.status = status;
+              await this.restoreStock(bill, queryRunner); // Khôi phục số lượng hàng tồn
+            } 
+          break;
+
+          case 'delivery':
+            if (status === 'success') {
+              bill.status = status;
+            } else if (status === 'failed') {
+              bill.status = status;
+              await this.restoreStock(bill, queryRunner); // Khôi phục số lượng hàng tồn
+            } 
+          break;
+
+          default:
+            throw new BadRequestException('Invalid status for this bill');
+        }
+        
+        bill.updatedAt = new Date();
+        await queryRunner.manager.save(bill);
+        await queryRunner.commitTransaction()
+
         return { message: 'Bill status updated successfully' }
         
     } catch (error) {
@@ -246,7 +273,34 @@ export class BillService extends BaseService<Bills> {
     }
   }
 
-  
+  async checkBillPendingByProduct(productAttributeId: string): Promise<boolean> {
+    try {
+      const bill = await this.billsRepository.createQueryBuilder('bills')
+       .where('bills.status = :status or bills.status = :status2', { status: 'pending', status2: 'delivery' })
+       .andWhere('bills.deletedAt IS NULL')
+       .innerJoinAndSelect('bills.billDetails', 'billDetails')
+       .innerJoinAndSelect('billDetails.productAttributes', 'productAttributes')
+       .where('productAttributes.id = :id', { id: productAttributeId })
+       .getMany();
+      if(bill.length > 0) {
+        return true;
+      }else {
+        return false;
+      }
+    } catch (error) {
+      CommonException.handle(error)
+    }
+  }
+
+  private async restoreStock(bill: Bills, queryRunner: QueryRunner) {
+    for (let detail of bill.billDetails) {
+      const productAttribute = await this.productService.checkExistingProductAttributeNotQuantity(detail.productAttributes.id);
+      if (productAttribute) {
+        productAttribute.quantity += detail.quantity;
+        await queryRunner.manager.save(productAttribute);
+      }
+    }
+  }
 
   
 }

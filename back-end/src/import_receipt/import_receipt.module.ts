@@ -12,11 +12,11 @@ import { ProductModule } from 'src/product/product.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([ImportReceipts, ImportReceiptDetail, Accounts]),
-    SupplierModule,
-    // forwardRef( () => ProductModule),
-    ProductModule
+    forwardRef(() => ProductModule),
+    forwardRef(() => SupplierModule),
   ],
   controllers: [ImportReceiptController],
   providers: [ImportReceiptService],
+  exports: [ImportReceiptService]  
 })
 export class ImportReceiptModule {}

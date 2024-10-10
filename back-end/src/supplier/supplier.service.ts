@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreateDetailSupplier, CreateSupplierDto } from './dto/create-supplier.dto';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
 import { BaseService } from 'src/common/baseService';
@@ -17,6 +17,7 @@ export class SupplierService extends BaseService<Supplier> {
     @InjectRepository(DetailSupplier)
     private readonly detailSupplierRepository: Repository<DetailSupplier>,
 
+    @Inject(forwardRef(() =>ProductService))
     private readonly productService: ProductService ,
     private readonly dataSource: DataSource
   ){

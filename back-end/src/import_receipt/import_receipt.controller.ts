@@ -40,10 +40,10 @@ export class ImportReceiptController {
     return this.importReceiptService.detailImportReceipt(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateImportReceiptDto: UpdateImportReceiptDto) {
-    return this.importReceiptService.update(id, updateImportReceiptDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateImportReceiptDto: UpdateImportReceiptDto) {
+  //   return this.importReceiptService.update(id, updateImportReceiptDto);
+  // }
   @UseGuards(AuthGuard)
   @Patch('status/:id')
   updateStatusBill(@Req() request: Request, @Param('id') id: string, @Body() statusImportReceiptDto: StatusImportReceiptDto) {
@@ -51,8 +51,8 @@ export class ImportReceiptController {
     return this.importReceiptService.updateStatusBill(id, statusImportReceiptDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.importReceiptService.deleteSoft(id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.importReceiptService.deleteSoft(id);
+  // }
 }

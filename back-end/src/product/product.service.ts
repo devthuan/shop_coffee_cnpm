@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CloudinaryService } from 'nestjs-cloudinary';
 import { DataSource, Repository } from 'typeorm';
@@ -12,6 +12,8 @@ import { AttributeService } from 'src/attribute/attribute.service';
 import { CommonException } from 'src/common/exception';
 import { BaseService } from 'src/common/baseService';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { BillService } from 'src/bill/bill.service';
+import { ImportReceiptService } from 'src/import_receipt/import_receipt.service';
 
 @Injectable()
 export class ProductService extends BaseService<Products> {
@@ -31,6 +33,12 @@ export class ProductService extends BaseService<Products> {
 
     private readonly categoryService: CategoriesService,
     private readonly attributeService: AttributeService,
+
+    @Inject(forwardRef(() =>BillService))
+    private  billService: BillService,
+
+    @Inject(forwardRef(() =>ImportReceiptService))
+    private  importReceiptService: ImportReceiptService,
     
     private readonly cloudinaryService: CloudinaryService,
     
@@ -278,7 +286,7 @@ export class ProductService extends BaseService<Products> {
       CommonException.handle(error);
     }
   }
-  async checkExistingProductAttributeForImportReceipt(productAttributeId: string): Promise<ProductAttributes> {
+  async checkExistingProductAttributeNotQuantity(productAttributeId: string): Promise<ProductAttributes> {
 
     try {
       
@@ -298,6 +306,56 @@ export class ProductService extends BaseService<Products> {
     } catch (error) {
       CommonException.handle(error);
     }
+  }
+
+  async deleteSoft(id: string): Promise<{message: string}> {
+    const queryRunner =  this.dataSource.createQueryRunner()
+      try {
+        await queryRunner.connect()
+        await queryRunner.startTransaction();
+
+        // check product attributes
+        const product = await this.productRepository.createQueryBuilder('products')
+        .leftJoinAndSelect('products.productAttributes', 'productAttributes')
+         .where('products.id = :id', { id })
+         .andWhere('products.deletedAt IS NULL')
+         .getOne();
+
+        for(let productAttribute of product.productAttributes) {
+           // check quantity
+          if(productAttribute.quantity > 0) {
+            throw new BadRequestException('Cannot deleting product but product attribute is in stock');
+          }
+          let productAttributeId = productAttribute.id
+
+          // check status bill
+          let checkStatusBill = await this.billService.checkBillPendingByProduct(productAttributeId)
+          if(checkStatusBill) {
+            throw new BadRequestException('Cannot delete product but product attribute is in bill pending or delivery status');
+          }
+
+          // check status import receipt
+          let checkStatusImport = await this.importReceiptService.statusIsPendingImportReceipt(productAttributeId)
+          if(checkStatusImport) {
+            throw new BadRequestException('Cannot delete product but product attribute is in import receipt pending status');
+          }
+
+          // delete product attribute
+          productAttribute.deletedAt = new Date()
+          productAttribute.updatedAt = new Date()
+          await queryRunner.manager.save(productAttribute)
+        }
+
+        product.deletedAt = new Date()
+        product.updatedAt = new Date()
+        await queryRunner.manager.save(product)
+
+        return {
+          message: 'Product deleted successfully'
+        }
+      } catch (error) {
+        CommonException.handle(error);
+      }
   }
 
 

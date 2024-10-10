@@ -23,6 +23,7 @@ import { PaymentModule } from './payment/payment.module';
 import { VoucherModule } from './voucher/voucher.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { ImportReceiptModule } from './import_receipt/import_receipt.module';
+import { CommonModule } from './common/common.module';
 
 
 @Module({
@@ -74,6 +75,7 @@ import { ImportReceiptModule } from './import_receipt/import_receipt.module';
     VoucherModule,
     InventoryModule,
     ImportReceiptModule,
+    CommonModule,
   ],
   controllers: [AppController],
   providers: [AppService],

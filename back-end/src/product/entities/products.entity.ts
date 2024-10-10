@@ -31,7 +31,7 @@ export class Products extends BaseEntity {
     productDiscount: ProductDiscount;
 
     @OneToMany(() => ProductAttributes, productAttributes => productAttributes.products)
-    productAttributes: ProductAttributes;
+    productAttributes: ProductAttributes[];
 
 }
 

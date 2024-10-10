@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreateImportReceiptDto } from './dto/create-import_receipt.dto';
 import { StatusImportReceiptDto, UpdateImportReceiptDto } from './dto/update-import_receipt.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -24,8 +24,11 @@ export class ImportReceiptService extends BaseService<ImportReceipts> {
     @InjectRepository(Accounts)
     private readonly accountsRepository: Repository<Accounts>,  
 
-    private readonly supplierService : SupplierService,
-    private readonly productService : ProductService,
+    @Inject(forwardRef(() =>SupplierService))
+    private  supplierService : SupplierService,
+
+    @Inject(forwardRef(() =>ProductService))
+    private  productService : ProductService,
 
     private readonly dataSource : DataSource
   ){
@@ -60,7 +63,7 @@ export class ImportReceiptService extends BaseService<ImportReceipts> {
 
       if(createImportReceiptDto.importReceiptDetails.length > 0){
         for(const detail of createImportReceiptDto.importReceiptDetails) {
-          const checkProductAttribute = await this.productService.checkExistingProductAttributeForImportReceipt(detail.productAttributeId);
+          const checkProductAttribute = await this.productService.checkExistingProductAttributeNotQuantity(detail.productAttributeId);
           if(!checkProductAttribute){
             throw new BadRequestException('Product attribute not found');
           }
@@ -80,7 +83,7 @@ export class ImportReceiptService extends BaseService<ImportReceipts> {
       await queryRunner.manager.save(newImportReceipt);
 
       for(const detail of createImportReceiptDto.importReceiptDetails) {
-        const productAttribute = await this.productService.checkExistingProductAttributeForImportReceipt(detail.productAttributeId);
+        const productAttribute = await this.productService.checkExistingProductAttributeNotQuantity(detail.productAttributeId);
         const newImportReceiptDetail =  this.ImportReceiptDetailRepository.create({
           productAttribute: productAttribute,
           unitPrice: detail.price,
@@ -169,7 +172,7 @@ export class ImportReceiptService extends BaseService<ImportReceipts> {
 
         for(let detail of importReceipt.importReceiptDetail){
           console.log(detail)
-          const productAttribute = await this.productService.checkExistingProductAttributeForImportReceipt(detail.productAttribute?.id);
+          const productAttribute = await this.productService.checkExistingProductAttributeNotQuantity(detail.productAttribute?.id);
           // update quantity and price product attributes
           let averagePrice = (productAttribute.sellPrice * productAttribute.quantity + detail.unitPrice * detail.quantity) / (productAttribute.quantity + detail.quantity);
           let priceSellFinal = averagePrice * 1.4
@@ -187,6 +190,26 @@ export class ImportReceiptService extends BaseService<ImportReceipts> {
       return {
         message: `Update status import receipt success. your import receipt has been ${statusImportReceiptDto.status}`
       };
+    } catch (error) {
+      CommonException.handle(error);
+    }
+  }
+
+  async statusIsPendingImportReceipt(productAttributeId: string) : Promise<boolean> {
+    try {
+      const importReceipt = await this.importReceiptsRepository.createQueryBuilder('importReceipts')
+        .leftJoinAndSelect('importReceipts.importReceiptDetail', 'importReceiptDetail')
+       .where('importReceiptDetail.productAttributeId = :productAttributeId', { productAttributeId })
+       .andWhere('importReceipts.deletedAt IS NULL')
+       .andWhere('importReceipts.status = :status', { status: 'pending' })
+       .getMany();
+       
+      
+      if(!importReceipt){
+        return false;
+      }
+      return true;
+      
     } catch (error) {
       CommonException.handle(error);
     }

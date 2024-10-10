@@ -45,7 +45,7 @@ export class Bills extends BaseEntity{
     vouchers: Vouchers;
 
     @OneToMany(()=> BillDetails, billDetails => billDetails.bills)
-    billDetails: BillDetails
+    billDetails: BillDetails[]
 
 
    
