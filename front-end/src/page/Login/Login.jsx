@@ -1,5 +1,5 @@
 import classNames from "classnames/bind";
-import styles from "./Register.module.scss";
+import styles from "./Login.module.scss";
 import quangcao from "~/assets/images/quangcao.png"
 import grocery from "~/assets/icon/grocerymart.svg"
 import google from "~/assets/icon/google.svg"
@@ -8,24 +8,21 @@ import { useNavigate } from 'react-router-dom'; // Để chuyển trang
 import api from '~/services/api';
 import { setItemWithExpiration } from '~/services/localStorage'; // Để lưu token
 import { Link } from 'react-router-dom';
+
 const cx = classNames.bind(styles);
-export const Register = () => {
+export const Login = () => {
   const [email, setEmail] = useState('');
-  const [username,setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [setAsDefaultCard, setSetAsDefaultCard] = useState(false);
   const navigate = useNavigate(); // Sử dụng hook để chuyển trang
-  
+
   const [err, setError] = useState(null);
   const handleSubmit = async (e) => {
     e.preventDefault();
-   
 
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
+
+    
+    
     if (setAsDefaultCard === false) {
       alert("please check")
     }
@@ -37,9 +34,9 @@ export const Register = () => {
         password,
       });
 
-      
+
       if (response.data && response.data.token) {
-        setItemWithExpiration('token', response.data.token, 1); 
+        setItemWithExpiration('token', response.data.token, 1);
         navigate('/register');
       }
     } catch (err) {
@@ -60,7 +57,7 @@ export const Register = () => {
         </div>
 
       </div>
-      <div className={cx("lg:col-span-6 flex flex-col items-center justify-center  ")}>\
+      <div className={cx("lg:col-span-6 flex flex-col items-center justify-center  ")}>
         <div className={cx("container justify-center")}>
           <div className={cx("max-w-[400px]  w-full mx-auto text-center left ")}>
 
@@ -79,13 +76,6 @@ export const Register = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
-              <input type="username"
-                placeholder="UserName"
-                className={cx("w-full mb-6 p-4 border rounded-md")}
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
               <input type="password"
                 placeholder="Password"
                 className={cx("w-full mb-6 p-4 border rounded-md")}
@@ -93,13 +83,7 @@ export const Register = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <input type="password"
-                placeholder="ConfirmPassword"
-                className={cx("w-full mb-6 p-4 border rounded-md")}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)} // Cập nhật giá trị state
-                required
-              />
+              
               <div className={cx("flex justify-between items-center mb-6")}>
                 <label className={cx("flex items-center")}>
                   <input
