@@ -5,6 +5,7 @@ import { Attributes } from "src/attribute/entities/attributes.entity";
 import { Cart } from "src/cart/entities/cart.entity";
 import { BillDetails } from "src/bill/entities/bill-detail.entity";
 import { DetailSupplier } from "src/supplier/entities/detail-supplier.entity";
+import { ImportReceiptDetail } from "src/import_receipt/entities/import_receipt_detail.entity";
 
 @Entity({name: "productAttributes"})
 export class ProductAttributes extends BaseEntity {
@@ -34,5 +35,8 @@ export class ProductAttributes extends BaseEntity {
  
     @OneToMany(() => DetailSupplier, detailSupplier => detailSupplier.productAttribute)
     detailSupplier: DetailSupplier;
+ 
+    @OneToMany(() => ImportReceiptDetail, importReceiptDetail => importReceiptDetail.productAttribute)
+    importReceiptDetail: ImportReceiptDetail;
 }
 

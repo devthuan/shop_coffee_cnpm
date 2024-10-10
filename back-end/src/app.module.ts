@@ -21,6 +21,8 @@ import { CartModule } from './cart/cart.module';
 import { BillModule } from './bill/bill.module';
 import { PaymentModule } from './payment/payment.module';
 import { VoucherModule } from './voucher/voucher.module';
+import { InventoryModule } from './inventory/inventory.module';
+import { ImportReceiptModule } from './import_receipt/import_receipt.module';
 
 
 @Module({
@@ -69,7 +71,10 @@ import { VoucherModule } from './voucher/voucher.module';
     CartModule,
     BillModule,
     PaymentModule,
-    VoucherModule,],
+    VoucherModule,
+    InventoryModule,
+    ImportReceiptModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

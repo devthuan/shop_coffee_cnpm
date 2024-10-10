@@ -2,6 +2,7 @@ import { Exclude, Expose } from "class-transformer";
 import { Bills } from "src/bill/entities/bill.entity";
 import { Cart } from "src/cart/entities/cart.entity";
 import { BaseEntity } from "src/common/base.entity";
+import { ImportReceipts } from "src/import_receipt/entities/import_receipt.entity";
 import { NotificationAccounts } from "src/notification/entities/notification-account.entity";
 import { Reviews } from "src/reviews/entities/review.entity";
 import { Roles } from "src/role-permission/entities/roles.entity";
@@ -57,6 +58,9 @@ export class Accounts extends BaseEntity {
 
     @OneToMany(() => UseVouchers, useVouchers => useVouchers.accounts)
     useVouchers : UseVouchers
+
+    @OneToMany(() => ImportReceipts, importReceipts => importReceipts.account)
+    importReceipt : ImportReceipts
 
     
     

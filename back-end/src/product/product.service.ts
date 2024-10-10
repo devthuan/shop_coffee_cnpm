@@ -278,6 +278,27 @@ export class ProductService extends BaseService<Products> {
       CommonException.handle(error);
     }
   }
+  async checkExistingProductAttributeForImportReceipt(productAttributeId: string): Promise<ProductAttributes> {
+
+    try {
+      
+      const productAttribute = await this.productAttributesRepository.createQueryBuilder('productAttributes')
+        .leftJoinAndSelect('productAttributes.products', 'products')
+        .leftJoinAndSelect('products.productDiscount', 'productDiscount')
+        .where('productAttributes.id = :id', { id: productAttributeId })
+        .andWhere('productAttributes.deletedAt IS NULL')
+        .getOne();
+
+      if(!productAttribute) {
+        throw new NotFoundException('Product attribute not found');
+      }
+      return productAttribute;
+
+      
+    } catch (error) {
+      CommonException.handle(error);
+    }
+  }
 
 
   async uploadFileCloudinary(file : Express.Multer.File): Promise<any>{
