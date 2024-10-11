@@ -11,5 +11,6 @@ import { Accounts } from 'src/auth/entities/accounts.entity';
   imports: [TypeOrmModule.forFeature([Cart, Products, ProductAttributes, Accounts])],
   controllers: [CartController],
   providers: [CartService],
+  exports: [CartService]   
 })
 export class CartModule {}

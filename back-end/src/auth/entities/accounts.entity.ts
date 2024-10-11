@@ -4,6 +4,7 @@ import { Cart } from "src/cart/entities/cart.entity";
 import { BaseEntity } from "src/common/base.entity";
 import { ImportReceipts } from "src/import_receipt/entities/import_receipt.entity";
 import { NotificationAccounts } from "src/notification/entities/notification-account.entity";
+import { Notification } from "src/notification/entities/notification.entity";
 import { Reviews } from "src/reviews/entities/review.entity";
 import { Roles } from "src/role-permission/entities/roles.entity";
 import { UseVouchers } from "src/voucher/entities/use-voucher.entity";
@@ -54,13 +55,16 @@ export class Accounts extends BaseEntity {
     cart : Cart
 
     @OneToMany(() => Bills, bills => bills.account)
-    bills : Bills
+    bills : Bills[]
 
     @OneToMany(() => UseVouchers, useVouchers => useVouchers.accounts)
     useVouchers : UseVouchers
 
     @OneToMany(() => ImportReceipts, importReceipts => importReceipts.account)
     importReceipt : ImportReceipts
+
+    @OneToMany(() => Notification, Notification => Notification.account)
+    notification : Notification
 
     
     

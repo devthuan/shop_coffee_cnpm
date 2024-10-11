@@ -15,6 +15,18 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { BillService } from 'src/bill/bill.service';
 import { ImportReceiptService } from 'src/import_receipt/import_receipt.service';
 
+interface StatisticalReview {
+    averageRating: number | 0; // or a suitable type based on your rating system
+    totalReview: number | 0;
+    total5Reviews: number | 0;
+    total4Reviews: number | 0;
+    total3Reviews: number | 0;
+    total2Reviews: number | 0;
+    total1Reviews: number | 0;
+    
+}
+
+
 @Injectable()
 export class ProductService extends BaseService<Products> {
   
@@ -232,13 +244,14 @@ export class ProductService extends BaseService<Products> {
     }
   }
 
-  async detailProduct(productId: string): Promise<Products> {
+  async detailProduct(productId: string): Promise<{statistical: {}, product: Products}> {
     try {
       const result = await this.productRepository.createQueryBuilder('products')
         .leftJoinAndSelect('products.productAttributes', 'productAttributes')
         .leftJoinAndSelect('productAttributes.attributes', 'attributes')
         .leftJoinAndSelect('products.category', 'category')
         .leftJoinAndSelect('products.images', 'images')
+        .leftJoinAndSelect('products.reviews', 'reviews')       
         .where('products.id = :productId', { productId })
         .andWhere('products.deletedAt IS NULL')
         .andWhere('attributes.deletedAt IS NULL')
@@ -247,11 +260,37 @@ export class ProductService extends BaseService<Products> {
         .andWhere('images.deletedAt IS NULL')
         .getOne();
       
+      const statisticalReview = await this.productRepository.createQueryBuilder('products')
+        .leftJoin('products.reviews', 'reviews')
+        .where('products.id = :productId', { productId })
+        .addSelect('AVG(reviews.rating) ',' averageRating')
+        .addSelect('COUNT(reviews.id) ',' totalReview')
+        .addSelect('COUNT(CASE WHEN reviews.rating = 5 THEN 1 END)', 'total5Reviews')
+        .addSelect('COUNT(CASE WHEN reviews.rating = 4 THEN 1 END)', 'total4Reviews')
+        .addSelect('COUNT(CASE WHEN reviews.rating = 3 THEN 1 END)', 'total3Reviews')
+        .addSelect('COUNT(CASE WHEN reviews.rating = 2 THEN 1 END)', 'total2Reviews')
+        .addSelect('COUNT(CASE WHEN reviews.rating = 1 THEN 1 END)', 'total1Reviews')
+        .andWhere('products.deletedAt IS NULL')
+        .getRawOne() as StatisticalReview; 
+
+      
       if(!result) {
         throw new NotFoundException('Product not found');
       }
       
-      return result;
+      return {
+        statistical: {
+         averageRating: statisticalReview.averageRating,
+          totalReview: statisticalReview.totalReview,
+          total5Reviews: statisticalReview.total5Reviews,
+          total4Reviews: statisticalReview.total4Reviews,
+          total3Reviews: statisticalReview.total3Reviews,
+          total2Reviews: statisticalReview.total2Reviews,
+          total1Reviews: statisticalReview.total1Reviews
+
+        },
+        product: result
+      };
     } catch (error) {
       CommonException.handle(error);
     }

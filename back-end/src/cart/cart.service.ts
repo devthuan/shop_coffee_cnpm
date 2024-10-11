@@ -317,6 +317,23 @@ export class CartService  {
     }
   }
 
+   async getProductByAccountIdAndProductAttributeId(accountId: string, productAttributeId: string): Promise<Cart> {
+    try {
+      const result = await this.cartRepository.createQueryBuilder('cart')
+        .leftJoinAndSelect('cart.productAttributes', 'productAttributes')
+        .where('cart.accounts.id = :accountId', { accountId })
+        .andWhere('productAttributes.id = :productAttributeId', { productAttributeId })
+        .andWhere('cart.deletedAt is null')
+        .getOne();
+        
+      return result;
+  
+
+    } catch (error) {
+      CommonException.handle(error)
+    }
+  }
+
  
 
 

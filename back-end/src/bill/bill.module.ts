@@ -9,12 +9,14 @@ import { VoucherModule } from 'src/voucher/voucher.module';
 import { Accounts } from 'src/auth/entities/accounts.entity';
 import { ProductModule } from 'src/product/product.module';
 import { PaymentModule } from 'src/payment/payment.module';
+import { CartModule } from 'src/cart/cart.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Bills, BillDetails, ProductAttributes, Accounts]),
     VoucherModule,
     PaymentModule,
+    CartModule,
     forwardRef(()=> ProductModule),
     
   ],

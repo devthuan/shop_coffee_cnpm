@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -25,12 +25,33 @@ export class ReviewsService extends BaseService<Reviews> {
  async create(createReview: CreateReviewDto) : Promise<Reviews> {
   try {
     const accounts = await this.accountRepository.createQueryBuilder('accounts')
-      .where('accounts.id = :id', {id: createReview.accountId})
-      .andWhere('accounts.deletedAt IS NULL')
-      .getOne();
-      
-    if (!accounts)   throw new NotFoundException('Account not found');
+    .leftJoinAndSelect('accounts.bills', 'bills')
+    .leftJoinAndSelect('bills.billDetails', 'billDetails')
+    .leftJoinAndSelect('billDetails.productAttributes', 'productAttributes')
+    .leftJoinAndSelect('productAttributes.products', 'products')
+    .where('accounts.id = :id', {id: createReview.accountId})
+    .andWhere('accounts.deletedAt IS NULL')
+    .getOne();
+  
+    if (!accounts || !accounts.isActive){
+      throw new NotFoundException('Account not found or blocked');
+    }
 
+    let hasBoughtProduct = false;
+    // Check if the account bought the product before
+    for (let bill of accounts.bills) {
+      for (let detail of bill.billDetails) {
+          if(detail.productAttributes.products.id === createReview.productId){
+             hasBoughtProduct = true;
+              break;
+          }
+       
+      }
+    }
+  
+  if (!hasBoughtProduct) {
+    throw new BadRequestException('Account has not bought this product');
+  }
     const products = await this.productRepository.createQueryBuilder('products')
      .where('products.id = :id', {id: createReview.productId})
      .andWhere('products.deletedAt IS NULL')

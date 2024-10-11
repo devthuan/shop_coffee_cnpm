@@ -11,6 +11,8 @@ import { Accounts } from 'src/auth/entities/accounts.entity';
 import { ProductService } from 'src/product/product.service';
 import { PaymentService } from 'src/payment/payment.service';
 import { BaseService } from 'src/common/baseService';
+import { CartService } from 'src/cart/cart.service';
+import { Cart } from 'src/cart/entities/cart.entity';
 
 @Injectable()
 export class BillService extends BaseService<Bills> {
@@ -30,6 +32,7 @@ export class BillService extends BaseService<Bills> {
     private  productService: ProductService,
 
     private readonly paymentService: PaymentService,
+    private readonly cartService: CartService,
     private readonly dataSource: DataSource
   ){
     super(billsRepository)
@@ -132,6 +135,18 @@ export class BillService extends BaseService<Bills> {
           productAttributes: product
         });
         await queryRunner.manager.save(newBillDetail);
+
+        
+        // update cart
+        let findProductAttribute = createBillDto.products.find(item => item.productAttributeId === product.id)
+        const cart = await this.cartService.getProductByAccountIdAndProductAttributeId(createBillDto.accountId, findProductAttribute.productAttributeId);
+        if(cart){
+
+          await queryRunner.manager.remove(cart)
+          
+        }
+
+
       }
       
       await queryRunner.commitTransaction()
@@ -291,6 +306,8 @@ export class BillService extends BaseService<Bills> {
       CommonException.handle(error)
     }
   }
+
+ 
 
   private async restoreStock(bill: Bills, queryRunner: QueryRunner) {
     for (let detail of bill.billDetails) {
