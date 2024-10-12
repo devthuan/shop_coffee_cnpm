@@ -13,6 +13,7 @@ import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { Roles } from 'src/role-permission/entities/roles.entity';
+import { UserInformation } from 'src/user-information/entities/user-information.entity';
 
 
 @Injectable()
@@ -26,6 +27,8 @@ export class AuthService {
     private readonly accountsRepository: Repository<Accounts>, 
     @InjectRepository(Roles)
     private readonly rolesRepository: Repository<Roles>, 
+    @InjectRepository(UserInformation)
+    private readonly userInformationRepository: Repository<UserInformation>, 
  
 
     private readonly dataSource: DataSource,
@@ -36,9 +39,9 @@ export class AuthService {
 
   async create(createAuthDto: CreateAuthDto) : Promise<RespondInterfacePOST> {
     const queryRunner = this.dataSource.createQueryRunner()
-    await queryRunner.connect()
-    await queryRunner.startTransaction()
     try {
+      await queryRunner.connect()
+      await queryRunner.startTransaction()
 
       const new_user = this.accountsRepository.create({
         userName: createAuthDto.username,
@@ -59,7 +62,6 @@ export class AuthService {
       const otpHash = await this.hashingPassword(otp.toString())
       // save otp to redis
       this.cacheManager.set(createAuthDto.email, otpHash, 3000);
-      console.log(await this.cacheManager.get(createAuthDto.email))
       // send otp to email
       await this.mailService.sendEmail(
         createAuthDto.email,
@@ -68,6 +70,14 @@ export class AuthService {
         otp.toString()
       )
 
+      const newAccountInfo =  this.userInformationRepository.create({
+        email: createAuthDto.email,
+        account: new_user
+      })
+      await queryRunner.manager.save(newAccountInfo)
+        
+
+  
       await queryRunner.commitTransaction()
 
       return {

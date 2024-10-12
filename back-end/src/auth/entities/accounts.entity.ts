@@ -7,6 +7,7 @@ import { NotificationAccounts } from "src/notification/entities/notification-acc
 import { Notification } from "src/notification/entities/notification.entity";
 import { Reviews } from "src/reviews/entities/review.entity";
 import { Roles } from "src/role-permission/entities/roles.entity";
+import { UserInformation } from "src/user-information/entities/user-information.entity";
 import { UseVouchers } from "src/voucher/entities/use-voucher.entity";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 
@@ -65,6 +66,9 @@ export class Accounts extends BaseEntity {
 
     @OneToMany(() => Notification, Notification => Notification.account)
     notification : Notification
+
+    @OneToMany(() => UserInformation, userInformation => userInformation.account)
+    userInformation : UserInformation
 
     
     

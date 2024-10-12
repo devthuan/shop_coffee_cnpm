@@ -20,7 +20,7 @@ export class ReviewsService extends BaseService<Reviews> {
   private readonly productRepository: Repository<Products>, // Inject repository for any entity Reviews
  ){
   super(reviewRepository);
- }
+ }  
 
  async create(createReview: CreateReviewDto) : Promise<Reviews> {
   try {

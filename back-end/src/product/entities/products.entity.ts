@@ -7,6 +7,7 @@ import { Categories } from "src/categories/entities/category.entity";
 import { ProductAttributes } from "./productAttributes.entity";
 import { DetailSupplier } from "src/supplier/entities/detail-supplier.entity";
 import { ImportReceiptDetail } from "src/import_receipt/entities/import_receipt_detail.entity";
+import { FavoriteList } from "src/user-information/entities/favorite-list.entity";
 
 @Entity({name: "products"})
 export class Products extends BaseEntity {
@@ -32,6 +33,9 @@ export class Products extends BaseEntity {
 
     @OneToMany(() => ProductAttributes, productAttributes => productAttributes.products)
     productAttributes: ProductAttributes[];
+
+    @OneToMany(() => FavoriteList, favoriteList => favoriteList.products)
+    favoriteList: FavoriteList;
 
 }
 
