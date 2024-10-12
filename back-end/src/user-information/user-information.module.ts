@@ -5,10 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserInformation } from './entities/user-information.entity';
 import { FavoriteList } from './entities/favorite-list.entity';
 import { Accounts } from 'src/auth/entities/accounts.entity';
+import { ProductModule } from 'src/product/product.module';
 
 @Module({
   imports:[
-    TypeOrmModule.forFeature([UserInformation, FavoriteList, Accounts])
+    TypeOrmModule.forFeature([UserInformation, FavoriteList, Accounts]),
+    ProductModule
   ],
   controllers: [UserInformationController],
   providers: [UserInformationService],

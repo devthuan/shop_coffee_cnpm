@@ -36,3 +36,8 @@ export class CreateUserInformationDto {
 
 
 }
+
+export class ProductIdDto {
+    @IsString()
+    productId: string;
+}

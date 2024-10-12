@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { UserInformationService } from './user-information.service';
-import { CreateUserInformationDto } from './dto/create-user-information.dto';
+import { CreateUserInformationDto, ProductIdDto } from './dto/create-user-information.dto';
 import { UpdateUserInformationDto } from './dto/update-user-information.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { plainToInstance } from 'class-transformer';
@@ -16,11 +16,13 @@ export class UserInformationController {
     let accountId =  request['user'].id;  // Get user's id from JWT token
     return this.userInformationService.create(accountId, createUserInformationDto);
   }
+  @Post('favorite')
+  addFavoriteList(@Req() request: Request, @Body() productIdDto: ProductIdDto) {
+    let accountId =  request['user'].id;  // Get user's id from JWT token
+    return this.userInformationService.addFavoriteList(accountId, productIdDto.productId);
+  }
 
-  // @Get()
-  // findAll() {
-  //   return this.userInformationService.findAll();
-  // }
+
 
   @Get('user')
   findOne(@Req() request: Request) {
@@ -35,8 +37,9 @@ export class UserInformationController {
     return this.userInformationService.update(accountId, updateUserInformationDto);
   }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.userInformationService.remove(+id);
-  // }
+  @Delete('favorite/:id')
+  remove(@Param('id') id: string, @Req() request: Request) {
+    let accountId =  request['user'].id;  // Get user's id from JWT token
+    return this.userInformationService.removeFavoriteList(id, accountId);
+  }
 }
