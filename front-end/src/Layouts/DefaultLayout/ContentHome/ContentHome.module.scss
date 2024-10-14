@@ -54,6 +54,7 @@
     display: flex;
     align-items: center;
     justify-content: start;
+    flex-wrap: wrap;
 }
 
 @keyframes changeColor {
@@ -70,6 +71,7 @@
     padding: 16px;
     background-color: var(--primary-color-background-1);
     border-radius: 20px;
+    width: 30%;
 }
 
 .item_product:hover {

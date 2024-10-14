@@ -65,6 +65,31 @@ function ContentHome() {
                     $47.00
                 </div>
             </li>
+            <li className={cx('item_product')}>
+                <div className={cx('img_product')}>
+                    <img src={img_product}/>
+                </div>
+                <div className={cx('name_product')}>
+                Coffee Beans - Espresso Arabica and Robusta Beans
+                </div>
+                <div className={cx('lazada')}>Lavazza</div>
+                <div className={cx('img_price')}>
+                    $47.00
+                </div>
+            </li>
+            <li className={cx('item_product')}>
+                <div className={cx('img_product')}>
+                    <img src={img_product}/>
+                </div>
+                <div className={cx('name_product')}>
+                Coffee Beans - Espresso Arabica and Robusta Beans
+                </div>
+                <div className={cx('lazada')}>Lavazza</div>
+                <div className={cx('img_price')}>
+                    $47.00
+                </div>
+            </li>
+          
          
         </ul>
     </div>);
