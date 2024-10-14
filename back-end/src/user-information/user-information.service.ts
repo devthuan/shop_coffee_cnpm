@@ -4,7 +4,6 @@ import { UpdateUserInformationDto } from './dto/update-user-information.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserInformation } from './entities/user-information.entity';
 import { DataSource, Repository } from 'typeorm';
-import { FavoriteList } from './entities/favorite-list.entity';
 import { CommonException } from 'src/common/exception';
 import { Accounts } from 'src/auth/entities/accounts.entity';
 import { ProductService } from 'src/product/product.service';
@@ -15,8 +14,7 @@ export class UserInformationService {
   constructor(
     @InjectRepository(UserInformation)
     private readonly userInformationRepository: Repository<UserInformation>,  
-    @InjectRepository(FavoriteList)
-    private readonly favoriteListRepository: Repository<FavoriteList>,  
+
     @InjectRepository(Accounts)
     private readonly accountsRepository: Repository<Accounts>,  
 
@@ -27,30 +25,30 @@ export class UserInformationService {
 
   async create(accountId: string, createUserInformationDto: CreateUserInformationDto): Promise<UserInformation> {
     try {
-      // check account
-      const account = await this.accountsRepository.createQueryBuilder('accounts')
-        .where('accounts.id = :id', {id: accountId})
-        .andWhere('accounts.deletedAt is null')
-        .andWhere('accounts.isActive = :isActive', {isActive: true})
-        .getOne();
+      // // check account
+      // const account = await this.accountsRepository.createQueryBuilder('accounts')
+      //   .where('accounts.id = :id', {id: accountId})
+      //   .andWhere('accounts.deletedAt is null')
+      //   .andWhere('accounts.isActive = :isActive', {isActive: true})
+      //   .getOne();
         
-      if (!account) {
-        throw new BadRequestException('Account not found');
-      }
+      // if (!account) {
+      //   throw new BadRequestException('Account not found');
+      // }
       
-      // create user information
-      const userInformation = this.userInformationRepository.create(createUserInformationDto);
-      await this.userInformationRepository.save(userInformation);
+      // // create user information
+      // const userInformation = this.userInformationRepository.create(createUserInformationDto);
+      // await this.userInformationRepository.save(userInformation);
       
-      // create favorite list
-      const favoriteList = this.favoriteListRepository.create({
-        account: account,
-        products: null
-      });
-      await this.favoriteListRepository.save(favoriteList);
+      // // create favorite list
+      // const favoriteList = this.favoriteListRepository.create({
+      //   account: account,
+      //   products: null
+      // });
+      // await this.favoriteListRepository.save(favoriteList);
       
-      return userInformation;
-
+      // return userInformation;
+      return null;
      
     } catch (error) {
       CommonException.handle(error)
@@ -80,6 +78,8 @@ export class UserInformationService {
       CommonException.handle(error)
     }
   }
+
+ 
 
   async update(accountId: string, updateUserInformationDto: UpdateUserInformationDto): Promise<{message: string}> {
      try {
@@ -115,56 +115,5 @@ export class UserInformationService {
     }
   }
 
-  async addFavoriteList(accountId: string, productId: string): Promise<{message: string}>{
-    try {
-      // check account
-      const account = await this.accountsRepository.createQueryBuilder('accounts')
-       .where('accounts.id = :id', {id: accountId})
-       .andWhere('accounts.deletedAt is null')
-       .andWhere('accounts.isActive = :isActive', {isActive: true})
-       .getOne();
-        
-      if (!account) {
-        throw new BadRequestException('Account not found');
-      }
-      // check product
-      const product = await this.productService.findOne(productId)
-      if (!product) {
-        throw new BadRequestException('Product not found');
-      }
   
-      const favoriteList =  this.favoriteListRepository.create({
-        account: account,
-        products: product
-
-      })
-      await this.favoriteListRepository.save(favoriteList);
-      
-      return {
-        message: 'Added to favorite list successfully',
-      }
-      
-    } catch (error) {
-      CommonException.handle(error)
-    }
-  }
-  async removeFavoriteList(id: string, accountId: string) : Promise<{message: string}> {
-    try {
-      const favoriteList = await this.favoriteListRepository.createQueryBuilder('favoriteList')
-      .where('favoriteList.id = :id', {id})
-      .andWhere('favoriteList.accountId = :accountId',{accountId})
-      .getOne();
-      
-      if (!favoriteList) {
-        throw new BadRequestException('Favorite list not found');
-      }
-      
-      this.favoriteListRepository.remove(favoriteList);
-      return {
-        message: 'Removed from favorite list successfully',
-      }
-    } catch (error) {
-      CommonException.handle(error)
-    }
-  }
 }

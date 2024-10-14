@@ -16,14 +16,7 @@ export class UserInformationController {
     let accountId =  request['user'].id;  // Get user's id from JWT token
     return this.userInformationService.create(accountId, createUserInformationDto);
   }
-  @Post('favorite')
-  addFavoriteList(@Req() request: Request, @Body() productIdDto: ProductIdDto) {
-    let accountId =  request['user'].id;  // Get user's id from JWT token
-    return this.userInformationService.addFavoriteList(accountId, productIdDto.productId);
-  }
-
-
-
+  
   @Get('user')
   findOne(@Req() request: Request) {
     let accountId =  request['user'].id;  // Get user's id from JWT token
@@ -37,9 +30,4 @@ export class UserInformationController {
     return this.userInformationService.update(accountId, updateUserInformationDto);
   }
 
-  @Delete('favorite/:id')
-  remove(@Param('id') id: string, @Req() request: Request) {
-    let accountId =  request['user'].id;  // Get user's id from JWT token
-    return this.userInformationService.removeFavoriteList(id, accountId);
-  }
 }

@@ -25,6 +25,7 @@ import { InventoryModule } from './inventory/inventory.module';
 import { ImportReceiptModule } from './import_receipt/import_receipt.module';
 import { CommonModule } from './common/common.module';
 import { UserInformationModule } from './user-information/user-information.module';
+import { FavoriteModule } from './favorite/favorite.module';
 
 
 @Module({
@@ -78,6 +79,7 @@ import { UserInformationModule } from './user-information/user-information.modul
     ImportReceiptModule,
     CommonModule,
     UserInformationModule,
+    FavoriteModule,
   ],
   controllers: [AppController],
   providers: [AppService],
