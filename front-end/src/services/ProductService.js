@@ -6,7 +6,7 @@ import api from "./api";
 export const DetailProduct = async() => {
   try 
   {
-    const response = await api.get(`products/detail/f87101a1-d5ee-4be3-80fc-a2ce8c756e4a`)
+    const response = await api.get(`products/detail/d45da10e-1e3a-4a6c-8923-0840e1003774`)
     return response.data
   }
   catch(error)
@@ -19,7 +19,7 @@ export const DetailProduct = async() => {
 export const EvaluateProduct = async() => {
   try 
   {
-    const response = await api.get(`reviews/by-product/f87101a1-d5ee-4be3-80fc-a2ce8c756e4a`)
+    const response = await api.get(`reviews/by-product/d45da10e-1e3a-4a6c-8923-0840e1003774`)
     return response.data;
   }
   catch(error)

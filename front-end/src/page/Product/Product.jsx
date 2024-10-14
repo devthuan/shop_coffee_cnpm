@@ -38,9 +38,10 @@ export const Product = () => {
     const fetchDetailProduct = async () => {
       try {
         const response = await DetailProduct();
+        console.log(response)
         setProduct(response)
         if (response.productAttributes.length > 0) {
-          setSelectedAttribute(response.productAttributes[0]);
+          // setSelectedAttribute(response.productAttributes[0]);
         }
       }
       catch (error) {
@@ -84,11 +85,18 @@ export const Product = () => {
           <div className={cx("rounded-s-xl grid lg:grid-cols-11 max-sm:gap-7 border border-gray-200 mb-16")}>
             <div className={cx("lg:col-span-5")}>
 
-              <Slider style={{ width: '430px' }} {...settings}>
-                {product.images.map((image, index) => (
-                  <img key={index} src={image.urlImage} alt="" />
-                ))}
-              </Slider>
+              {product.images.length > 1 ? (
+                <Slider style={{ width: '430px' }} {...settings}>
+                  {product.images.map((image, index) => (
+                    <img key={index} src={image.urlImage} alt="" />
+                  ))}
+                </Slider>
+              ) : (
+                product.images.length === 1 && (
+                  <img  key={0} src={product.images[0].urlImage} alt="" />
+                )
+              )}
+
 
             </div>
 
@@ -100,7 +108,7 @@ export const Product = () => {
                   <div className={cx("w-full flex items-center")}>
                     <FontAwesomeIcon className={cx("text-yellow-300 pr-4")} icon={faStar} />
                     <p class="text-[#323134] text-2xl font-semibold font-['Gordita'] leading-relaxed pr-2">(3.5)</p>
-                    <p class="text-[#323134] text-2xl font-normal font-['Gordita'] leading-relaxed pr-2">{countReview}</p> 
+                    <p class="text-[#323134] text-2xl font-normal font-['Gordita'] leading-relaxed pr-2">{countReview}</p>
                     <p>Customer Reviews</p>
                   </div>
                   <p class="w-full text-start text-[#000000] pt-6 text-[23px] font-semiblod font-['Gordita'] leading-9">Size/Weight</p>
@@ -110,6 +118,7 @@ export const Product = () => {
                       <option value="">Xay</option>
                     </select> */}
                     <select value={selectedAttribute ? selectedAttribute.id : ""} onChange={handleAttributeChange} class="w-[120px] text-[#000000] text-[15px] font-medium font-['Gordita'] leading-snug border border-gray-200 rounded-tr rounded-br px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                      <option>Chọn</option>
                       {product.productAttributes.map((item, index) => (
                         <option key={index} value={item.id}>{item.attributes.name}</option>
                       ))}
