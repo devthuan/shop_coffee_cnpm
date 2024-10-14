@@ -4,54 +4,48 @@ import quangcao from "~/assets/images/quangcao.png"
 import grocery from "~/assets/icon/grocerymart.svg"
 import google from "~/assets/icon/google.svg"
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Để chuyển trang
-import api from '~/services/api';
-import { setItemWithExpiration } from '~/services/localStorage'; // Để lưu token
+// import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-
+import {LoginAPI}  from "~/services/AuthService";
 const cx = classNames.bind(styles);
 export const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [setAsDefaultCard, setSetAsDefaultCard] = useState(false);
-  const navigate = useNavigate(); // Sử dụng hook để chuyển trang
-
-  const [err, setError] = useState(null);
+  // const navigate = useNavigate(); // Sử dụng hook để chuyển trang
+  const [message,setMessage] = useState('');
+  const [error, setError] = useState(null);
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-
-    
-    
     if (setAsDefaultCard === false) {
       alert("please check")
     }
-
     try {
       // Gọi API đăng ký
-      const response = await api.post('/register', {
-        email,
-        password,
-      });
-
-
-      if (response.data && response.data.token) {
-        setItemWithExpiration('token', response.data.token, 1);
-        navigate('/register');
-      }
+      console.log(email, password)
+      const response = await LoginAPI( email, password )
+      console.log(response && response.data)
+      setError(null)
+      setMessage('Đăng nhập thành công')
+      console.log("Đăng nhập thành công",response)
+      // if (response.data && response.data.token) {
+      //   setItemWithExpiration('token', response.data.token, 1);
+      // navigate('/');
+      // }
+      
     } catch (err) {
-      setError('Đăng ký không thành công. Vui lòng thử lại.');
-      console.error(err);
+      
+      console.error('Đăng nhập thất bại:', err.response?.data || err.message );
+      setError('Đăng nhập không thành công. Vui lòng thử lại.');
+      setMessage(null)
     }
   };
-
-
   return (
-
     <div className={cx("grid lg:grid-cols-11 max-sm:grid-cols-1  min-h-screen ")}>
+      
       <div className={cx("lg:col-span-5 flex items-center justify-center   ")}>
         <div className={cx("title-2")}>
-
+        
           <img src={quangcao} alt="Illustration" className={cx("w-full max-w-[422px] max-h-[261]   ")} />
           <h2>The best of luxury brand values, high quality products, and innovative services</h2>
         </div>
@@ -60,7 +54,6 @@ export const Login = () => {
       <div className={cx("lg:col-span-6 flex flex-col items-center justify-center  ")}>
         <div className={cx("container justify-center")}>
           <div className={cx("max-w-[400px]  w-full mx-auto text-center left ")}>
-
             <div className={cx("top-name")}>
               <h1><img src={grocery} alt="Logo" className={cx("mb-6")} />grocerymart</h1>
             </div>
@@ -69,6 +62,8 @@ export const Login = () => {
               <h3>Let’s create your account and  Shop like a pro and save money.</h3>
             </div>
             <form onSubmit={handleSubmit}>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {message && <p style={{color:'red'}}>{message}</p>}
               <input type="email"
                 placeholder="Email"
                 className={cx("w-full mb-6 p-4 border rounded-md")}
@@ -83,7 +78,7 @@ export const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              
+
               <div className={cx("flex justify-between items-center mb-6")}>
                 <label className={cx("flex items-center")}>
                   <input
@@ -106,8 +101,8 @@ export const Login = () => {
             </form>
             <div className={cx("bot-title")}>
               <p className={cx("text-sm mt-6  ")}>
-              <span>You have an account yet?</span> 
-               <Link to="/register" className={cx("text-blue-500")}>Sign In</Link>
+                <span>You have an account yet?</span>
+                <Link to="/register" className={cx("text-blue-500")}>Sign In</Link>
               </p>
             </div>
 
