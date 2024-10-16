@@ -26,6 +26,7 @@ import { ImportReceiptModule } from './import_receipt/import_receipt.module';
 import { CommonModule } from './common/common.module';
 import { UserInformationModule } from './user-information/user-information.module';
 import { FavoriteModule } from './favorite/favorite.module';
+import { TransactionHistoryModule } from './transaction-history/transaction-history.module';
 
 
 @Module({
@@ -80,6 +81,7 @@ import { FavoriteModule } from './favorite/favorite.module';
     CommonModule,
     UserInformationModule,
     FavoriteModule,
+    TransactionHistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
