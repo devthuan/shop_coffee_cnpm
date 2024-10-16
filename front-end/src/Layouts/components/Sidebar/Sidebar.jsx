@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
+import { NavLink } from "react-router-dom";
 
 const Menu = (props) => {
   const { children, items } = props;
@@ -29,8 +30,8 @@ const Menu = (props) => {
         <ul className="mx-4 px-2 border-l text-sm font-medium">
           {items.map((item, idx) => (
             <li key={idx}>
-              <a
-                href={item.href}
+              <NavLink
+                to={item.href}
                 className="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg  hover:bg-gray-50 active:bg-gray-100 duration-150"
               >
                 {item.icon ? (
@@ -39,7 +40,7 @@ const Menu = (props) => {
                   ""
                 )}
                 {item.name}
-              </a>
+              </NavLink>
             </li>
           ))}
         </ul>
@@ -51,9 +52,10 @@ const Menu = (props) => {
 };
 
 const Sidebar = () => {
+
   const navigation = [
     {
-      href: "javascript:void(0)",
+      href: "/admin",
       name: "Dashboard",
       icon: (
         <svg
@@ -73,7 +75,7 @@ const Sidebar = () => {
       ),
     },
     {
-      href: "javascript:void(0)",
+      href: "/admin/account",
       name: "Quản lý tài khoản",
       icon: (
         <svg
@@ -93,7 +95,7 @@ const Sidebar = () => {
       ),
     },
     {
-      href: "javascript:void(0)",
+      href: "/admin/permission",
       name: "Quản lý Quyền",
       icon: (
         <svg
@@ -118,7 +120,7 @@ const Sidebar = () => {
       ),
     },
     {
-      href: "javascript:void(0)",
+      href: "/admin/notification",
       name: "Quản lý thông báo",
       icon: (
         <svg
@@ -138,7 +140,7 @@ const Sidebar = () => {
       ),
     },
     {
-      href: "javascript:void(0)",
+      href: "/admin/voucher",
       name: "Quản lý voucher",
       icon: (
         <svg
@@ -159,7 +161,7 @@ const Sidebar = () => {
       ),
     },
     {
-      href: "javascript:void(0)",
+      href: "/admin/bill",
       name: "Quản lý hoá đơn",
       icon: (
         <svg
@@ -184,7 +186,7 @@ const Sidebar = () => {
       ),
     },
     {
-      href: "javascript:void(0)",
+      href: "/admin/receipt",
       name: "Quản lý phiếu nhập",
       icon: (
         <svg
@@ -205,7 +207,7 @@ const Sidebar = () => {
       ),
     },
     {
-      href: "javascript:void(0)",
+      href: "/admin/warehouse",
       name: "Quản lý quản lý kho",
       icon: (
         <svg
@@ -226,7 +228,7 @@ const Sidebar = () => {
       ),
     },
     {
-      href: "javascript:void(0)",
+      href: "/admin/supplier",
       name: "Quản lý nhà cung cấp",
       icon: (
         <svg
@@ -246,7 +248,7 @@ const Sidebar = () => {
       ),
     },
     {
-      href: "javascript:void(0)",
+      href: "/admin/order",
       name: "Quản lý đơn hàng",
       icon: (
         <svg
@@ -268,11 +270,11 @@ const Sidebar = () => {
   ];
 
   const nestedNav = [
-    { name: "Sản phẩm", href: "javascript:void(0)", icon: "" },
-    { name: "Danh mục", href: "javascript:void(0)", icon: "" },
-    { name: "Thuộc tính", href: "javascript:void(0)", icon: "" },
-    { name: "Giảm giá", href: "javascript:void(0)", icon: "" },
-    { name: "Đánh giá", href: "javascript:void(0)", icon: "" },
+    { name: "Sản phẩm", href: "/admin/product", icon: "" },
+    { name: "Danh mục", href: "/admin/category", icon: "" },
+    { name: "Thuộc tính", href: "/admin/attribute", icon: "" },
+    { name: "Giảm giá", href: "/admin/discount", icon: "" },
+    { name: "Đánh giá", href: "/admin/review", icon: "" },
   ];
 
   const navsFooter = [
@@ -357,28 +359,24 @@ const Sidebar = () => {
 
   return (
     <div className="w-full">
-      <nav className=" w-full  h-screen border-r bg-white space-y-8 ">
+      <nav className=" w-full  h-screen border-r bg-white space-y-4 ">
         <div class="flex flex-col h-full">
           <div className="h-20 flex items-center px-8">
             <a href="javascript:void(0)" className="flex-none">
-              <img
-                src="https://floatui.com/logo.svg"
-                width={140}
-                className="mx-auto"
-              />
+              Welcome to oshi
             </a>
           </div>
           <div className="flex-1 flex flex-col h-full overflow-auto">
-            <ul className="px-4 text-sm font-medium flex-1">
+            <ul className="px-2 text-sm font-medium flex-1">
               {navigation.map((item, idx) => (
                 <li key={idx}>
-                  <a
-                    href={item.href}
+                  <NavLink
+                    to={item.href}
                     className="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg  hover:bg-gray-50 active:bg-gray-100 duration-150"
                   >
                     <div className="text-gray-500">{item.icon}</div>
                     {item.name}
-                  </a>
+                  </NavLink>
                 </li>
               ))}
               <Menu items={nestedNav}>
@@ -426,7 +424,7 @@ const Sidebar = () => {
                   />
                   <div>
                     <span className="block text-gray-700 text-sm font-semibold">
-                      Alivika tony
+                      Oshi
                     </span>
                     <a
                       href="javascript:void(0)"
