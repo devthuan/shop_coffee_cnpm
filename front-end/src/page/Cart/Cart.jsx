@@ -11,7 +11,7 @@ export const Cart = () => {
       <div className={cx("lg:col-span-8 flex flex-wrap")}>
 
         <div style={{ width: '100%' }} className={cx("flex")}>
-          <img style={{ width: '18%', height: 150 }} src="https://s3-alpha-sig.figma.com/img/0dc9/8023/1b3301cf80ceeab9071bd437ced0c257?Expires=1728864000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=I~jcd4t0EE23rSBlLXCW1tDzOF8l5E~ChHwVS103C6Sm0zAl5828VwZOiQt8nL3D7srt4wTFpKrhq5CWerVkPjC9uP-JFZ1LU-5wSQdewV4zL1QpWJBzMkCRQrF1ae7AtHvGNDrTVYSEMhyZV6FqIqDm~Kd5IwpLZGD3U-3ycoygemSoY2-5Pa2JefNEtAlhMM1DV9RzSFLlAYKM1UWMO91idp4kX3cl1oxyKkxHpQU3OFbP1HCWZbvT6JWs~jarV86P~CSoZByjH3LCsnvs9ovgG29iCyS1NqFM7RCMGSwGh38hMWLc~sebuP5tVNJSFAFPSBOm7j6hjwZIHJlGag__" alt="" />
+          <img style={{ width: '18%', height: 150 }} src="https://res.cloudinary.com/dsho2mecb/image/upload/v1726934274/md2srnm8lhel4kmijm9p.png" alt="" />
           <div style={{ width: '80%' }} className={cx("justify-start py-3 ")}>
             <div className={cx("flex justify-between")}>
               <p style={{ textAlign: 'start', color: '#1A162E', fontSize: '18px', fontStyle: 'normal', fontFamily: ' Tahoma, sans-serif', fontWeight: '500', wordWrap: 'break-word' }}>Coffee Beans - Espresso Arabica and Robusta Beans</p>
@@ -75,7 +75,7 @@ export const Cart = () => {
 
 
         <div style={{ width: '100%' }} className={cx("flex")}>
-          <img style={{ width: '18%', height: 150 }} src="https://s3-alpha-sig.figma.com/img/0dc9/8023/1b3301cf80ceeab9071bd437ced0c257?Expires=1728864000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=I~jcd4t0EE23rSBlLXCW1tDzOF8l5E~ChHwVS103C6Sm0zAl5828VwZOiQt8nL3D7srt4wTFpKrhq5CWerVkPjC9uP-JFZ1LU-5wSQdewV4zL1QpWJBzMkCRQrF1ae7AtHvGNDrTVYSEMhyZV6FqIqDm~Kd5IwpLZGD3U-3ycoygemSoY2-5Pa2JefNEtAlhMM1DV9RzSFLlAYKM1UWMO91idp4kX3cl1oxyKkxHpQU3OFbP1HCWZbvT6JWs~jarV86P~CSoZByjH3LCsnvs9ovgG29iCyS1NqFM7RCMGSwGh38hMWLc~sebuP5tVNJSFAFPSBOm7j6hjwZIHJlGag__" alt="" />
+          <img style={{ width: '18%', height: 150 }} src="https://res.cloudinary.com/dsho2mecb/image/upload/v1726934274/md2srnm8lhel4kmijm9p.png" alt="" />
           <div style={{ width: '80%' }} className={cx("justify-start py-3 ")}>
             <div className={cx("flex justify-between")}>
               <p style={{ textAlign: 'start', color: '#1A162E', fontSize: '18px', fontStyle: 'normal', fontFamily: ' Tahoma, sans-serif', fontWeight: '500', wordWrap: 'break-word' }}>Coffee Beans - Espresso Arabica and Robusta Beans</p>
@@ -137,7 +137,7 @@ export const Cart = () => {
           </div>
         </div>
         <div style={{ width: '100%' }} className={cx("flex")}>
-          <img style={{ width: '18%', height: 150 }} src="https://s3-alpha-sig.figma.com/img/0dc9/8023/1b3301cf80ceeab9071bd437ced0c257?Expires=1728864000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=I~jcd4t0EE23rSBlLXCW1tDzOF8l5E~ChHwVS103C6Sm0zAl5828VwZOiQt8nL3D7srt4wTFpKrhq5CWerVkPjC9uP-JFZ1LU-5wSQdewV4zL1QpWJBzMkCRQrF1ae7AtHvGNDrTVYSEMhyZV6FqIqDm~Kd5IwpLZGD3U-3ycoygemSoY2-5Pa2JefNEtAlhMM1DV9RzSFLlAYKM1UWMO91idp4kX3cl1oxyKkxHpQU3OFbP1HCWZbvT6JWs~jarV86P~CSoZByjH3LCsnvs9ovgG29iCyS1NqFM7RCMGSwGh38hMWLc~sebuP5tVNJSFAFPSBOm7j6hjwZIHJlGag__" alt="" />
+          <img style={{ width: '18%', height: 150 }} src="https://res.cloudinary.com/dsho2mecb/image/upload/v1726934274/md2srnm8lhel4kmijm9p.png" alt="" />
           <div style={{ width: '80%' }} className={cx("justify-start py-3 ")}>
             <div className={cx("flex justify-between")}>
               <p style={{ textAlign: 'start', color: '#1A162E', fontSize: '18px', fontStyle: 'normal', fontFamily: ' Tahoma, sans-serif', fontWeight: '500', wordWrap: 'break-word' }}>Coffee Beans - Espresso Arabica and Robusta Beans</p>

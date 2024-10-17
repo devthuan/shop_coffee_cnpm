@@ -3,9 +3,6 @@ import styles from "./Product.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
-import { faWpforms } from "@fortawesome/free-brands-svg-icons";
-import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
-import { faLock } from "@fortawesome/free-solid-svg-icons";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useEffect, useState } from "react";
@@ -13,15 +10,27 @@ import Slider from "react-slick";
 import { DetailProduct } from "~/services/ProductService";
 import FeedBackProduct from "./FeedBackProduct";
 import DescriptionProduct from "./DescriptionProduct";
+import { useDispatch, useSelector } from "react-redux"; // Import các hook của Redux
+import { addToCart, removeFromCart, updateCartQuantity } from "../../redux/features/cart/cartSlice"; // Import các action
+
 const cx = classNames.bind(styles);
 export const Product = () => {
   const [product, setProduct] = useState({});
+  const [statistical, setStatistical] = useState({})
   const [showDescription, setShowDescription] = useState(true);
   const [showFeedBack, setShowFeedBack] = useState(false)
   const [textDescription, setTextDescription] = useState('gray')
   const [textFeedBack, setTextFeedBack] = useState('black')
   const [selectedAttribute, setSelectedAttribute] = useState(null);
-  const [countReview, setCountReview] = useState(0)
+  // const [countReview, setCountReview] = useState(0)
+
+  const dispatch = useDispatch(); // Sử dụng dispatch để gửi action
+  const cart = useSelector((state) => state.cart); // Lấy dữ liệu giỏ hàng từ store
+  const handleAddToCart = () => {
+    dispatch(addToCart([product])); // Thêm sản phẩm vào giỏ
+  };
+
+
   var settings = {
     dots: true,
     infinite: true,
@@ -39,10 +48,8 @@ export const Product = () => {
       try {
         const response = await DetailProduct();
         console.log(response)
-        setProduct(response)
-        if (response.productAttributes.length > 0) {
-          // setSelectedAttribute(response.productAttributes[0]);
-        }
+        setProduct(response.product)
+        setStatistical(response.statistical)
       }
       catch (error) {
         console.log("Error when get detail product : ", error);
@@ -74,14 +81,14 @@ export const Product = () => {
     setTextFeedBack('gray')
   }
 
-  const handleReviewCountChange = (count) => {
-    setCountReview(count);
-  };
+  // const handleReviewCountChange = (count) => {
+  //   setCountReview(count);
+  // };
 
   return (
     <div className="">
       <div className={cx("mb-7")}>
-        {product && product.images ? (
+        {product && statistical && product.images ? (
           <div className={cx("rounded-s-xl grid lg:grid-cols-11 max-sm:gap-7 border border-gray-200 mb-16")}>
             <div className={cx("lg:col-span-5")}>
 
@@ -93,7 +100,7 @@ export const Product = () => {
                 </Slider>
               ) : (
                 product.images.length === 1 && (
-                  <img  key={0} src={product.images[0].urlImage} alt="" />
+                  <img key={0} src={product.images[0].urlImage} alt="" />
                 )
               )}
 
@@ -107,8 +114,8 @@ export const Product = () => {
                 <div className={cx("w-1/2 mr-10")}>
                   <div className={cx("w-full flex items-center")}>
                     <FontAwesomeIcon className={cx("text-yellow-300 pr-4")} icon={faStar} />
-                    <p class="text-[#323134] text-2xl font-semibold font-['Gordita'] leading-relaxed pr-2">(3.5)</p>
-                    <p class="text-[#323134] text-2xl font-normal font-['Gordita'] leading-relaxed pr-2">{countReview}</p>
+                    <p class="text-[#323134] text-2xl font-semibold font-['Gordita'] leading-relaxed pr-2">({statistical.averageRating})</p>
+                    <p class="text-[#323134] text-2xl font-normal font-['Gordita'] leading-relaxed pr-2">{statistical.totalReview}</p>
                     <p>Customer Reviews</p>
                   </div>
                   <p class="w-full text-start text-[#000000] pt-6 text-[23px] font-semiblod font-['Gordita'] leading-9">Size/Weight</p>
@@ -159,13 +166,12 @@ export const Product = () => {
                     <p class="pl-10 text-[#1a162e] text-lg font-normal font-['Gordita'] leading-tight">From $6 for 1-3 days</p>
                   </div> */}
 
-                  {/* <div class="h-[50px] flex flex-col justify-start items-start gap-1 pt-6">
+                  {selectedAttribute && (
                     <div className={cx("flex items-center")}>
-                      <FontAwesomeIcon icon={faLock} />
-                      <p class="pl-3 text-[#1a162e] text-xl font-semibold font-['Gordita'] leading-relaxed">Delivery</p>
+                      <p className="text-2xl">Số lượng</p>
+                      <p class="text-[#232325] text-2xl font-semibold font-['Gordita'] leading-relaxed pl-3">{selectedAttribute.quantity}</p>
                     </div>
-                    <p class="pl-10 text-[#1a162e] text-lg font-normal font-['Gordita'] leading-tight">From $6 for 1-3 days</p>
-                  </div> */}
+                  )}
 
                   <div style={{ border: '1px solid #ccc' }} class="h-[146px] w-full flex-col justify-start items-start gap-5 flex p-6 mt-5 ">
                     <div class="flex-col justify-start items-start gap-5 flex">
@@ -190,7 +196,7 @@ export const Product = () => {
                     </div>
                     <div class="w-full justify-start items-start gap-[19px] inline-flex">
                       <div style={{ width: '100%', height: '40px' }} class=" bg-[#ffb700] rounded-md justify-center items-center gap-2.5 inline-flex">
-                        <div class=" text-[#1a162e] text-[16px] font-medium font-['Gordita'] leading-relaxed">Add to cart</div>
+                        <div onClick={() => handleAddToCart()} class=" text-[#1a162e] text-[16px] font-medium font-['Gordita'] leading-relaxed">Add to cart</div>
                       </div>
                       <div class="p-[10px] rounded-md border border-[#d2d1d6] justify-center items-center gap-2.5 flex">
                         <div class="w-6 h-6 px-[2.50px] py-[3px] justify-center items-center flex">
@@ -223,7 +229,7 @@ export const Product = () => {
 
 
         <DescriptionProduct show={showDescription} content={product.description} />
-        <FeedBackProduct show={showFeedBack} countReviewer={handleReviewCountChange} />
+        <FeedBackProduct show={showFeedBack} />
 
 
       </div>
