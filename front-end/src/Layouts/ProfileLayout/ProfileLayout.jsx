@@ -1,6 +1,6 @@
 import classNames from "classnames/bind";
 import styles from "./ProfileLayout.module.scss";
-
+import SideBar from "./SideBar/SideBar";
 
 const cx = classNames.bind(styles);
 
@@ -16,8 +16,9 @@ function ProfileLayout({children}) {
         )}
       >
         <div className="lg:col-span-3 grid gap-y-7">
-          <div className="">avatar</div>
-          <div className="">list</div>
+          {/* <div className="">avatar</div>
+          <div className="">list</div> */}
+          <SideBar/>
         </div>
         <div className="lg:col-span-9 p-7">{children}</div>
       </div>
