@@ -1,11 +1,11 @@
-import { configureStore } from "@reduxjs/toolkit";
-// code demo
-// import productDemoSlice from "./features/product/productDemoSlice";
-
+// store.js
+import { configureStore } from '@reduxjs/toolkit';
+import productReducer from 'src/redux/features/PoductSlice'; // Đường dẫn tới productSlice
 
 export const store = configureStore({
   reducer: {
-    // code demo
-    // product: productDemoSlice,
+    products: productReducer, // Kết hợp reducer vào store
   },
 });
+
+

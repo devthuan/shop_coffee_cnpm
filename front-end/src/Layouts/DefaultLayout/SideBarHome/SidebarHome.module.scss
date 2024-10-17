@@ -50,12 +50,11 @@
     display: flex;
     flex-direction: column;
     align-items: start;
-    justify-content: center;
+    justify-content: start;
     gap: 16px;
-    height: 316px;
-    overflow-y: auto;
-  }
-
+    overflow-x: auto;
+    max-height: 70vh;
+}
   .item {
     width: 230px;
     border-radius: 10px;
@@ -67,6 +66,10 @@
     font-weight: 700;
     line-height: 24px;
     padding-left: 20px;
+  }
+  .item_img {
+    width: 70px;
+    flex-shrink: 0;
   }
 
 }
@@ -108,5 +111,6 @@
   .item_img {
     width: 44px;
     flex-shrink: 0;
+    
   }
 }

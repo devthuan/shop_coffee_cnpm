@@ -12,7 +12,7 @@ import InputSearch from "~/Layouts/components/Header/InputSearch/inputSearch";
 
 const cx = classNames.bind(styles);
 function Header() {
-  const [Login, setLogin] = useState(true)
+  const [Login, setLogin] = useState(false)
   const [imgUser, setImgUser] = useState()
   const [sideBarHeader, setSideBarHeader] = useState(false)
   const [toggleSearch, setToggleSearch] = useState(false)

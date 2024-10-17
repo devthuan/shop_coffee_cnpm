@@ -1,10 +1,22 @@
 import api from "./api";
 
-
-export const RegisAPI = (email, password, confirmPassword,setAsDefaultCard) => {
-  return api.post(`auth/register`, { username: email, password: password , confirmPassword:confirmPassword,setAsDefaultCard:setAsDefaultCard});
-
+export const RegisAPI = (email, username, password, confirmPassword) => {
+  return api.post(`auth/register`, { email, username, password, confirmPassword});
 };
+
+export const LoginAPI = (email, password) => {
+  let ip = "0.0.0.0"
+  return api.post(`auth/login`,{email: email, password: password, ip: i} )
+}
+
+export const SendOTPAPI = (email) =>{
+  return api.post(`auth/send-otp`,{email});
+}
+
+export const VerifyOTPAPI = (email, otp) => {
+  return api.post('auth/verify-otp', { email, otp });
+};
+
 export const LogOut = async () => {
   try {
     const response = await api.post('auth/logout');

@@ -3,7 +3,7 @@ import { getItemWithExpiration } from "./localStorage";
 
 const api = axios.create({
   baseURL: "http://103.211.207.149:8080/api/v1",
-  timeout: 5000, // Đặt timeout tùy ý
+  timeout: 150000, // Đặt timeout tùy ý
 });
 
 api.interceptors.request.use(
