@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getItemWithExpiration } from "./LocalStorage";
+import { getItemWithExpiration } from "./localStorage";
 
 const api = axios.create({
   baseURL: "http://localhost:8080/api/v1",

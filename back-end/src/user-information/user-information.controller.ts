@@ -11,11 +11,11 @@ import { Accounts } from 'src/auth/entities/accounts.entity';
 export class UserInformationController {
   constructor(private readonly userInformationService: UserInformationService) {}
 
-  @Post()
-  create(@Req() request: Request, @Body() createUserInformationDto: CreateUserInformationDto) {
-    let accountId =  request['user'].id;  // Get user's id from JWT token
-    return this.userInformationService.create(accountId, createUserInformationDto);
-  }
+  // @Post()
+  // create(@Req() request: Request, @Body() createUserInformationDto: CreateUserInformationDto) {
+  //   let accountId =  request['user'].id;  // Get user's id from JWT token
+  //   return this.userInformationService.create(accountId, createUserInformationDto);
+  // }
   
   @Get('user')
   findOne(@Req() request: Request) {

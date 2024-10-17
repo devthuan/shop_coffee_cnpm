@@ -1,11 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-// code demo
-// import productDemoSlice from "./features/product/productDemoSlice";
-
+import accountsReducer from "./features/Accounts/accountsSilce";
 
 export const store = configureStore({
   reducer: {
-    // code demo
-    // product: productDemoSlice,
+    accounts: accountsReducer,
   },
 });

@@ -6,7 +6,6 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import HeaderAdmin from "../components/HeaderAdmin/HeaderAdmin";
 const cx = classNames.bind(styles);
 function DashboardLayout({ children }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="grid grid-cols-12 gap-x-4">

@@ -14,6 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { Roles } from 'src/role-permission/entities/roles.entity';
 import { UserInformation } from 'src/user-information/entities/user-information.entity';
+import { CommonException } from 'src/common/exception';
 
 
 @Injectable()
@@ -372,6 +373,47 @@ export class AuthService {
   async verifyPassword(originPassword: string, hashPassword: string): Promise<boolean> {
       return await bcrypt.compare(originPassword, hashPassword);
   }
+
+  async getAllAccount( 
+      search: string,
+      page : number = 1,
+      limit : number = 10,
+      sortBy : string = 'createdAt',
+      sortOrder: 'ASC' | 'DESC' = 'ASC'
+    ): Promise<{ message: string; total: number;  currentPage: number; totalPage: number; limit : number; data: Accounts[]}> {
+      try {
+        const query = this.accountsRepository.createQueryBuilder('accounts')
+          .leftJoinAndSelect('accounts.userInformation', 'userInformation')
+          .leftJoinAndSelect('accounts.role', 'role')
+          .where('accounts.deletedAt is null')
+
+          if (search) {
+            query
+             .andWhere('LOWER(accounts.email) LIKE LOWER(:search) OR LOWER(accounts.username) LIKE LOWER(:search) ', { search: `%${search}%` })
+          }
+
+        const [result, total] = await query
+            .skip((page - 1) * limit)
+            .take(limit)
+            .orderBy(`accounts.${sortBy}`, sortOrder)
+            .getManyAndCount();
+
+        const totalPage = Math.ceil(total / limit);
+
+        return {
+          message: 'Success',
+          total: total,
+          currentPage: page,
+          totalPage: totalPage,
+          limit: limit,
+          data: result
+        }
+        
+      } catch (error) {
+        CommonException.handle(error)
+      }
+    }
+
 
   generateOTP() {
       let otp = Math.floor(100000 + Math.random() * 900000);

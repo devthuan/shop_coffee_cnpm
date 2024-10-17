@@ -1,4 +1,4 @@
-import { LogOut } from "./UseServices";
+// import { LogOut } from "./UseServices";
 
 // Lưu item vào localStorage với thời hạn sống (seconds)
 function setItemWithExpiration(key, value, expirationInHour) {
@@ -18,7 +18,7 @@ async function getItemWithExpiration(key) {
     return item.value;
   } else if (item && item.expirationTime === new Date().getTime()) {
     // call api logout
-    await LogOut();
+    // await LogOut();
     // Xóa item khỏi localStorage nếu đã hết hạn
     localStorage.removeItem(key);
     return false;
