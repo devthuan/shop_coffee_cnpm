@@ -28,7 +28,7 @@ export default function FeedBackProduc({ show }) {
 
     return (
         <div className={cx(`d-none ${show ? 'block' : 'hidden'}`)} >
-            <p className={cx("text-start mt-7 mb-7 text-[#1a162e] font-bold hover:text-blue-700")}>What our customers are saying</p>
+            <p className={cx("text-start mt-7 mb-7 text-[20px] text-[#1a162e] font-bold hover:text-blue-700")}>What our customers are saying</p>
             {evaluates && evaluates.data ? (
                 <div className={cx("grid lg:grid-cols-3 gap-7 max-sm:grid-cols-1 ")}>
                     {evaluates.data.map((evalute, index) => (
@@ -47,14 +47,14 @@ export default function FeedBackProduc({ show }) {
                                             {Array.from({ length: 5 }, (_, index) => (
                                                 <FontAwesomeIcon
                                                     key={index}
-                                                    className={cx("text-yellow-400 pr-4")}
+                                                    className={cx("text-yellow-400 pr-2")}
                                                     icon={faStar}
-                                                    style={{ opacity: index < item.rating ? 1 : 0.3 }} // Tô sáng sao dựa trên rating
+                                                    style={{fontSize : '16px', opacity: index < item.rating ? 1 : 0.3 }} // Tô sáng sao dựa trên rating
                                                 />
                                             ))}
 
                                         </div>
-                                        <div class="text-[#1a162e] font-bold text-2xl font-['Gordita'] leading-relaxed">({item.rating}) Star</div>
+                                        <div class="text-[#1a162e] font-bold text-xl font-['Gordita'] leading-relaxed">({item.rating}) Star</div>
                                     </div>
                                 </div>
                             </div>

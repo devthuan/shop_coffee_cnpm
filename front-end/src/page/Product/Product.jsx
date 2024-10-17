@@ -93,7 +93,7 @@ export const Product = () => {
             <div className={cx("lg:col-span-5")}>
 
               {product.images.length > 1 ? (
-                <Slider style={{ width: '430px' }} {...settings}>
+                <Slider style={{ width: '400px' }} {...settings}>
                   {product.images.map((image, index) => (
                     <img key={index} src={image.urlImage} alt="" />
                   ))}
@@ -109,14 +109,14 @@ export const Product = () => {
 
             <div className={cx("lg:col-span-6 bg-gray-100")}>
 
-              <p class="text-[#1a162e] pt-16 text-[26px] font-semiblod font-['Gordita'] leading-9">{product.name}</p>
-              <div className={cx("flex px-16 mt-6")}>
+              <p class="text-[#1a162e] pt-2 text-[26px] font-semiblod font-['Gordita'] leading-9">{product.name}</p>
+              <div className={cx("flex px-4 mt-4")}>
                 <div className={cx("w-1/2 mr-10")}>
                   <div className={cx("w-full flex items-center")}>
-                    <FontAwesomeIcon className={cx("text-yellow-300 pr-4")} icon={faStar} />
-                    <p class="text-[#323134] text-2xl font-semibold font-['Gordita'] leading-relaxed pr-2">({statistical.averageRating})</p>
-                    <p class="text-[#323134] text-2xl font-normal font-['Gordita'] leading-relaxed pr-2">{statistical.totalReview}</p>
-                    <p>Customer Reviews</p>
+                    <FontAwesomeIcon className={cx("text-yellow-300 pr-2 text-[19px]")} icon={faStar} />
+                    <p class="text-[#323134] text-[19px] font-semibold font-['Gordita'] leading-relaxed pr-2">({statistical.averageRating})</p>
+                    <p class="text-[#323134] text-[19px] font-normal font-['Gordita'] leading-relaxed pr-2">{statistical.totalReview}</p>
+                    <p style = {{ fontSize : '16px' }}>Customer Reviews</p>
                   </div>
                   <p class="w-full text-start text-[#000000] pt-6 text-[23px] font-semiblod font-['Gordita'] leading-9">Size/Weight</p>
                   <div class="flex justify-start mt-5">
@@ -124,7 +124,7 @@ export const Product = () => {
                       <option value="">Hạt</option>
                       <option value="">Xay</option>
                     </select> */}
-                    <select value={selectedAttribute ? selectedAttribute.id : ""} onChange={handleAttributeChange} class="w-[120px] text-[#000000] text-[15px] font-medium font-['Gordita'] leading-snug border border-gray-200 rounded-tr rounded-br px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <select value={selectedAttribute ? selectedAttribute.id : ""} onChange={handleAttributeChange} class=" w-[120px] text-[#000000] text-[17px] font-medium font-['Gordita'] leading-snug border border-gray-200 rounded-tr rounded-br px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                       <option>Chọn</option>
                       {product.productAttributes.map((item, index) => (
                         <option key={index} value={item.id}>{item.attributes.name}</option>
@@ -144,7 +144,7 @@ export const Product = () => {
                     </div>
                   </div> */}
                   {selectedAttribute && (
-                    <div className={cx("w-full flex flex-wrap pt-4")}>
+                    <div className={cx("w-full flex flex-wrap pt-4 ")}>
                       <p class="text-[#323134] text-2xl text-start font-normal font-['Gordita'] leading-relaxed pr-1">
                         {selectedAttribute.attributes.description}
                       </p>
@@ -153,10 +153,10 @@ export const Product = () => {
 
                 </div>
 
-                <div className={cx("w-1/2 ")}>
+                <div className={cx("w-1/2 pb-3")}>
                   <div className={cx("flex items-center")}>
-                    <p className="text-2xl">Thể loại: </p>
-                    <p class="text-[#232325] text-2xl font-semibold font-['Gordita'] leading-relaxed pl-3">{product.category.name}</p>
+                    <p className="text-[19px]">Thể loại: </p>
+                    <p class="text-[#232325] text-[19px] font-semibold font-['Gordita'] leading-relaxed pl-3">{product.category.name}</p>
                   </div>
                   {/* <div class="h-[50px] flex flex-col justify-start items-start gap-1 pt-6">
                     <div className={cx("flex items-center")}>
@@ -168,29 +168,29 @@ export const Product = () => {
 
                   {selectedAttribute && (
                     <div className={cx("flex items-center")}>
-                      <p className="text-2xl">Số lượng</p>
-                      <p class="text-[#232325] text-2xl font-semibold font-['Gordita'] leading-relaxed pl-3">{selectedAttribute.quantity}</p>
+                      <p className="text-[19px]">Số lượng</p>
+                      <p class="text-[#232325] text-[19px]   font-semibold font-['Gordita'] leading-relaxed pl-3">{selectedAttribute.quantity}</p>
                     </div>
                   )}
 
-                  <div style={{ border: '1px solid #ccc' }} class="h-[146px] w-full flex-col justify-start items-start gap-5 flex p-6 mt-5 ">
+                  <div style={{ border: '1px solid #ccc' }} class=" w-full flex-col justify-start items-start gap-5 flex p-3 mt-5 ">
                     <div class="flex-col justify-start items-start gap-5 flex">
                       <div class="justify-start items-start gap-2.5 inline-flex">
 
                         {selectedAttribute && (
-                          <div class="text-black font-medium font-['Gordita'] leading-normal">
-                            {(selectedAttribute.sellPrice).toLocaleString('vi-VN')}đ
+                          <div class="text-black text-[21px] font-medium font-['Gordita'] leading-normal">
+                            {(selectedAttribute.sellPrice).toLocaleString('vi-VN')} đ
                           </div>
                         )}
 
                         <div class="px-2 py-0.5 bg-white/80 justify-start items-start gap-2.5 flex">
-                          <div class="w-[30px] h-[17px] text-[#67b044] font-medium font-['Gordita'] leading-tight">10%</div>
+                          <div class="w-[30px] text-[21px] h-[17px] text-[#67b044] font-medium font-['Gordita'] leading-tight">10%</div>
                         </div>
                       </div>
 
                       {selectedAttribute && (
-                        <div class="text-black text-[26px] font-medium font-['Gordita'] leading-9">
-                          {(selectedAttribute.sellPrice - 10 / 100 * (selectedAttribute.sellPrice)).toLocaleString('vi-VN')}đ
+                        <div class="text-black text-[21px] font-medium font-['Gordita'] leading-9">
+                          {(selectedAttribute.sellPrice - 10 / 100 * (selectedAttribute.sellPrice)).toLocaleString('vi-VN')} đ
                         </div>
                       )}
                     </div>
@@ -218,9 +218,9 @@ export const Product = () => {
         <div
           className={cx("text-start grid lg:grid-cols-9 max-sm:grid-cols-4 grid-rows-1")}
         >
-          <p onClick={() => clickDescription()} className={cx(`cursor-pointer text-${textDescription === 'gray' ? 'gray' : 'black'}-500`)}>Description</p>
+          <p onClick={() => clickDescription()} className={cx(`text-[20px] cursor-pointer text-${textDescription === 'gray' ? 'gray' : 'black'}-500`)}>Description</p>
           {/* <div className={cx("")}>Features</div> */}
-          <div onClick={() => clickFeedBack()} className={cx(` flex items-center cursor-pointer text-${textFeedBack === 'gray' ? 'gray' : 'black'}-500`)}>
+          <div onClick={() => clickFeedBack()} className={cx(`text-[20px] flex items-center cursor-pointer text-${textFeedBack === 'gray' ? 'gray' : 'black'}-500`)}>
             <p>Review</p>
             <p>(1000)</p>
           </div>

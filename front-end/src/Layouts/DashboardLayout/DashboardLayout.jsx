@@ -1,20 +1,20 @@
+import React, { useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./DashboardLayout.module.scss";
-import SidebarAdmin from "../components/SidebarAdmin/SidebarAdmin";
-
-
+import Sidebar from "../components/Sidebar/Sidebar";
+import HeaderAdmin from "../components/HeaderAdmin/HeaderAdmin";
 const cx = classNames.bind(styles);
-function DashboardLayout({children}) {
+function DashboardLayout({ children }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
-    <div className={cx("max-w-screen mx-auto  max-sm:p-5 text-center")}>
-      <div className="grid grid-cols-11">
-          <div className="col-span-2">
-            <SidebarAdmin/>
-          </div>
-          <div className="col-span-9">
-            <div className="">header</div>
-            <div className="">content</div>
-          </div>
+    <div className="grid grid-cols-12 gap-x-4">
+      <div className="h-screen col-span-2">
+        <Sidebar />
+      </div>
+      <div className="col-span-10">
+        <HeaderAdmin />
+        <div className="">{children}</div>
       </div>
     </div>
   );
