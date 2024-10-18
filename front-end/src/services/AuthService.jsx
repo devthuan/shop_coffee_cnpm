@@ -7,11 +7,11 @@ export const RegisAPI = (email, username, password, confirmPassword) => {
 };
 export const LoginAPI = (email, password) => {
   let ip = "0.0.0.0"
-  
-  return api.post(`auth/login`,{ email: email, password: password, ip: ip } )
+
+  return api.post(`auth/login`, { email: email, password: password, ip: ip })
 }
-export const SendOTPAPI = (email) =>{
-  return api.post(`auth/send-otp`,{email});
+export const SendOTPAPI = (email) => {
+  return api.post(`auth/send-otp`, { email });
 }
 export const VerifyOTPAPI = (email, otp) => {
   return api.post('auth/verify-otp', { email, otp });
