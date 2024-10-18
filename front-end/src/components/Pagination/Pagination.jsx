@@ -69,7 +69,7 @@ export const Pagination = ({
   }, [limit]);
 
   return (
-    <div className="max-w-screen-xl mx-auto mt-12 px-4 text-gray-600 md:px-8">
+    <div className="max-w-screen-xl mx-auto mt-5 px-4 text-gray-600 md:px-8">
       <div className="hidden justify-end text-sm md:flex gap-x-10">
         <div className="flex justify-center items-center gap-x-6">
           <div className="relative w-16 max-w-full mx-auto">
@@ -114,14 +114,14 @@ export const Pagination = ({
             {generatePages().map((item) => {
               return (
                 <li key={item}>
-                  {item == "..." ? (
+                  {item === "..." ? (
                     <div>{item}</div>
                   ) : (
                     <p
                       onClick={() => handlePageClick(item)}
-                      aria-current={currentPage == item ? "page" : false}
+                      aria-current={parseInt(currentPage) === item ? "page" : false}
                       className={`px-3 py-2 rounded-lg duration-150 hover:text-white hover:bg-indigo-600 ${
-                        currentPage == item
+                        parseInt(currentPage) === item
                           ? "bg-indigo-600 text-white font-medium"
                           : ""
                       }`}

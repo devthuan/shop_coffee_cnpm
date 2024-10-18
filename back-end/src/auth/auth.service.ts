@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CreateAuthDto } from './dto/register.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { DataSource, Repository } from 'typeorm';
@@ -412,7 +412,38 @@ export class AuthService {
       } catch (error) {
         CommonException.handle(error)
       }
+  }
+
+
+  async lockAccount(accountId: string): Promise<{message: string}> {
+    try {
+      // check account
+      const account = await this.accountsRepository.createQueryBuilder('accounts')
+      .where('accounts.id = :id', {id: accountId})
+      .andWhere('accounts.deletedAt is null')
+      .getOne();
+      
+      if(!account) {
+        return { message: 'Account not found' }
+      }
+      // if(account.isActive === false) {
+      //   throw new BadRequestException('Account has been locked')
+      // } 
+      
+      // lock account
+      account.isActive = !account.isActive;
+      account.updatedAt = new Date();
+      await this.accountsRepository.save(account);
+      if(account.isActive){
+        return { message: 'Account unlock successfully' }
+        
+      }else {
+        return { message: 'Account locked successfully' }
+      }
+    } catch (error) {
+      CommonException.handle(error)
     }
+  }
 
 
   generateOTP() {

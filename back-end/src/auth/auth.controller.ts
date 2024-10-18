@@ -62,5 +62,10 @@ export class AuthController {
     let data = this.authService.getAllAccount(search, page, limit, sortBy, sortOrder);
     return plainToInstance(Accounts, data)
   }
+
+  @Patch('lock/:id')
+  lockAccount(@Param('id') id: string){
+    return this.authService.lockAccount(id);
+  }
  
 }

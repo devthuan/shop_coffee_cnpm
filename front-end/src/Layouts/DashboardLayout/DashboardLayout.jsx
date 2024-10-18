@@ -8,13 +8,13 @@ const cx = classNames.bind(styles);
 function DashboardLayout({ children }) {
 
   return (
-    <div className="grid grid-cols-12 gap-x-4">
+    <div className="grid grid-cols-12 gap-x-4 ">
       <div className="h-screen col-span-2">
         <Sidebar />
       </div>
       <div className="col-span-10">
         <HeaderAdmin />
-        <div className="">{children}</div>
+        <div className="h-5/6">{children}</div>
       </div>
     </div>
   );
