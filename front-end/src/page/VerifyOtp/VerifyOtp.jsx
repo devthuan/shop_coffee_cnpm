@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import './OtpModal.module.scss'; // Thêm file CSS cho styling nếu cần
 import classNames from "classnames/bind";
-import styles from "./OtpModal.module.scss";
+import styles from "./VerifyOtp.module.scss";
 import grocery from "~/assets/icon/grocerymart.svg"
 import { SendOTPAPI } from '~/services/AuthService';
 
@@ -9,7 +8,7 @@ import { SendOTPAPI } from '~/services/AuthService';
 
 // import { Navigate } from "react-router-dom";
 const cx = classNames.bind(styles);
-export const OtpModal = ({ isOpen, onClose, onSubmit, otpError }) => {
+export const VerifyOtp = ({ isOpen, onClose, onSubmit, otpError }) => {
 
   const [otp, setOtp] = useState('');
   const [timeRemaining, setTimeRemaining] = useState(60);
@@ -38,12 +37,13 @@ export const OtpModal = ({ isOpen, onClose, onSubmit, otpError }) => {
     setIsOtpValid(true); // Kích hoạt lại OTP
     onClose(); // Gọi hàm onClose
   };
+
   const handleResendOtp = async () => {
     try {
       const response = await SendOTPAPI(email);
       if (response && response.data) {
         alert('Mã OTP mới đã được gửi đến email.');
-        await SendOTPAPI(email);
+        // await SendOTPAPI(email);
         setOtp(''); // Xóa mã OTP hiện tại
         setTimeRemaining(60); // Reset thời gian
         setIsOtpValid(true); // Kích hoạt lại OTP
@@ -115,4 +115,4 @@ export const OtpModal = ({ isOpen, onClose, onSubmit, otpError }) => {
 
   );
 };
-export default OtpModal;
+export default VerifyOtp;

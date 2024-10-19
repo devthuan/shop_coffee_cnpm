@@ -5,6 +5,7 @@ import reportWebVitals from "./reportWebVitals";
 import GlobalStyle from "~/components/GlobalStyle";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
+ import "react-toastify/dist/ReactToastify.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
