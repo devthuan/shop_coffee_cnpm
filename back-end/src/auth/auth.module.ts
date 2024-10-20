@@ -24,6 +24,7 @@ import { UserInformation } from 'src/user-information/entities/user-information.
   ],
   controllers: [AuthController],
   providers: [AuthService, MailService],
+  exports: [AuthService]
   
 })
 export class AuthModule {}

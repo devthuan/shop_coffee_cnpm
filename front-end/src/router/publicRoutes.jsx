@@ -6,6 +6,7 @@ import{ Cart} from "~/page/Cart/Cart";
 import ProfileLayout from "~/Layouts/ProfileLayout/ProfileLayout";
 import CartLayout from "~/Layouts/CartLayout/CartLayout";
 import ProductLayout from "~/Layouts/ProductLayout/ProductLayout";
+import Page404 from "~/components/Page404/Page404";
 // routes for public
 export const publicRoutes = [
   { path: "/", component: Home },
@@ -13,4 +14,5 @@ export const publicRoutes = [
   { path: "/profile", component: Profile, layout: ProfileLayout },
   { path: "/product", component: Product, layout: ProductLayout },
   { path: "/cart", component: Cart, layout: CartLayout },
+  { path: "*", component: Page404, layout: null },
 ];

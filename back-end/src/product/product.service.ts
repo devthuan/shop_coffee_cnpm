@@ -397,6 +397,49 @@ export class ProductService extends BaseService<Products> {
       }
   }
 
+  async findAll(
+    search: string,
+    page : number = 1,
+    limit : number = 10,
+    sortBy : string = 'createdAt',
+    sortOrder: 'ASC' | 'DESC' = 'ASC'
+  ): Promise<{ total: number;  currentPage: number; totalPage: number; limit : number; data: Products[]}> {
+    try {
+      const queryBuilder = this.productRepository.createQueryBuilder('products')
+          .leftJoinAndSelect('products.images', 'images')
+          .where('products.deletedAt IS NULL');
+
+          if (search) {
+            queryBuilder.andWhere('products.name LIKE :search', { search: `%${search}%` });
+          }
+
+          // count total
+          const total = await queryBuilder.getCount();
+
+         // pagination page
+          const data = await queryBuilder
+            .skip((page - 1) * limit) // Bỏ qua các bản ghi đã được hiển thị
+            .take(limit) // Giới hạn số bản ghi trả về
+            .orderBy(`products.${sortBy}`, sortOrder) // Sắp xếp theo trường chỉ định
+            .getMany(); // Lấy danh sách bản ghi
+
+
+      const totalPage = Math.ceil(total / limit);
+
+      return {
+        total,
+        totalPage,
+        currentPage: +page,
+        limit: +limit,
+        data
+      }
+
+      return null;
+    } catch (error) {
+      CommonException.handle(error)
+    }
+  }
+
 
   async uploadFileCloudinary(file : Express.Multer.File): Promise<any>{
     return this.cloudinaryService.uploadFile(file)

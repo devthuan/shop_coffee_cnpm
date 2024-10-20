@@ -1,52 +1,131 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { useEffect, useState } from "react";
 import React from "react";
-
-const ModelEditAccount = ({data}) => {
-  console.log(data);
+import { toast } from "react-toastify";
+import { ResetPasswordAPI, UpdateAccountAPI } from "~/services/AccountService";
+import { useDispatch, useSelector } from "react-redux";
+import { updateAccount } from "~/redux/features/Accounts/accountsSilce";
+import { HandleApiError } from "~/Utils/HandleApiError";
+import { clearDataRole, initDataRole } from "~/redux/features/Roles/rolesSilce";
+import { GetAllRole } from "~/services/PermissionService";
+const ModelEditAccount = ({ data }) => {
+  const dispatch = useDispatch();
+  const dataRole = useSelector((item) => item.roles.data);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
     email: "",
-    username: "",
-    role: "", // Default to "user"
+    userName: "",
+    role: "",
+    balance: "",
+    ip: "",
+    typeLogin: "",
+    status: "",
+    updated_at: "",
+    deleted_at: "",
+    created_at: "",
   });
-  const listInput = [
-    {
-      title: "Email",
-      typeInput: "text",
-      name: "email",
-      placeholder: "Enter your email address",
-    },
-    {
-      title: "Username",
-      typeInput: "text",
-      name: "username",
-      placeholder: "Enter your username",
-    },
-    {
-      title: "password",
-      typeInput: "password",
-      name: "password",
-      placeholder: "Enter your password",
-    },
-    {
-      title: "Confirm password",
-      typeInput: "password",
-      name: "confirmPassword",
-      placeholder: "Confirm your password",
-    },
-  ];
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmitUpdate = async () => {
+    try {
+      const response = await UpdateAccountAPI(formData.id, {
+        userName: formData.userName,
+        role: formData.role,
+      });
+      if (response && response.data) {
+        const { statusCode, status, message } = response.data;
+
+        if (statusCode === 200 && status === "success") {
+          dispatch(
+            updateAccount({
+              id: formData.id,
+              userName: formData.userName,
+              role: formData.role,
+            })
+          );
+          toast.success(message);
+        }
+      }
+    } catch (err) {
+      const result = HandleApiError(err);
+      result
+        ? toast.error(result)
+        : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (isProcessing) return; // Prevent further clicks during processing
+
+    setIsProcessing(true); // Start processing
+
+    try {
+      const response = await ResetPasswordAPI(formData.id);
+      console.log(response);
+
+      if (response && response.data) {
+        const { statusCode, status, message, data } = response.data;
+        if (statusCode === 200 && status === "success") {
+          toast.success(message);
+          setIsProcessing(false);
+        } else if (statusCode === 400 && status === "error") {
+          toast.error(message);
+        } else {
+          toast.error(message);
+        }
+      }
+    } catch (err) {
+      const result = HandleApiError(err);
+      result
+        ? toast.error(result)
+        : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+    }
+  };
+  useEffect(() => {
+    const fetchAPI = async () => {
+      dispatch(clearDataRole());
+      try {
+        const response = await GetAllRole();
+        if (response && response.data && response.status === 200) {
+          dispatch(initDataRole(response.data));
+        }
+      } catch (error) {
+        console.log(error);
+        const result = HandleApiError(error);
+        result
+          ? toast.error(result)
+          : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+      }
+    };
+    if (dataRole.length === 0) {
+      fetchAPI();
+    }
+  }, [dispatch]);
 
   useEffect(() => {
-    if (data) {
-      setFormData({
-        id: data.id,
-        email: data.email,
-        username: data.username,
-        role: data.role, // Default to "user"
-      });
-    }
-  }, [data]);
+    setFormData({
+      id: data.id,
+      email: data.email,
+      userName: data.userName,
+      role: data.role.name,
+      balance: data.balance,
+      ip: data.ip,
+      typeLogin: data.typeLogin,
+      status: data.isActive,
+      lastLogin: data.lastLogin,
+      updatedAt: data.updatedAt,
+      deletedAt: data.deletedAt,
+      createdAt: data.createdAt,
+    });
+  }, []);
 
   return (
     <Dialog.Root>
@@ -83,8 +162,10 @@ const ModelEditAccount = ({data}) => {
                   <label className="text-gray-600">ID</label>
                   <div className="relative max-w-xs mt-2">
                     <input
+                      readOnly="true"
                       type="text"
-                      value={data.id}
+                      name="id"
+                      value={formData.id}
                       className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                     />
                   </div>
@@ -93,8 +174,10 @@ const ModelEditAccount = ({data}) => {
                   <label className="text-gray-600">Email</label>
                   <div className="relative max-w-xs mt-2">
                     <input
+                      readOnly="true"
                       type="text"
-                      value={data.email}
+                      name="email"
+                      value={formData.email}
                       className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                     />
                   </div>
@@ -103,8 +186,10 @@ const ModelEditAccount = ({data}) => {
                   <label className="text-gray-600">Username</label>
                   <div className="relative max-w-xs mt-2">
                     <input
+                      onChange={handleInputChange}
                       type="text"
-                      value={data.userName}
+                      name="userName"
+                      value={formData.userName}
                       className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                     />
                   </div>
@@ -113,11 +198,16 @@ const ModelEditAccount = ({data}) => {
                 <div>
                   <label className="text-gray-600 select ">Role</label>
                   <select
-                    value={data.role.name}
+                    onChange={handleInputChange}
+                    name="role"
+                    defaultValue={formData.role}
                     className="w-full pr-12 pl-3 py-2 mt-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                   >
-                    <option value="admin">Admin</option>
-                    <option value="user">User</option>
+                    {dataRole &&
+                      dataRole.length > 0 &&
+                      dataRole.map((item) => {
+                        return <option value={item.name}>{item.name}</option>;
+                      })}
                   </select>
                 </div>
 
@@ -125,8 +215,10 @@ const ModelEditAccount = ({data}) => {
                   <label className="text-gray-600">Balance</label>
                   <div className="relative max-w-xs mt-2">
                     <input
+                      readOnly="true"
                       type="text"
-                      value={data.balance}
+                      name="balance"
+                      value={formData.balance}
                       className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                     />
                   </div>
@@ -135,8 +227,10 @@ const ModelEditAccount = ({data}) => {
                   <label className="text-gray-600">IP</label>
                   <div className="relative max-w-xs mt-2">
                     <input
+                      readOnly="true"
                       type="text"
-                      value={data.ip}
+                      name="ip"
+                      value={formData.ip}
                       className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                     />
                   </div>
@@ -145,8 +239,10 @@ const ModelEditAccount = ({data}) => {
                   <label className="text-gray-600">Type login</label>
                   <div className="relative max-w-xs mt-2">
                     <input
+                      readOnly="true"
                       type="text"
-                      value={data.typeLogin}
+                      name="typeLogin"
+                      value={formData.typeLogin}
                       className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                     />
                   </div>
@@ -155,8 +251,10 @@ const ModelEditAccount = ({data}) => {
                   <label className="text-gray-600">Status</label>
                   <div className="relative max-w-xs mt-2">
                     <input
+                      readOnly="true"
                       type="text"
-                      value={data.isActive ? "active" : "inactive"}
+                      name="status"
+                      value={formData.status ? "active" : "inactive"}
                       className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                     />
                   </div>
@@ -165,8 +263,10 @@ const ModelEditAccount = ({data}) => {
                   <label className="text-gray-600">Last login</label>
                   <div className="relative max-w-xs mt-2">
                     <input
+                      readOnly="true"
                       type="text"
-                      value={new Date(data.lastLogin).toLocaleString()}
+                      name="lastLogin"
+                      value={new Date(formData.lastLogin).toLocaleString()}
                       className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                     />
                   </div>
@@ -175,8 +275,10 @@ const ModelEditAccount = ({data}) => {
                   <label className="text-gray-600">Created At</label>
                   <div className="relative max-w-xs mt-2">
                     <input
+                      readOnly="true"
                       type="text"
-                      value={new Date(data.createdAt).toLocaleString()}
+                      name="createdAt"
+                      value={new Date(formData.createdAt).toLocaleString()}
                       className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                     />
                   </div>
@@ -185,8 +287,10 @@ const ModelEditAccount = ({data}) => {
                   <label className="text-gray-600">Updated At</label>
                   <div className="relative max-w-xs mt-2">
                     <input
+                      readOnly="true"
                       type="text"
-                      value={new Date(data.updatedAt).toLocaleString()}
+                      name="updatedAt"
+                      value={new Date(formData.updatedAt).toLocaleString()}
                       className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                     />
                   </div>
@@ -194,8 +298,11 @@ const ModelEditAccount = ({data}) => {
                 <div className="col-span-3">
                   <label className="text-gray-600">Provider password</label>
                   <div className="relative max-w-xs mt-2">
-                    <button className="px-4 py-2 text-indigo-600 bg-indigo-50 rounded-lg duration-150 hover:bg-indigo-100 active:bg-indigo-200">
-                      Reset password
+                    <button
+                      onClick={() => handleResetPassword()}
+                      className="px-4 py-2 text-indigo-600 bg-indigo-50 rounded-lg duration-150 hover:bg-indigo-100 active:bg-indigo-200"
+                    >
+                      {isProcessing ? "Processing..." : "Reset Password"}
                     </button>
                   </div>
                 </div>
@@ -203,7 +310,10 @@ const ModelEditAccount = ({data}) => {
             </Dialog.Description>
             <div className="flex justify-end items-center gap-3 p-4 border-t">
               <Dialog.Close asChild>
-                <button className="px-3 py-1 t text-xl text-white bg-green-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2 ">
+                <button
+                  onClick={() => handleSubmitUpdate()}
+                  className="px-3 py-1 t text-xl text-white bg-green-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2 "
+                >
                   Update
                 </button>
               </Dialog.Close>

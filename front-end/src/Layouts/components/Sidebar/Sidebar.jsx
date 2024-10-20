@@ -52,7 +52,6 @@ const Menu = (props) => {
 };
 
 const Sidebar = () => {
-
   const navigation = [
     {
       href: "/admin",
@@ -358,10 +357,10 @@ const Sidebar = () => {
   }, []);
 
   return (
-    <div className="w-full">
-      <nav className=" w-full  h-screen border-r bg-white space-y-4 ">
+    <div className="fixed  top-0 left-0 bottom-0 h-full">
+      <nav className=" w-full  h-screen border-r bg-white space-y-1 ">
         <div className="flex flex-col h-full">
-          <div className="h-20 flex items-center px-8">
+          <div className="h-20 flex items-center px-4">
             <a href="#" className="flex-none">
               Welcome to oshi
             </a>

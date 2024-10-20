@@ -1,16 +1,21 @@
 import classNames from "classnames/bind";
 import styles from "./Account.module.scss";
-import { useEffect, useState } from "react";
-import { GetAllAccountAPI } from "~/services/AuthService";
+import { useEffect, useMemo, useState } from "react";
+import { GetAllAccountAPI, LockAccountAPI } from "~/services/AccountService";
 import {
   clearDataAccount,
   initDataAccount,
+  updateStatusAccount,
 } from "~/redux/features/Accounts/accountsSilce";
+import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { Pagination } from "~/components/Pagination/Pagination";
 import ModelAddAccount from "./ModelAddAccount";
 import ModelEditAccount from "./ModelEditAccount";
 import Loading from "~/components/Loading/Loading";
+import { HandleApiError } from "~/Utils/HandleApiError";
+import { GetAllRole } from "~/services/PermissionService";
+import { initDataRole } from "~/redux/features/Roles/rolesSilce";
 
 const cx = classNames.bind(styles);
 export const Account = () => {
@@ -28,11 +33,16 @@ export const Account = () => {
   });
 
   const filterItems = [
-    { value: "sắp xếp theo ngày tạo", label: "sắp xếp theo ngày tạo" },
-    { value: "Product designer", label: "Product designer" },
-    { value: "Front-end developer", label: "Front-end developer" },
-    { value: "Laravel engineer", label: "Laravel engineer" },
-    { value: "Open source manager", label: "Open source manager" },
+    { value: "createdAt_ASC", label: "sắp xếp theo ngày tạo tăng dần" },
+    { value: "createdAt_DESC", label: "sắp xếp theo ngày tạo giảm dần" },
+    {
+      value: "isActive_ASC",
+      label: "sắp xếp theo trạng thái tài khoản blocked",
+    },
+    {
+      value: "isActive_DESC",
+      label: "sắp xếp theo trạng thái tài khoản active",
+    },
   ];
 
   const titleColumn = [
@@ -54,7 +64,36 @@ export const Account = () => {
 
       dispatch(initDataAccount(result.data));
     } catch (error) {
-      console.log(error);
+      const result = HandleApiError(error);
+      result
+        ? toast.error(result)
+        : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+    }
+  };
+
+  const handleLockAccount = async (account) => {
+    try {
+      const response = await LockAccountAPI(account.id);
+      console.log(response);
+      if (response && response.data) {
+        const { statusCode, status, message } = response.data;
+
+        if (statusCode === 200) {
+          // update data in redux
+          dispatch(
+            updateStatusAccount({
+              id: account.id,
+              status: !account.isActive,
+            })
+          );
+          toast.success(message);
+        }
+      }
+    } catch (error) {
+      const result = HandleApiError(error);
+      result
+        ? toast.error(result)
+        : toast.error("Có lỗi xảy ra, vui lòng thử lại");
     }
   };
 
@@ -71,12 +110,34 @@ export const Account = () => {
     setOptionLimit((prevData) => ({
       ...prevData,
       limit: newLimit,
-      currentPage: 1, // reset to first page when limit changes
+      currentPage: 1,
     }));
+  };
+
+  const handleFilter = async (e) => {
+    if (e === "createdAt_ASC") {
+      let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&sortBy=createdAt&sortOrder=ASC`;
+      const result = await GetAllAccountAPI(queryParams);
+
+      dispatch(initDataAccount(result.data));
+    } else if (e === "createdAt_DESC") {
+      let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&sortBy=createdAt&sortOrder=DESC`;
+      const result = await GetAllAccountAPI(queryParams);
+      dispatch(initDataAccount(result.data));
+    } else if (e === "isActive_ASC") {
+      let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&sortBy=isActive&sortOrder=ASC`;
+      const result = await GetAllAccountAPI(queryParams);
+      dispatch(initDataAccount(result.data));
+    } else if (e === "isActive_DESC") {
+      let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&sortBy=isActive&sortOrder=DESC`;
+      const result = await GetAllAccountAPI(queryParams);
+      dispatch(initDataAccount(result.data));
+    }
   };
 
   useEffect(() => {
     const fetchData = async () => {
+      // dispatch(clearDataAccount());
       try {
         // API call here
         let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
@@ -85,24 +146,53 @@ export const Account = () => {
           dispatch(initDataAccount(response.data));
         }
       } catch (error) {
-          dispatch(initDataAccount({error: error}));
-
-        console.error(error);
+        if (error.request) {
+          dispatch(
+            initDataAccount({ error: "Không có phản hồi từ server..." })
+          );
+        }
+        const result = HandleApiError(error);
+        result
+          ? toast.error(result)
+          : toast.error("Có lỗi xảy ra, vui lòng thử lại");
       }
     };
+
     dispatch(clearDataAccount());
 
     setTimeout(() => {
       fetchData();
-    }, 1000);
-  }, [dispatch, optionLimit.limit, optionLimit.currentPage]);
+    }, 800);
+  }, [optionLimit.limit, optionLimit.currentPage]);
+
+  //  useEffect(() => {
+  //    const fetchAPI = async () => {
+  //      try {
+  //        const response = await GetAllRole();
+  //        console.log(response.data.data);
+  //        if (response && response.data && response.status === 200) {
+  //          dispatch(initDataRole(response.data));
+  //        }
+  //      } catch (error) {
+  //        console.log(error);
+  //        const result = HandleApiError(error);
+  //        result
+  //          ? toast.error(result)
+  //          : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+  //      }
+  //    };
+
+  //    fetchAPI();
+  //  }, [dispatch]);
 
   return (
     <>
       {isError ? (
-        <div className="w-full h-full flex justify-center items-center">{isError}</div>
+        <div className="w-full h-full flex justify-center items-center">
+          {isError}
+        </div>
       ) : (
-        <div className="max-w-screen-2xl  mx-auto px-4 md:px-8">
+        <div className="mx-auto  md:pr-5">
           <div className=" ">
             <div className="flex justify-center ">
               <form
@@ -134,7 +224,7 @@ export const Account = () => {
               </form>
             </div>
             <div className="flex justify-between mt-7">
-              <div className="relative w-52 ">
+              <div className="relative w-72 ">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
@@ -147,7 +237,12 @@ export const Account = () => {
                     clipRule="evenodd"
                   />
                 </svg>
-                <select className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2">
+                <select
+                  onChange={(e) => {
+                    handleFilter(e.target.value);
+                  }}
+                  className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
+                >
                   {filterItems &&
                     filterItems.length > 0 &&
                     filterItems.map((item) => {
@@ -191,8 +286,8 @@ export const Account = () => {
                       <td className="flex items-center gap-x-3 py-3 px-2 whitespace-nowrap">
                         <img
                           src={
-                            item.userInformation[0]?.avatar
-                              ? item.userInformation[0]?.avatar
+                            item.userInformation?.avatar
+                              ? item.userInformation?.avatar
                               : "https://randomuser.me/api/portraits/men/86.jpg"
                           }
                           className="w-10 h-10 rounded-full"
@@ -238,8 +333,11 @@ export const Account = () => {
                           <div>
                             <ModelEditAccount data={item} />
                           </div>
-                          <div className="py-2  px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg">
-                            Lock
+                          <div
+                            onClick={() => handleLockAccount(item)}
+                            className="py-2  px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg"
+                          >
+                            {item.isActive ? "lock" : "unlock"}
                           </div>
                         </div>
                       </td>
@@ -256,6 +354,20 @@ export const Account = () => {
             limit={limit}
             onPageChange={handlePageChange}
             onLimitChange={handleLimitChange}
+          />
+          <ToastContainer
+            className="text-base"
+            fontSize="10px"
+            position="top-right"
+            autoClose={2000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
           />
         </div>
       )}

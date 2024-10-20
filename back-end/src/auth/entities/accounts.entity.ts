@@ -10,7 +10,7 @@ import { Roles } from "src/role-permission/entities/roles.entity";
 import { TransactionHistory } from "src/transaction-history/entities/transaction-history.entity";
 import { UserInformation } from "src/user-information/entities/user-information.entity";
 import { UseVouchers } from "src/voucher/entities/use-voucher.entity";
-import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from "typeorm";
 
 @Entity({name: "accounts"})
 export class Accounts extends BaseEntity {
@@ -68,7 +68,7 @@ export class Accounts extends BaseEntity {
     @OneToMany(() => Notification, Notification => Notification.account)
     notification : Notification
 
-    @OneToMany(() => UserInformation, userInformation => userInformation.account)
+    @OneToOne(() => UserInformation, userInformation => userInformation.account)
     userInformation : UserInformation
 
     @OneToMany(() => TransactionHistory, transactionHistory => transactionHistory.account)

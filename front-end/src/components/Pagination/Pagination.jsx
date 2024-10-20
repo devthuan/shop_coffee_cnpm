@@ -50,7 +50,6 @@ export const Pagination = ({
     onPageChange(page);
   };
 
-
   // Handle limit change
   const handleLimitChange = (e) => {
     setOptionLimit(e.target.value);
@@ -100,42 +99,25 @@ export const Pagination = ({
                 })}
             </select>
           </div>
-          <p>showing 1 - {optionLimit} </p>
+          <p>
+            Showing {optionLimit * (currentPage - 1) + 1} - {" "}
+            {Math.min(optionLimit * currentPage, totalItems)} of {totalItems}
+          </p>
         </div>
 
         <div className="flex items-center gap-12" aria-label="Pagination">
           <p
             onClick={() => currentPage > 1 && handlePreviousClick()}
-            className="hover:text-indigo-600 cursor-default"
+            className="hover:text-indigo-600 cursor-default px-4 py-2 border rounded-lg duration-150 hover:bg-gray-50"
           >
             Previous
           </p>
-          <ul className="flex items-center gap-1">
-            {generatePages().map((item) => {
-              return (
-                <li key={item}>
-                  {item === "..." ? (
-                    <div>{item}</div>
-                  ) : (
-                    <p
-                      onClick={() => handlePageClick(item)}
-                      aria-current={parseInt(currentPage) === item ? "page" : false}
-                      className={`px-3 py-2 rounded-lg duration-150 hover:text-white hover:bg-indigo-600 ${
-                        parseInt(currentPage) === item
-                          ? "bg-indigo-600 text-white font-medium"
-                          : ""
-                      }`}
-                    >
-                      {item}
-                    </p>
-                  )}
-                </li>
-              );
-            })}
+          <ul className="flex items-center gap-1 ">
+            Page {currentPage} of {totalPage}
           </ul>
           <p
             onClick={() => currentPage < totalPage && handleNextClick()}
-            className="hover:text-indigo-600 cursor-default"
+            className="hover:text-indigo-600 cursor-default px-4 py-2 border rounded-lg duration-150 hover:bg-gray-50"
           >
             Next
           </p>
@@ -143,7 +125,7 @@ export const Pagination = ({
       </div>
 
       {/* On mobile version */}
-      <div className="flex items-center justify-between text-sm text-gray-600 font-medium md:hidden">
+      {/* <div className="flex items-center justify-between text-sm text-gray-600 font-medium md:hidden">
         <p
           className="px-4 py-2 border rounded-lg duration-150 hover:bg-gray-50"
           onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
@@ -160,7 +142,7 @@ export const Pagination = ({
         >
           Next
         </p>
-      </div>
+      </div> */}
     </div>
   );
 };

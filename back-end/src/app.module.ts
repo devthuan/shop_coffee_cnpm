@@ -27,6 +27,7 @@ import { CommonModule } from './common/common.module';
 import { UserInformationModule } from './user-information/user-information.module';
 import { FavoriteModule } from './favorite/favorite.module';
 import { TransactionHistoryModule } from './transaction-history/transaction-history.module';
+import { AccountModule } from './account/account.module';
 
 
 @Module({
@@ -82,6 +83,7 @@ import { TransactionHistoryModule } from './transaction-history/transaction-hist
     UserInformationModule,
     FavoriteModule,
     TransactionHistoryModule,
+    AccountModule,
   ],
   controllers: [AppController],
   providers: [AppService],

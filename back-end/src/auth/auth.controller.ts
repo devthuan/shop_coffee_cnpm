@@ -8,6 +8,7 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { AuthGuard } from './auth.guard';
 import { plainToInstance } from 'class-transformer';
 import { Accounts } from './entities/accounts.entity';
+import { UpdateAuthDto } from './dto/update-auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -51,21 +52,6 @@ export class AuthController {
     return this.authService.forgotPassword(emailDto.email);
   }
 
-  @Get('accounts')
-  getAllAccount(
-    @Query('search') search: string,
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
-    @Query('sortBy') sortBy: string = 'createdAt',
-    @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC' 
-  ) {
-    let data = this.authService.getAllAccount(search, page, limit, sortBy, sortOrder);
-    return plainToInstance(Accounts, data)
-  }
-
-  @Patch('lock/:id')
-  lockAccount(@Param('id') id: string){
-    return this.authService.lockAccount(id);
-  }
+  
  
 }

@@ -1,6 +1,6 @@
 import { Accounts } from "src/auth/entities/accounts.entity";
 import { BaseEntity } from "src/common/base.entity";
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 
 @Entity({name: "userInformation"})
 export class UserInformation extends BaseEntity {
@@ -28,7 +28,8 @@ export class UserInformation extends BaseEntity {
     @Column({nullable: true})
     address2: string;
     
-    @ManyToOne(() => Accounts, accounts => accounts.userInformation)
+    @OneToOne(() => Accounts, accounts => accounts.userInformation)
+    @JoinColumn()
     account: Accounts;
     
 

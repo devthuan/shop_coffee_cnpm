@@ -1,7 +1,6 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, Min, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 
-
-export class CreateAuthDto {
+export class CreateAccountDto {
     @IsEmail()
     email: string;
 
@@ -21,8 +20,7 @@ export class CreateAuthDto {
     confirmPassword: string;
 
 
-    @IsOptional()
+    @IsString()
     role: string;
 
-    
 }

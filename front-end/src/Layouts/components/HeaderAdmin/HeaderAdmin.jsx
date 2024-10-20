@@ -11,7 +11,7 @@ const cx = classNames.bind(styles);
 function HeaderAdmin() {
   const [Login, setLogin] = useState(false)
   return (
-    <div className="max-w-full mx-auto px-2 md:px-4">
+    <div className=" w-full mx-auto px-2 md:px-4 ">
       <div className="items-start justify-between py-2 border-b md:flex">
         <div>
           <h3 className="text-gray-800 text-2xl font-bold">Analytics</h3>
