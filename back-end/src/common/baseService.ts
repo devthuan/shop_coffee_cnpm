@@ -22,6 +22,14 @@ export class BaseService<T extends BaseEntity> {
           if (createDto['code']) {
             queryBuilder.orWhere('entity.code = :code', { code: createDto['code'] })
           }
+          
+          if (createDto['codeName']) {
+            queryBuilder.orWhere('entity.codeName = :codeName', { codeName: createDto['codeName'] })
+          }
+          
+          if (createDto['guardName']) {
+            queryBuilder.orWhere('entity.guardName = :guardName', { guardName: createDto['guardName'] })
+          }
 
           queryBuilder.andWhere('entity.deletedAt is null')
           

@@ -46,7 +46,7 @@ export class AccountService extends BaseService<Accounts> {
       if (existingAccountUsername) throw new BadRequestException('Username already exists')
       
       const  role = await this.rolesRepository.createQueryBuilder('roles')
-      .where('roles.name = :name', {name: createAccountDto.role})
+      .where('roles.codeName = :codeName', {codeName: createAccountDto.role})
       .andWhere('roles.deletedAt is null')
       .getOne();
 

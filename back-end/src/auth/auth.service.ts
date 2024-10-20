@@ -59,7 +59,7 @@ export class AuthService {
 
       
       const  role = await this.rolesRepository.createQueryBuilder('roles')
-      .where('roles.name = :name', {name: "client"})
+      .where('roles.codeName = :codeName', {codeName: "CLIENT"})
       .andWhere('roles.deletedAt is null')
       .getOne();
 

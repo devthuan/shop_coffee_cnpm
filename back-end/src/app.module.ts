@@ -28,6 +28,7 @@ import { UserInformationModule } from './user-information/user-information.modul
 import { FavoriteModule } from './favorite/favorite.module';
 import { TransactionHistoryModule } from './transaction-history/transaction-history.module';
 import { AccountModule } from './account/account.module';
+import { SeederModule } from './seeder/seeder.module';
 
 
 @Module({
@@ -84,6 +85,7 @@ import { AccountModule } from './account/account.module';
     FavoriteModule,
     TransactionHistoryModule,
     AccountModule,
+    SeederModule,
   ],
   controllers: [AppController],
   providers: [AppService],
