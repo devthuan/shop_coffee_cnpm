@@ -27,3 +27,15 @@ export const EvaluateProduct = async() => {
     console.log("Error when get data of evaluate product : ", error)
   }
 }
+
+export const DiscountProduct = async() => {
+  try 
+  {
+    const response = await api.get(`discount`)
+    return response.data;
+  }
+  catch(error)
+  {
+    console.log("Error when get data of evaluate product : ", error)
+  }
+}
