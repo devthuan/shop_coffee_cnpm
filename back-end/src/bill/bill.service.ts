@@ -154,7 +154,10 @@ export class BillService extends BaseService<Bills> {
 
   
     } catch (error) {
+      await queryRunner.rollbackTransaction()
       CommonException.handle(error)
+    } finally {
+      await queryRunner.release()
     }
   }
 

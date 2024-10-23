@@ -61,7 +61,7 @@ export class AuthService {
 
       
       const  role = await this.rolesRepository.createQueryBuilder('roles')
-      .where('roles.codeName = :codeName', {codeName: "CLIENT"})
+      .where('roles.codeName = :codeName', {codeName: "USER"})
       .andWhere('roles.deletedAt is null')
       .getOne();
 
@@ -200,11 +200,104 @@ export class AuthService {
   }
 
   async loginWithGoogle(infoUser : LoginGoogle): Promise<any>{
+  
+      const queryRunner = this.dataSource.createQueryRunner()
     try {
-      return null;
+      await queryRunner.connect()
+      await queryRunner.startTransaction()
+
+      // check existing accounts
+      const existingAccountEmail = await this.accountsRepository.createQueryBuilder('accounts')
+      .leftJoinAndSelect('accounts.role', 'role')
+      .where('accounts.email = :email', {email: infoUser.email})
+      .getOne();
+      if (existingAccountEmail){
+         const payload = {
+          id: existingAccountEmail.id,
+          username: existingAccountEmail?.userName,
+          email: existingAccountEmail.email,
+          role: existingAccountEmail.role.codeName
+        }
+        const token = await this.jwtService.signAsync(payload)
+
+        existingAccountEmail.lastLogin = new Date();
+        existingAccountEmail.ip = "0.0.0.0";
+        existingAccountEmail.typeLogin = "google";
+        await this.accountsRepository.save(existingAccountEmail);
+        return {
+          statusCode: 200,
+          status:'success',
+          message: 'Logged in successfully',
+          data: {
+            accessToken : token
+          }
+        }
+      }else {
+        const  role = await this.rolesRepository.createQueryBuilder('roles')
+          .where('roles.codeName = :codeName', {codeName: "USER"})
+          .andWhere('roles.deletedAt is null')
+          .getOne();
+
+          if (!role) throw new BadRequestException('Role not found')
+
+
+          const new_user = this.accountsRepository.create({
+            userName: infoUser.email,
+            email: infoUser.email,
+            password: await this.hashingPassword(this.generatePassword()),
+            balance: 0,
+            ip: '127.0.0.1',
+            device: 'web',
+            typeLogin: 'google',
+            lastLogin: null,
+            isActive: true,
+            role: role 
+          })
+          await queryRunner.manager.save(new_user)
+
+        
+          const newAccountInfo =  this.userInformationRepository.create({
+            email: infoUser.email,
+            avatar: infoUser.picture,
+            fullName: infoUser.firstName + " " + infoUser.lastName,
+            account: new_user
+          })
+          await queryRunner.manager.save(newAccountInfo)
+        
+          const payload = {
+          id: new_user.id,
+          username: new_user?.userName,
+          email: new_user.email,
+          role: role.codeName
+        }
+        const token = await this.jwtService.signAsync(payload)
+
+        new_user.lastLogin = new Date();
+        new_user.ip = "0.0.0.0";
+        await queryRunner.manager.save(new_user);
+        
+        await queryRunner.commitTransaction()
+        
+        return {
+          statusCode: 200,
+          status:'success',
+          message: 'Logged in successfully',
+          data: {
+            accessToken : token
+          }
+        }
+
+      
+      }
+      
+      
     } catch (error) {
+      await queryRunner.rollbackTransaction()
       CommonException.handle(error)
+    }finally {
+      await queryRunner.release();
     }
+   
   }
 
 
