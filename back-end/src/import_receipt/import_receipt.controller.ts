@@ -24,9 +24,14 @@ export class ImportReceiptController {
     @Query('limit') limit: number = 10,
     @Query('sortBy') sortBy: string = 'id',
     @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',
+    @Query() query: Record<string, any>
+
   ) {
-     
-    let data = this.importReceiptService.findAll(search, page, limit, sortBy, sortOrder);
+
+    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+    limit > 100 ? limit = 100 : limit
+
+    let data = this.importReceiptService.findAll(search, page, limit, sortBy, sortOrder, filters);
     return plainToInstance(ImportReceipts, data)
   }
 

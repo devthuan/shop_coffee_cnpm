@@ -90,6 +90,7 @@ export const Account = () => {
         }
       }
     } catch (error) {
+      console.log(error);
       const result = HandleApiError(error);
       result
         ? toast.error(result)
@@ -146,15 +147,10 @@ export const Account = () => {
           dispatch(initDataAccount(response.data));
         }
       } catch (error) {
-        if (error.request) {
-          dispatch(
-            initDataAccount({ error: "Không có phản hồi từ server..." })
-          );
+        const { message, status } = HandleApiError(error);
+        if (status === "error") {
+          dispatch(initDataAccount({ error: message }));
         }
-        const result = HandleApiError(error);
-        result
-          ? toast.error(result)
-          : toast.error("Có lỗi xảy ra, vui lòng thử lại");
       }
     };
 

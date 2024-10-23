@@ -51,10 +51,15 @@ export class CartController {
     @Query('limit') limit: number = 10,
     @Query('sortBy') sortBy: string = 'createdAt',
     @Query('sortOrder') sortOrder: "ASC" | "DESC" = "DESC",
+    @Query() query: Record<string, any>
+
   ) {
+
+    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+
     limit = limit > 100 ? 100 : limit ;
     let accountId = req['user'].id
-    let data = this.cartService.findAll(search, page, limit, sortBy, sortOrder, accountId);
+    let data = this.cartService.findAll(search, page, limit, sortBy, sortOrder, accountId,filters);
     return plainToInstance(Cart, data)
   }
 

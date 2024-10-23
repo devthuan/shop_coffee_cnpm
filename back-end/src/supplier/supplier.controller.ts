@@ -26,9 +26,13 @@ export class SupplierController {
     @Query('limit') limit: number,
     @Query('sortBy') sortBy: string,
     @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',
+    @Query() query: Record<string, any>
+
 
   ) {
-    const data = this.supplierService.findAll(search, page, limit, sortBy, sortOrder);
+    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+    limit = limit > 100 ? 100 : limit;
+    const data = this.supplierService.findAll(search, page, limit, sortBy, sortOrder, filters);
     return plainToInstance(Supplier, data)
   }
 
@@ -39,8 +43,12 @@ export class SupplierController {
     @Query('limit') limit: number,
     @Query('sortBy') sortBy: string,
     @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',
+    @Query() query: Record<string, any>
+
   )
   {
+    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+    limit = limit > 100 ? 100 : limit;
     return this.supplierService.findAllDeleted(search, page, limit, sortBy, sortOrder);
   }
 

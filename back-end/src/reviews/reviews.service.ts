@@ -44,6 +44,7 @@ export class ReviewsService extends BaseService<Reviews> {
           if(detail.productAttributes.products.id === createReview.productId){
              hasBoughtProduct = true;
               break;
+
           }
        
       }

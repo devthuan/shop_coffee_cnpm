@@ -29,7 +29,9 @@ export class FavoriteService extends BaseService<Favorite> {
     page : number = 1,
     limit : number = 10,
     sortBy : string = 'createdAt',
-    sortOrder: 'ASC' | 'DESC' = 'ASC'
+    sortOrder: 'ASC' | 'DESC' = 'ASC',
+    filters: Record<string, any> = {} // Nhận filters từ controller
+
     ): Promise<{ total: number;  currentPage: number; totalPage: number; limit : number; data: Favorite[]}>{
     try {
       const favorites =  this.favoriteRepository.createQueryBuilder('favorite')
@@ -40,6 +42,19 @@ export class FavoriteService extends BaseService<Favorite> {
       if(search){
         favorites.andWhere('products.name LIKE :search OR products.code LIKE :search', {search: `%${search}%`});
       }
+
+       // Filter conditions
+        Object.keys(filters).forEach((key) => {
+          if (filters[key] !== undefined && filters[key] !== null) {
+            let value = filters[key];
+            
+            // Chuyển đổi giá trị 'true' hoặc 'false' thành boolean
+            if (value === 'true') value = true;
+            if (value === 'false') value = false;
+
+            favorites.andWhere(`favorite.${key} = :${key}`, { [key]: value });
+          }
+        });
 
        // count total
       const total = await favorites.getCount();

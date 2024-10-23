@@ -21,10 +21,12 @@ export class RoleController {
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('sortBy') sortBy: string,
-    @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC'
+    @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',
+    @Query() filters: Record<string, any> // Lấy tất cả query params còn lại
   ) {
+    console.log(filters)
 
-    const data = this.roleService.findAll(search, page, limit, sortBy, sortOrder);
+    const data = this.roleService.findAll(search, page, limit, sortBy, sortOrder, filters);
     return plainToInstance( Roles, data);
   }
 

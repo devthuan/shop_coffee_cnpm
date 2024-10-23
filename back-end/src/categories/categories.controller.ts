@@ -21,9 +21,13 @@ export class CategoriesController {
     @Query('limit') limit: number ,
     @Query('sortBy') sortBy: string ,
     @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'DESC',
+    @Query() query: Record<string, any>
+
   ) {
+    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+
     limit > 100 ? limit = 100 : limit;
-    const data = this.categoriesService.findAll(search, page, limit, sortBy, sortOrder);
+    const data = this.categoriesService.findAll(search, page, limit, sortBy, sortOrder, filters);
     return plainToInstance(Categories, data)
   }
   @Get('deleted')
@@ -33,9 +37,13 @@ export class CategoriesController {
     @Query('limit') limit: number ,
     @Query('sortBy') sortBy: string ,
     @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'DESC',
+    @Query() query: Record<string, any>
+
   ) {
+    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+
     limit > 100 ? limit = 100 : limit;
-    return this.categoriesService.findAllDeleted(search, page, limit, sortBy, sortOrder);
+    return this.categoriesService.findAllDeleted(search, page, limit, sortBy, sortOrder, filters);
   }
 
   @Get(':id')

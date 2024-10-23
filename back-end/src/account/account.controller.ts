@@ -28,9 +28,11 @@ export class AccountController {
     @Query('limit') limit: number = 10,
     @Query('sortBy') sortBy: string = 'id',
     @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',  // add sort query parameters here`
+     @Query() query: Record<string, any> // Lấy tất cả query params còn lại
   ) {
-    console.log("ádas")
-    const data =  this.accountService.getAllAccount(search, page, limit, sortBy, sortOrder);
+     const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+     console.log(filters)
+    const data =  this.accountService.getAllAccount(search, page, limit, sortBy, sortOrder, filters);
     return plainToInstance(Accounts, data)
   }
 

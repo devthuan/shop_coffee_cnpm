@@ -29,7 +29,9 @@ export class InventoryService {
   page: number = 1,
   limit: number = 10,
   sortBy: string = 'createdAt',
-  sortOrder: 'ASC' | 'DESC' = 'ASC'
+  sortOrder: 'ASC' | 'DESC' = 'ASC',
+  filters: Record<string, any> = {} // Nhận filters từ controller
+
 ): Promise<{
   message: string;
   total: number;
@@ -49,6 +51,19 @@ export class InventoryService {
     if (search) {
       queryBuilder.andWhere('attributes.name LIKE :search OR products.name LIKE :search', { search: `%${search}%` });
     }
+
+     // Filter conditions
+      Object.keys(filters).forEach((key) => {
+        if (filters[key] !== undefined && filters[key] !== null) {
+          let value = filters[key];
+          
+          // Chuyển đổi giá trị 'true' hoặc 'false' thành boolean
+          if (value === 'true') value = true;
+          if (value === 'false') value = false;
+
+          queryBuilder.andWhere(`productAttributes.${key} = :${key}`, { [key]: value });
+        }
+      });
 
     // Ensuring valid sortBy and sortOrder
     const allowedSortFields = ['createdAt', 'updatedAt', 'name']; // Add valid fields here

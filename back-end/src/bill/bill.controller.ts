@@ -28,9 +28,13 @@ export class BillController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
     @Query('sortBy') sortBy: string = 'id',
-    @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC'
+    @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',
+    @Query() query: Record<string, any>
+
   ) {
-    let data = this.billService.findAll(search, page, limit, sortBy, sortOrder);
+    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+
+    let data = this.billService.findAll(search, page, limit, sortBy, sortOrder, filters);
     return plainToInstance(Bills, data)
   }
   @UseGuards(AuthGuardCustom)
@@ -41,10 +45,14 @@ export class BillController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
     @Query('sortBy') sortBy: string = 'id',
-    @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC'
+    @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',
+    @Query() query: Record<string, any>
   ) {
+    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+    console.log(filters)
+    
     let accountId = request['user'].id;  // get accountId from token
-    let data = this.billService.getBillByAccount(accountId,search, page, limit, sortBy, sortOrder);
+    let data = this.billService.getBillByAccount(accountId,search, page, limit, sortBy, sortOrder, filters);
     return plainToInstance(Bills, data)
   }
   

@@ -113,7 +113,8 @@ export class AccountService extends BaseService<Accounts> {
       page : number = 1,
       limit : number = 10,
       sortBy : string = 'createdAt',
-      sortOrder: 'ASC' | 'DESC' = 'ASC'
+      sortOrder: 'ASC' | 'DESC' = 'ASC',
+      filters: Record<string, any> = {} // Nhận filters từ controller
     ): Promise<{ message: string; total: number;  currentPage: number; totalPage: number; limit : number; data: Accounts[]}> {
       try {
         const query = this.accountsRepository.createQueryBuilder('accounts')
@@ -125,6 +126,19 @@ export class AccountService extends BaseService<Accounts> {
             query
              .andWhere('LOWER(accounts.email) LIKE LOWER(:search) OR LOWER(accounts.username) LIKE LOWER(:search) ', { search: `%${search}%` })
           }
+
+          // Filter conditions
+            Object.keys(filters).forEach((key) => {
+              if (filters[key] !== undefined && filters[key] !== null) {
+                let value = filters[key];
+                
+                // Chuyển đổi giá trị 'true' hoặc 'false' thành boolean
+                if (value === 'true') value = true;
+                if (value === 'false') value = false;
+
+                query.andWhere(`accounts.${key} = :${key}`, { [key]: value });
+              }
+            });
 
         const [result, total] = await query
             .skip((page - 1) * limit)
