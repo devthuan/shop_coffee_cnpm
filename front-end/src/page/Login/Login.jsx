@@ -34,7 +34,6 @@ export const Login = () => {
       if(response.status === 201 && response.data.data.accessToken)  {
         setItemWithExpiration('token', response.data.data.accessToken, 1);
       }
-      
       // else {
       //   console.log(response.data.data)
       // // if(response.status === 201) {  
