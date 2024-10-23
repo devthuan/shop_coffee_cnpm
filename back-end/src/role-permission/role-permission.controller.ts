@@ -31,6 +31,19 @@ export class RolePermissionController {
     return this.rolePermissionService.getRolePermissions();
   }
 
+  @Patch('change-status/:id')
+  changeStatusPermission(@Param('id') id: string) { 
+    return this.rolePermissionService.changeStatusPermission(id);
+  }
+
+  @Get('by-role/:role')
+  getRolePermissionsByRole(
+    @Param('role') roleCodeName: string
+  ) {
+    const data =  this.rolePermissionService.getRolePermissionsByRole(roleCodeName);
+    return plainToInstance(Roles, data);
+  }
+
 
 
   @Post('roles')

@@ -251,13 +251,15 @@ export class ProductService extends BaseService<Products> {
         .leftJoinAndSelect('productAttributes.attributes', 'attributes')
         .leftJoinAndSelect('products.category', 'category')
         .leftJoinAndSelect('products.images', 'images')
-        .leftJoinAndSelect('products.reviews', 'reviews')       
+        .leftJoinAndSelect('products.reviews', 'reviews') 
+        .leftJoinAndSelect('products.productDiscount', 'productDiscount')       
         .where('products.id = :productId', { productId })
         .andWhere('products.deletedAt IS NULL')
         .andWhere('attributes.deletedAt IS NULL')
         .andWhere('productAttributes.deletedAt IS NULL')
         .andWhere('category.deletedAt IS NULL')
         .andWhere('images.deletedAt IS NULL')
+        .andWhere('productDiscount.deletedAt IS NULL')
         .getOne();
       
       const statisticalReview = await this.productRepository.createQueryBuilder('products')
@@ -325,6 +327,7 @@ export class ProductService extends BaseService<Products> {
       CommonException.handle(error);
     }
   }
+  
   async checkExistingProductAttributeNotQuantity(productAttributeId: string): Promise<ProductAttributes> {
 
     try {
@@ -407,6 +410,8 @@ export class ProductService extends BaseService<Products> {
     try {
       const queryBuilder = this.productRepository.createQueryBuilder('products')
           .leftJoinAndSelect('products.images', 'images')
+          .leftJoinAndSelect('products.productAttributes', 'productAttributes')
+          .leftJoinAndSelect('productAttributes.attributes', 'attributes')
           .where('products.deletedAt IS NULL');
 
           if (search) {

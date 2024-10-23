@@ -4,9 +4,9 @@ import { CreateFavoriteDto } from './dto/create-favorite.dto';
 import { UpdateFavoriteDto } from './dto/update-favorite.dto';
 import { plainToInstance } from 'class-transformer';
 import { Favorite } from './entities/favorite.entity';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuardCustom } from 'src/auth/auth.guard';
 
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuardCustom)
 @Controller('favorite')
 export class FavoriteController {
   constructor(private readonly favoriteService: FavoriteService) {}

@@ -45,16 +45,17 @@ export const accountsSlice = createSlice({
         (item) => item.id === action.payload.id
       );
       console.log(accountIndex)
-      // console.log(action.payload.role)
+      console.log(action.payload.role)
       // console.log(action.payload.userName);
       if (accountIndex !== -1) {
         state.data[accountIndex] = {
           ...state.data[accountIndex], // Keep other account properties
           userName: action.payload.userName, // Update the userName status
-          role: {
-            ...state.data[accountIndex].role, // Spread the current role object
-            name: action.payload.role,
-          },
+          // role: {
+          //   ...state.data[accountIndex].role, // Spread the current role object
+          //   name: action.payload.role,
+          // },
+          role: action.payload.role
         };
       }
     },

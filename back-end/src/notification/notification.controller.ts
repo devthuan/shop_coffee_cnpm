@@ -4,14 +4,14 @@ import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { plainToInstance } from 'class-transformer';
 import { Notification } from './entities/notification.entity';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuardCustom } from 'src/auth/auth.guard';
 import { CommonException } from 'src/common/exception';
 
 @Controller('notification')
 export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardCustom)
   @Post()
   create(@Req() request: Request, @Body() createNotificationDto: CreateNotificationDto) {
     console.log(createNotificationDto.roleId)
@@ -40,7 +40,7 @@ export class NotificationController {
     const data = this.notificationService.findAll(search, page, limit, sortBy, sortOrder);
     return plainToInstance(Notification, data);
   }
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardCustom)
   @Get('user')
   allNotificationByAccount(
     @Req() request: Request,
@@ -73,7 +73,7 @@ export class NotificationController {
   deleteSoft(@Param('id') id: string) {
     return this.notificationService.deleteSoftNotification(id);
   }
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardCustom)
   @Delete('/user/:id')
   deleteSoftUser(@Req() request: Request, @Param('id') id: string) {
     let accountId = request['user'].id

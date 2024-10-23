@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Get, Inject, Injectable, Req, UseGuards } from '@nestjs/common';
 import { CreateAuthDto } from './dto/register.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { DataSource, Repository } from 'typeorm';
@@ -15,6 +15,8 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { Roles } from 'src/role-permission/entities/roles.entity';
 import { UserInformation } from 'src/user-information/entities/user-information.entity';
 import { CommonException } from 'src/common/exception';
+import { AuthGuard } from '@nestjs/passport';
+import { LoginGoogle } from './auth.interface';
 
 
 @Injectable()
@@ -196,6 +198,16 @@ export class AuthService {
     }
     
   }
+
+  async loginWithGoogle(infoUser : LoginGoogle): Promise<any>{
+    try {
+      return null;
+    } catch (error) {
+      CommonException.handle(error)
+    }
+  }
+
+
 
   async sendOTP(email: string) : Promise<RespondInterfacePOST>{
       try {

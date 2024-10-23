@@ -4,13 +4,13 @@ import { CreateImportReceiptDto } from './dto/create-import_receipt.dto';
 import { StatusImportReceiptDto, UpdateImportReceiptDto } from './dto/update-import_receipt.dto';
 import { plainToInstance } from 'class-transformer';
 import { ImportReceipts } from './entities/import_receipt.entity';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuardCustom } from 'src/auth/auth.guard';
 
 @Controller('import-receipt')
 export class ImportReceiptController {
   constructor(private readonly importReceiptService: ImportReceiptService) {}
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardCustom)
   @Post()
   create(@Req() request: Request, @Body() createImportReceiptDto: CreateImportReceiptDto) {
     createImportReceiptDto.accountId = request['user'].id;
@@ -44,7 +44,7 @@ export class ImportReceiptController {
   // update(@Param('id') id: string, @Body() updateImportReceiptDto: UpdateImportReceiptDto) {
   //   return this.importReceiptService.update(id, updateImportReceiptDto);
   // }
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardCustom)
   @Patch('status/:id')
   updateStatusBill(@Req() request: Request, @Param('id') id: string, @Body() statusImportReceiptDto: StatusImportReceiptDto) {
     statusImportReceiptDto.accountId = request['user'].id;

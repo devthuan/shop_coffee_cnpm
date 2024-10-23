@@ -4,13 +4,13 @@ import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 import { plainToInstance } from 'class-transformer';
 import { Cart } from './entities/cart.entity';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuardCustom } from 'src/auth/auth.guard';
 
 @Controller('cart')
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardCustom)
   @Post()
   create(
     @Req() req: Request,
@@ -21,7 +21,7 @@ export class CartController {
     return this.cartService.createCart(createCartDto);
   }
   
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardCustom)
   @Patch('increase/:id')
   increaseQuantity(
     @Param('id') id: string,
@@ -31,7 +31,7 @@ export class CartController {
     return this.cartService.increaseQuantity(id, accountsId);
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardCustom)
   @Patch('decrease/:id')
   decreaseQuantity(
     @Param('id') id: string,
@@ -42,7 +42,7 @@ export class CartController {
   }
 
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardCustom)
   @Get()
   findAll(
     @Req() req: Request,
@@ -62,7 +62,7 @@ export class CartController {
   // findOne(@Param('id') id: string) {
   //   return this.cartService.findOne(id);
   // }
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardCustom)
   @Patch(':id')
   update(
     @Req() req: Request,
@@ -73,7 +73,7 @@ export class CartController {
     return this.cartService.updateQuantity(id, updateCartDto);
   }
   
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardCustom)
 
   @Delete(':id')
   deleteSoft(@Param('id') id: string, @Req() req: Request) {

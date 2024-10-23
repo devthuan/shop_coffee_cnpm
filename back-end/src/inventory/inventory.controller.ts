@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { InventoryService } from './inventory.service';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { UpdateInventoryDto } from './dto/update-inventory.dto';
@@ -13,8 +13,14 @@ export class InventoryController {
   }
 
   @Get()
-  findAll() {
-    return this.inventoryService.findAll();
+  findAll(
+    @Query('search') search : string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('sortBy') sortBy: string = 'id',
+    @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',
+  ) {
+    return this.inventoryService.findAll(search, page, limit, sortBy, sortOrder);
   }
 
   @Get(':id')

@@ -2,10 +2,10 @@ import { Controller, Get,  Param,  Query, UseGuards } from '@nestjs/common';
 import { TransactionHistoryService } from './transaction-history.service';
 import { plainToInstance } from 'class-transformer';
 import { TransactionHistory } from './entities/transaction-history.entity';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuardCustom } from 'src/auth/auth.guard';
 
 @Controller('transaction-history')
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuardCustom)
 export class TransactionHistoryController {
   constructor(private readonly transactionHistoryService: TransactionHistoryService) {}
 

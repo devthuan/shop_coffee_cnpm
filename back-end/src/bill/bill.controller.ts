@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards, Quer
 import { BillService } from './bill.service';
 import { CreateBillDto } from './dto/create-bill.dto';
 import { UpdateBillDto, UpdateStatusDto } from './dto/update-bill.dto';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuardCustom } from 'src/auth/auth.guard';
 import { plainToInstance } from 'class-transformer';
 import { Bills } from './entities/bill.entity';
 import { CommonException } from 'src/common/exception';
@@ -11,7 +11,7 @@ import { CommonException } from 'src/common/exception';
 export class BillController {
   constructor(private readonly billService: BillService) {}
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardCustom)
   @Post()
   create(
     @Req() request: Request,
@@ -33,7 +33,7 @@ export class BillController {
     let data = this.billService.findAll(search, page, limit, sortBy, sortOrder);
     return plainToInstance(Bills, data)
   }
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardCustom)
   @Get('account')
   findAllByAccount(
     @Req() request: Request,

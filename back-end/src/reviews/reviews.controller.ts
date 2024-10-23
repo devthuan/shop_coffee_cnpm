@@ -4,13 +4,13 @@ import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { plainToInstance } from 'class-transformer';
 import { Reviews } from './entities/review.entity';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuardCustom } from 'src/auth/auth.guard';
 
 @Controller('reviews')
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardCustom)
   @Post()
   create(@Req() req, @Body() createReviewDto: CreateReviewDto) {
     createReviewDto.accountId = req.user.id

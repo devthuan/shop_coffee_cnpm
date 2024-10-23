@@ -9,6 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { MailService } from 'src/mail/mail.service';
 import { Roles } from 'src/role-permission/entities/roles.entity';
 import { UserInformation } from 'src/user-information/entities/user-information.entity';
+import { GoogleStrategy } from './strategy/google.strategy';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { UserInformation } from 'src/user-information/entities/user-information.
     TypeOrmModule.forFeature([Accounts, Roles, UserInformation])
   ],
   controllers: [AuthController],
-  providers: [AuthService, MailService],
+  providers: [AuthService, MailService, GoogleStrategy],
   exports: [AuthService]
   
 })

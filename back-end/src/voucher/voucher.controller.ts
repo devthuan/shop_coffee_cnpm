@@ -5,7 +5,7 @@ import { UpdateVoucherDto } from './dto/update-voucher.dto';
 import { plainToInstance } from 'class-transformer';
 import { Vouchers } from './entities/vouchers.entity';
 import { UseVoucherDto } from './dto/use-voucher-dto';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuardCustom } from 'src/auth/auth.guard';
 
 @Controller('vouchers')
 export class VoucherController {
@@ -41,7 +41,7 @@ export class VoucherController {
     return this.voucherService.update(id, updateVoucherDto);
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardCustom)
 
   @Patch('use-voucher/:id')
   useVoucher(
