@@ -1,13 +1,13 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
-import { Roles } from './entities/roles.entity';
-import { Functions } from './entities/functions.entity';
 import { RoleHasFunctions } from './entities/roles_has_functions.entity';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { RespondInterfacePOST } from 'src/common/interface';
 import { createRoleHasFunctions } from './dto/create-role-has-function.dto';
 import { CommonException } from 'src/common/exception';
+import { Roles } from 'src/role/entities/roles.entity';
+import { Functions } from 'src/function/entities/functions.entity';
 
 @Injectable()
 export class RolePermissionService {

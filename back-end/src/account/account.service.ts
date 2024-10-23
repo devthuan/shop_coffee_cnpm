@@ -1,15 +1,17 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable, UseGuards } from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { Accounts } from 'src/auth/entities/accounts.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { BaseService } from 'src/common/baseService';
-import { Roles } from 'src/role-permission/entities/roles.entity';
 import { CommonException } from 'src/common/exception';
 import { AuthService } from 'src/auth/auth.service';
 import { UserInformation } from 'src/user-information/entities/user-information.entity';
 import { MailService } from 'src/mail/mail.service';
+import { PermissionsGuard } from 'src/auth/permisson.guard';
+import { Permissions } from 'src/auth/permission.decorator';
+import { Roles } from 'src/role/entities/roles.entity';
 
 @Injectable()
 export class AccountService extends BaseService<Accounts> {
@@ -21,6 +23,7 @@ export class AccountService extends BaseService<Accounts> {
     @InjectRepository(UserInformation)
     private readonly userInformationRepository: Repository<UserInformation>,  // inject account repository here`
 
+    @Inject(forwardRef(() =>AuthService))
     private authService: AuthService,
     private mailService: MailService,
     private readonly dataSource: DataSource,

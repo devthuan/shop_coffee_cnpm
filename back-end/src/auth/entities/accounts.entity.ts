@@ -6,7 +6,7 @@ import { ImportReceipts } from "src/import_receipt/entities/import_receipt.entit
 import { NotificationAccounts } from "src/notification/entities/notification-account.entity";
 import { Notification } from "src/notification/entities/notification.entity";
 import { Reviews } from "src/reviews/entities/review.entity";
-import { Roles } from "src/role-permission/entities/roles.entity";
+import { Roles } from "src/role/entities/roles.entity";
 import { TransactionHistory } from "src/transaction-history/entities/transaction-history.entity";
 import { UserInformation } from "src/user-information/entities/user-information.entity";
 import { UseVouchers } from "src/voucher/entities/use-voucher.entity";

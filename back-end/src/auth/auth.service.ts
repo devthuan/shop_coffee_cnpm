@@ -12,11 +12,11 @@ import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ChangePasswordDto } from './dto/change-password.dto';
-import { Roles } from 'src/role-permission/entities/roles.entity';
 import { UserInformation } from 'src/user-information/entities/user-information.entity';
 import { CommonException } from 'src/common/exception';
 import { AuthGuard } from '@nestjs/passport';
 import { LoginGoogle } from './auth.interface';
+import { Roles } from 'src/role/entities/roles.entity';
 
 
 @Injectable()

@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { plainToInstance } from 'class-transformer';
 import { Accounts } from 'src/auth/entities/accounts.entity';
+import { AuthGuardCustom } from 'src/auth/auth.guard';
+import { Permissions } from 'src/auth/permission.decorator';
+import { PermissionsGuard } from 'src/auth/permisson.guard';
 
 @Controller('account')
 export class AccountController {
@@ -15,6 +18,9 @@ export class AccountController {
     return plainToInstance(Accounts, data)
   }
 
+  @UseGuards(PermissionsGuard)
+  @UseGuards(AuthGuardCustom)
+  @Permissions("READ_ACCOUNT")
   @Get()
   getAllAccount(
     @Query('search') search: string,  // add search query parameter here`
@@ -23,6 +29,7 @@ export class AccountController {
     @Query('sortBy') sortBy: string = 'id',
     @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',  // add sort query parameters here`
   ) {
+    console.log("ádas")
     const data =  this.accountService.getAllAccount(search, page, limit, sortBy, sortOrder);
     return plainToInstance(Accounts, data)
   }

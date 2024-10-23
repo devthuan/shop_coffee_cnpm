@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Accounts } from 'src/auth/entities/accounts.entity';
 import { CommonException } from 'src/common/exception';
-import { Functions } from 'src/role-permission/entities/functions.entity';
-import { Roles } from 'src/role-permission/entities/roles.entity';
+import { Functions } from 'src/function/entities/functions.entity';
 import { RoleHasFunctions } from 'src/role-permission/entities/roles_has_functions.entity';
+import { Roles } from 'src/role/entities/roles.entity';
 import { DataSource, Repository } from 'typeorm';
 
 @Injectable()

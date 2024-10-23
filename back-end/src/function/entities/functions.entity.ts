@@ -1,6 +1,6 @@
 import { BaseEntity } from "src/common/base.entity";
+import { RoleHasFunctions } from "src/role-permission/entities/roles_has_functions.entity";
 import { Column, Entity, OneToMany } from "typeorm";
-import { RoleHasFunctions } from "./roles_has_functions.entity";
 
 @Entity({name: "functions"})
 export class Functions extends BaseEntity {
