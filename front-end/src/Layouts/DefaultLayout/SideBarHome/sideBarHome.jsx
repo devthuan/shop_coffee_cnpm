@@ -9,31 +9,31 @@ const cx = classNames.bind(style);
 
 function SidebarHome() {
     const { data, loading, error } = useSelector((state) => state.products);
-    const [listProducts, setListProducts] = useState(data);
+    
+    // const [listProducts, setListProducts] = useState([]);
+
     const dispatch = useDispatch();
-    console.log(data)
     useEffect(() => {
         const fetchProductId = async () => {
             dispatch(setLoading(true)); // Bật trạng thái loading
             try {
                 // Lấy danh sách ID sản phẩm
                 const response = await ProductID(); 
-                const listProductID = response.data.map(item => item.id); 
-                
+                const listProductID = response.data.map(item => item.id);  
                 // Kiểm tra nếu danh sách ID không rỗng
                 if (listProductID.length > 0) {
                     // Gọi API để lấy chi tiết sản phẩm
                     const detailsPromises = listProductID.map(id => DetailProduct(id)); 
                     const productsDetails = await Promise.all(detailsPromises);
-                    
                     // Kiểm tra nếu có chi tiết sản phẩm
                     if (productsDetails.length > 0) {
                         // Trích xuất dữ liệu sản phẩm (name, price, image, ...)
+                        // console.log(productData)
                         const productData = productsDetails.map(item => {
                             const product = item.product;
                             return {
                                 name: product?.name || 'N/A',
-                                price: product?.price || 0,
+                                price: product?.productAttributes?.[0]?.buyPrice || 1,
                                 imageUrl: product?.images?.[0]?.urlImage || 'No image',
                                 description: product?.description || 'No description',
                                 category: product?.category || 'No category'
@@ -41,7 +41,6 @@ function SidebarHome() {
                         });
                         // Lưu dữ liệu sản phẩm vào Redux
                         dispatch(setProducts(productData)); 
-                        setListProducts(productData); 
                     }
                 } else {
                     dispatch(setError('Không tìm thấy sản phẩm nào.'));
@@ -56,13 +55,11 @@ function SidebarHome() {
     
         fetchProductId();
     }, [dispatch]);
-    
-  
     return (
         <div className={cx("wrapper")}>
             <div className={cx("title")}>Categories</div>
             <ul className={cx("list_product")}>
-                {listProducts.map((item, i) => (
+                {data && data.length > 0 && data.map((item, i) => (
                     <li key={i} className={cx("item")}>
                         <p className={cx("item_name")}>{item.name}</p>
                         <img src={item.imageUrl} className={cx("item_img")} alt={item.name} />
