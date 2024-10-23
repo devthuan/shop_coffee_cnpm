@@ -12,6 +12,7 @@ import { Product } from "~/page/admin/Product/Product";
 import { Receipt } from "~/page/admin/Receipt/Receipt";
 import { Review } from "~/page/admin/Review/Review";
 import { Supplier } from "~/page/admin/Supplier/Supplier";
+import { Template } from "~/page/admin/Template/Template";
 import { Voucher } from "~/page/admin/Voucher/Voucher";
 import { Warehouse } from "~/page/admin/Warehouse/Warehouse";
 
@@ -32,4 +33,5 @@ export const adminRoutes = [
   { path: "/admin/attribute", component: Attribute, layout: DashboardLayout },
   { path: "/admin/discount", component: Discount, layout: DashboardLayout },
   { path: "/admin/review", component: Review, layout: DashboardLayout },
+  { path: "/admin/template", component: Template, layout: DashboardLayout },
 ];
