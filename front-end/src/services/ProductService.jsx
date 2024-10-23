@@ -1,6 +1,19 @@
 import api from "./api";
 
 // code demo
+export const ListProduct = async() => {
+  try 
+  {
+    const response = await api.get(`products`)
+    return response.data
+  }
+  catch(error)
+  {
+    console.error("Error when get data of detail product : ", error);
+  }
+};
+
+
 export const DetailProduct = async(id) => {
   try 
   {
@@ -12,19 +25,6 @@ export const DetailProduct = async(id) => {
     console.error("Error when get data of detail product : ", error);
   }
 };
-
-export const ProductID = async() => {
-  try 
-  {
-    const response = await api.get(`products?limit=19`)
-    return response.data
-  }
-  catch(error)
-  {
-    console.error("Error when get data of detail product : ", error);
-  }
-};
-
 
 
 export const EvaluateProduct = async() => {

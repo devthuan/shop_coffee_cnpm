@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import classNames from "classnames/bind";
 import styles from "./Profile.module.scss";
 import ContentProfile from "~/Layouts/ProfileLayout/ContentProfile/contentProfile";
 
