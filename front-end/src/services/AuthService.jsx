@@ -20,6 +20,11 @@ export const SendOTPAPI = (email) => {
 export const VerifyOTPAPI = (email, otp) => {
   return api.post("auth/verify-otp", { email: email, otp: otp });
 };
+
+
+export const RecoverPass = async (email) => {
+  return await api.post('auth/forgot-password', { email });
+};
 export const LogOut = async () => {
   try {
     const response = await api.post("auth/logout");

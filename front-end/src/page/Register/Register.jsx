@@ -9,6 +9,10 @@ import { Link } from "react-router-dom";
 import { RegisAPI } from "~/services/AuthService";
 import VerifyOtp from "./VerifyOtp";
 import { useNavigate } from "react-router-dom";
+// import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
+import { setItemWithExpiration } from "~/services/localStorage";
+import { RecoveryPass } from "~/page/RecoveryPass/RecoveryPass";
+
 const cx = classNames.bind(styles);
 export const Register = () => {
   const navigate = useNavigate();
@@ -21,6 +25,7 @@ export const Register = () => {
   const [loading, setLoading] = useState(false);
   const [messageError, setMessageError] = useState("");
 
+  
   const handleSubmit = async () => {
     if (password !== confirmPassword) {
       alert("Passwords do not match!");
@@ -69,6 +74,7 @@ export const Register = () => {
       }, 1000);
     }
   };
+
 
   return (
     <div
@@ -168,12 +174,10 @@ export const Register = () => {
                 />
                 Set as default card
               </label>
-              <a
-                href="https://chatgpt.com/c/66fdfaf9-cb74-8011-89ff-236369702781"
-                className={cx("text-blue-500")}
-              >
+              <Link to="/recoverypass" className={cx("text-blue-500")}>
                 Recovery Password
-              </a>
+              </Link>
+
             </div>
             <button
               className={cx(
@@ -183,16 +187,18 @@ export const Register = () => {
             >
               Sign Up
             </button>
+
             <button
               className={cx(
                 "w-full border py-4 rounded-md mb-6 flex justify-center items-center"
               )}
+            // onClick={signIn}
             >
               <img src={google} alt="Gmail" className={cx("mr-2")} />
               Sign in with Gmail
             </button>
+            
             {/* </form> */}
-
             <div className={cx("bot-title")}>
               <p className={cx("text-sm mt-6  ")}>
                 <span>You have an account yet?</span>
@@ -204,6 +210,7 @@ export const Register = () => {
           </div>
         </div>
       </div>
+
       <VerifyOtp
         isOpen={showOtpModal}
         onClose={() => setShowOtpModal(false)}
@@ -221,6 +228,14 @@ export const Register = () => {
         pauseOnHover
         theme="light"
       />
+      {/* <RecoveryPass
+        emailClient={email}
+      /> */}
+
+
     </div>
   );
-};
+}
+
+
+

@@ -125,6 +125,12 @@ export const VerifyOtp = ({ isOpen, onClose, emailClient }) => {
       toast.error("Có lỗi xảy ra, vui lòng thử lại.");
     }
   };
+  const handleClose = async () => {
+    if (onClose) {
+      onClose(); // Gọi hàm onClose được truyền từ component cha
+    }
+  };
+  
 
   if (!isOpen) return null; // Không render modal nếu không mở
 
@@ -219,8 +225,16 @@ export const VerifyOtp = ({ isOpen, onClose, emailClient }) => {
                   className="px-4 py-2 text-md text-white bg-indigo-600 rounded-lg duration-150 hover:bg-indigo-700 active:shadow-lg"
                 >
                   Gửi
-                </button>
+                </button>              
               </div>
+              <div className="flex justify-center mt-4">
+    <button
+      onClick={() => handleClose()}
+      className="px-4 py-2 text-md text-red-600 bg-indigo-600 rounded-lg duration-150 hover:bg-indigo-700 active:shadow-lg"
+    >
+      Đóng
+    </button>
+  </div>
             </div>
           </div>
         </main>
