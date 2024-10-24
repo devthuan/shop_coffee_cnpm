@@ -5,6 +5,8 @@ import { UpdateUserInformationDto } from './dto/update-user-information.dto';
 import { AuthGuardCustom } from 'src/auth/auth.guard';
 import { plainToInstance } from 'class-transformer';
 import { Accounts } from 'src/auth/entities/accounts.entity';
+import { PermissionsGuard } from 'src/auth/permisson.guard';
+import { Permissions } from 'src/auth/permission.decorator';
 
 @Controller('user-information')
 @UseGuards(AuthGuardCustom)
@@ -16,7 +18,8 @@ export class UserInformationController {
   //   let accountId =  request['user'].id;  // Get user's id from JWT token
   //   return this.userInformationService.create(accountId, createUserInformationDto);
   // }
-  
+  @UseGuards(PermissionsGuard)
+  @Permissions("GET_USER_INFORMATION")
   @Get('user')
   findOne(@Req() request: Request) {
     let accountId =  request['user'].id;  // Get user's id from JWT token
@@ -24,6 +27,8 @@ export class UserInformationController {
     return plainToInstance(Accounts, data)
   }
 
+  @UseGuards(PermissionsGuard)
+  @Permissions("UPDATE_USER_INFORMATION")
   @Patch()
   update(@Req() request: Request, @Body() updateUserInformationDto: UpdateUserInformationDto) {
     let accountId =  request['user'].id;  // Get user's id from JWT token

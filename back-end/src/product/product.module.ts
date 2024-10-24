@@ -10,6 +10,7 @@ import { CategoriesModule } from 'src/categories/categories.module';
 import { AttributeModule } from 'src/attribute/attribute.module';
 import { BillModule } from 'src/bill/bill.module';
 import { ImportReceiptModule } from 'src/import_receipt/import_receipt.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { ImportReceiptModule } from 'src/import_receipt/import_receipt.module';
     CategoriesModule,
     AttributeModule,
     forwardRef(()=> BillModule),
-    forwardRef(()=> ImportReceiptModule)
+    forwardRef(()=> ImportReceiptModule),
+    AuthModule
   ],
   controllers: [ProductController],
   providers: [ProductService],

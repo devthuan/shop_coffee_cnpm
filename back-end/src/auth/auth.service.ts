@@ -17,6 +17,7 @@ import { CommonException } from 'src/common/exception';
 import { AuthGuard } from '@nestjs/passport';
 import { LoginGoogle } from './auth.interface';
 import { Roles } from 'src/role/entities/roles.entity';
+import { RolePermissionService } from 'src/role-permission/role-permission.service';
 
 
 @Injectable()
@@ -32,7 +33,8 @@ export class AuthService {
     private readonly rolesRepository: Repository<Roles>, 
     @InjectRepository(UserInformation)
     private readonly userInformationRepository: Repository<UserInformation>, 
- 
+
+    private rolePermissionService: RolePermissionService,
 
     private readonly dataSource: DataSource,
     private readonly mailService: MailService,
@@ -501,6 +503,11 @@ export class AuthService {
       return await bcrypt.compare(originPassword, hashPassword);
   }
 
+
+  async getPermissionByRole(codeNameRole: string): Promise<any>{
+    const {data} = await this.rolePermissionService.getRolePermissionsByRole(codeNameRole)
+    return data;
+  }
   
 
 

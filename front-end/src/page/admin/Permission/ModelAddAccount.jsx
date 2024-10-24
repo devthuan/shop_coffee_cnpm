@@ -105,7 +105,8 @@ const ModelAddAccount = () => {
     const fetchAPI = async () => {
       dispatch(clearDataRole());
       try {
-        const response = await GetAllRole();
+        let paramQuery = ""
+        const response = await GetAllRole(paramQuery);
         if (response && response.data && response.status === 200) {
           dispatch(initDataRole(response.data));
         }

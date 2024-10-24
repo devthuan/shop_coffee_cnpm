@@ -59,38 +59,14 @@ export const Permission = () => {
 
       dispatch(initDataRole(result.data));
     } catch (error) {
-      const result = HandleApiError(error);
-      result
-        ? toast.error(result)
-        : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+      const { message, status } = HandleApiError(error);
+      if (status === "error") {
+        dispatch(initDataRole({ error: message }));
+      }
     }
   };
 
-  // const handleLockAccount = async (account) => {
-  //   try {
-  //     const response = await LockAccountAPI(account.id);
-  //     console.log(response);
-  //     if (response && response.data) {
-  //       const { statusCode, status, message } = response.data;
 
-  //       if (statusCode === 200) {
-  //         // update data in redux
-  //         dispatch(
-  //           updateStatusAccount({
-  //             id: account.id,
-  //             status: !account.isActive,
-  //           })
-  //         );
-  //         toast.success(message);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     const result = HandleApiError(error);
-  //     result
-  //       ? toast.error(result)
-  //       : toast.error("Có lỗi xảy ra, vui lòng thử lại");
-  //   }
-  // };
 
   // Callback function to update currentPage
   const handlePageChange = (newPage) => {
@@ -122,10 +98,10 @@ export const Permission = () => {
         }
       } catch (error) {
         console.log(error);
-        const result = HandleApiError(error);
-        result
-          ? toast.error(result)
-          : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+         const { message, status } = HandleApiError(error);
+         if (status === "error") {
+           dispatch(initDataRole({ error: message }));
+         }
       }
     };
 

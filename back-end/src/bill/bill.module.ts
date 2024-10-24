@@ -10,6 +10,7 @@ import { Accounts } from 'src/auth/entities/accounts.entity';
 import { ProductModule } from 'src/product/product.module';
 import { PaymentModule } from 'src/payment/payment.module';
 import { CartModule } from 'src/cart/cart.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { CartModule } from 'src/cart/cart.module';
     PaymentModule,
     CartModule,
     forwardRef(()=> ProductModule),
-    
+    AuthModule
   ],
   controllers: [BillController],
   providers: [BillService],

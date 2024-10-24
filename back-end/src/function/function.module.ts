@@ -3,10 +3,12 @@ import { FunctionService } from './function.service';
 import { FunctionController } from './function.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Functions } from './entities/functions.entity';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Functions])
+    TypeOrmModule.forFeature([Functions]),
+    AuthModule
   ],
   controllers: [FunctionController],
   providers: [FunctionService],

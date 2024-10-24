@@ -9,6 +9,7 @@ import { Permissions } from 'src/auth/permission.decorator';
 import { PermissionsGuard } from 'src/auth/permisson.guard';
 
 @Controller('account')
+@UseGuards(AuthGuardCustom)
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
@@ -19,8 +20,7 @@ export class AccountController {
   }
 
   @UseGuards(PermissionsGuard)
-  @UseGuards(AuthGuardCustom)
-  @Permissions("READ_ACCOUNT")
+  @Permissions("VIEW_ACCOUNT")
   @Get()
   getAllAccount(
     @Query('search') search: string,  // add search query parameter here`
@@ -28,29 +28,37 @@ export class AccountController {
     @Query('limit') limit: number = 10,
     @Query('sortBy') sortBy: string = 'id',
     @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',  // add sort query parameters here`
-     @Query() query: Record<string, any> // Lấy tất cả query params còn lại
+    @Query() query: Record<string, any> // Lấy tất cả query params còn lại
   ) {
      const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
-     console.log(filters)
     const data =  this.accountService.getAllAccount(search, page, limit, sortBy, sortOrder, filters);
     return plainToInstance(Accounts, data)
   }
 
+  @UseGuards(PermissionsGuard)
+  @Permissions("VIEW_ACCOUNT")
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.accountService.findOne(id);
 
   }
 
+  @UseGuards(PermissionsGuard)
+  @Permissions("UPDATE_ACCOUNT")
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAccountDto: UpdateAccountDto) {
     updateAccountDto.id = id;
     return this.accountService.updateAccount( updateAccountDto);
   }
+  @UseGuards(PermissionsGuard)
+  @Permissions("LOCK_ACCOUNT")
   @Patch('lock/:id')
   lockAccount(@Param('id') id: string) {
     return this.accountService.lockAccount( id);
   }
+  
+  @UseGuards(PermissionsGuard)
+  @Permissions("RESET_PASSWORD")
   @Patch('reset-password/:id')
   resetPassword(@Param('id') id: string) {
     return this.accountService.resetPassword(id);

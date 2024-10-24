@@ -5,12 +5,16 @@ import { UpdateReviewDto } from './dto/update-review.dto';
 import { plainToInstance } from 'class-transformer';
 import { Reviews } from './entities/review.entity';
 import { AuthGuardCustom } from 'src/auth/auth.guard';
+import { Permissions } from 'src/auth/permission.decorator';
+import { PermissionsGuard } from 'src/auth/permisson.guard';
 
 @Controller('reviews')
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
+  @UseGuards(PermissionsGuard)
   @UseGuards(AuthGuardCustom)
+  @Permissions("CREATE_REVIEW")
   @Post()
   create(@Req() req, @Body() createReviewDto: CreateReviewDto) {
     createReviewDto.accountId = req.user.id
@@ -50,11 +54,17 @@ export class ReviewsController {
     return this.reviewsService.findOne(id);
   }
 
+  @UseGuards(PermissionsGuard)
+  @UseGuards(AuthGuardCustom)
+  @Permissions("UPDATE_REVIEW")
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateReviewDto: UpdateReviewDto) {
     return this.reviewsService.update(id, updateReviewDto);
   }
 
+  @UseGuards(PermissionsGuard)
+  @UseGuards(AuthGuardCustom)
+  @Permissions("DELETE_REVIEW")
   @Delete(':id')
   deleteSoft(@Param('id') id: string) {
     return this.reviewsService.deleteSoft(id);

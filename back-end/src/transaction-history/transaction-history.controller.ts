@@ -3,6 +3,8 @@ import { TransactionHistoryService } from './transaction-history.service';
 import { plainToInstance } from 'class-transformer';
 import { TransactionHistory } from './entities/transaction-history.entity';
 import { AuthGuardCustom } from 'src/auth/auth.guard';
+import { PermissionsGuard } from 'src/auth/permisson.guard';
+import { Permissions } from 'src/auth/permission.decorator';
 
 @Controller('transaction-history')
 @UseGuards(AuthGuardCustom)
@@ -15,6 +17,8 @@ export class TransactionHistoryController {
   //   return this.transactionHistoryService.create(createTransactionHistoryDto);
   // }
 
+  @UseGuards(PermissionsGuard)
+  @Permissions("GET_TRANSACTION_HISTORY")
   @Get()
   findAll(
     @Query('search') search : string,
@@ -31,6 +35,8 @@ export class TransactionHistoryController {
     return plainToInstance(TransactionHistory, data)
   }
 
+  @UseGuards(PermissionsGuard)
+  @Permissions("GET_TRANSACTION_HISTORY")
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.transactionHistoryService.findOne(id);

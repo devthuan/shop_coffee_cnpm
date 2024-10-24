@@ -5,18 +5,24 @@ import { UpdateFavoriteDto } from './dto/update-favorite.dto';
 import { plainToInstance } from 'class-transformer';
 import { Favorite } from './entities/favorite.entity';
 import { AuthGuardCustom } from 'src/auth/auth.guard';
+import { Permissions } from 'src/auth/permission.decorator';
+import { PermissionsGuard } from 'src/auth/permisson.guard';
 
-@UseGuards(AuthGuardCustom)
 @Controller('favorite')
+@UseGuards(AuthGuardCustom)
 export class FavoriteController {
   constructor(private readonly favoriteService: FavoriteService) {}
 
+  @UseGuards(PermissionsGuard)
+  @Permissions("CREATE_FAVORITE")
   @Post()
   create(@Req() request: Request,@Body() createFavoriteDto: CreateFavoriteDto) {
     createFavoriteDto.accountId = request['user'].id;
     return this.favoriteService.addFavoriteList(createFavoriteDto);
   }
 
+  @UseGuards(PermissionsGuard)
+  @Permissions("GET_FAVORITES")
   @Get()
   findAll(
     @Query('search') search: string,
@@ -33,6 +39,9 @@ export class FavoriteController {
     let data =  this.favoriteService.findAll(search, page, limit, sortBy, sortOrder, filters);
     return plainToInstance(Favorite, data);
     }
+
+    @UseGuards(PermissionsGuard)
+  @Permissions("GET_FAVORITES_BY_USER") 
   @Get('user')
   getListFavoriteByAccount(
     @Req() request: Request,
@@ -50,7 +59,9 @@ export class FavoriteController {
     let data =  this.favoriteService.getListFavoriteByAccount(accountId, search, page, limit, sortBy, sortOrder, filters);
     return plainToInstance(Favorite, data);
     }
-
+  
+  //   @UseGuards(PermissionsGuard)
+  // @Permissions("DELETE_FAVORITE_BY_ID") 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.favoriteService.findOne(id);
@@ -61,6 +72,8 @@ export class FavoriteController {
   //   return this.favoriteService.update(id, updateFavoriteDto);
   // }
 
+  @UseGuards(PermissionsGuard)
+  @Permissions("DELETE_FAVORITE_BY_ID") 
   @Delete(':id')
   remove(@Req() request: Request, @Param('id') id: string) {
     let accountId = request['user'].id

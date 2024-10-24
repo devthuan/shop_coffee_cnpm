@@ -30,14 +30,14 @@ export class SeederService {
             await queryRunner.startTransaction()
 
             const checkDataRole = await this.rolesRepository.find()
-            if (checkDataRole.length > 0) {
+            if (checkDataRole.length > 2) {
                 return {
                     message: 'Role already created',
                 }
             }
 
             const checkDataFunction = await this.functionsRepository.find()
-            if (checkDataFunction.length > 0) {
+            if (checkDataFunction.length > 2) {
                 return {
                     message: 'Function already created',
                 }
@@ -82,8 +82,10 @@ export class SeederService {
                 {name: 'Khôi phục chức năng bị xóa', codeName: 'RECOVER_FUNCTION', method: "PATCH", endpoint:"role-permission/functions/recover/:id", isActive: true},
                 {name: 'Xóa chức năng theo ID', codeName: 'DELETE_FUNCTION', method: "DELETE", endpoint:"role-permission/functions/:id", isActive: true},
                 // role-permission
-                {name: 'Gán quyền cho vai trò', codeName: 'ASSIGN_PERMISSIONS', method: "GET", endpoint:"role-permission", isActive: true},
-                {name: 'Cập nhật quyền cho vai trò', codeName: 'UPDATE_PERMISSIONS', method: "POST", endpoint:"role-permission", isActive: true},
+                {name: 'Lấy danh quyền', codeName: 'GET_PERMISSION', method: "GET", endpoint:"role-permission", isActive: true},
+                {name: 'Lấy danh quyền theo vai trò', codeName: 'GET_PERMISSION_BY_ROLE', method: "GET", endpoint:"role-permission/by-role/:role", isActive: true},
+                {name: 'Cập nhật quyền cho quyền', codeName: 'CREATE_PERMISSION', method: "POST", endpoint:"role-permission", isActive: true},
+                {name: 'Thay đổi trạng thái cho quyền', codeName: 'CHANGE_STATUS_PERMISSION', method: "PATCH", endpoint:"role-permission/change-status/:id", isActive: true},
                 // product
                 {name: 'Lấy danh sách sản phẩm', codeName: 'GET_PRODUCTS', method: "GET", endpoint:"products", isActive: true},
                 {name: 'Xem chi tiết thông tin sản phẩm', codeName: 'VIEW_PRODUCT', method: "GET", endpoint:"products/:id", isActive: true},
@@ -105,6 +107,7 @@ export class SeederService {
                 {name: 'Lấy danh sách chương trình giảm giá', codeName: 'GET_DISCOUNTS', method: "GET", endpoint:"discount", isActive: true},
                 {name: 'Xem chi tiết chương trình giảm giá', codeName: 'VIEW_DISCOUNT', method: "GET", endpoint:"discount/:id", isActive: true},
                 {name: 'Tạo chương trình giảm giá', codeName: 'CREATE_DISCOUNT', method: "POST", endpoint:"discount", isActive: true},
+                {name: 'Chỉnh sửa chương trình giảm giá', codeName: 'UPDATE_DISCOUNT', method: "PATCH", endpoint:"discount/:id", isActive: true},
                 {name: 'Khôi phục chương trình giảm giá', codeName: 'RECOVER_DISCOUNT', method: "PATCH", endpoint:"discount/recover/:id", isActive: true},
                 {name: 'Xóa chương trình giảm giá', codeName: 'DELETE_DISCOUNT', method: "DELETE", endpoint:"discount/:id", isActive: true},
                 // categories
@@ -119,6 +122,8 @@ export class SeederService {
                 {name: 'Xem đánh giá theo sản phẩm', codeName: 'GET_REVIEWS_BY_PRODUCT', method: "GET", endpoint:"reviews/by-product/:id", isActive: true},
                 {name: 'Lấy danh sách đánh giá', codeName: 'GET_REVIEWS', method: "GET", endpoint:"reviews", isActive: true},
                 {name: 'Tạo đánh giá mới', codeName: 'CREATE_REVIEW', method: "POST", endpoint:"reviews", isActive: true},
+                {name: 'Chỉnh sửa đánh giá', codeName: 'UPDATE_REVIEW', method: "POST", endpoint:"reviews/:id", isActive: true},
+                {name: 'xoá đánh giá', codeName: 'DELETE_REVIEW', method: "DELETE", endpoint:"reviews/:id", isActive: true},
                 // supplier
                 { name: "Lấy danh sách nhà cung cấp", codeName: 'GET_SUPPLIERS', method: "GET", endpoint: "supplier", isActive: true },
                 { name: "Xem nhà cung cấp đã bị xóa", codeName: 'GET_DELETED_SUPPLIERS', method: "GET", endpoint: "supplier/deleted", isActive: true },
@@ -146,6 +151,7 @@ export class SeederService {
                 { name: "Lấy danh sách voucher", codeName: 'GET_VOUCHERS', method: "GET", endpoint: "vouchers", isActive: true },
                 { name: "Xem thông tin voucher theo ID", codeName: 'GET_VOUCHER_BY_ID', method: "GET", endpoint: "vouchers/:id", isActive: true },
                 { name: "Tạo voucher mới", codeName: 'CREATE_VOUCHER', method: "POST", endpoint: "vouchers", isActive: true },
+                { name: "Chỉnh sửa voucher ", codeName: 'UPDATE_VOUCHER', method: "PATCH", endpoint: "vouchers/:id", isActive: true },
                 { name: "Sử dụng voucher theo ID", codeName: 'USE_VOUCHER', method: "PATCH", endpoint: "vouchers/use-voucher/:id", isActive: true },
                 { name: "Khôi phục voucher bị xóa", codeName: 'RECOVER_VOUCHER', method: "PATCH", endpoint: "vouchers/recover/:id", isActive: true },
                 { name: "Xóa voucher theo ID", codeName: 'DELETE_VOUCHER', method: "DELETE", endpoint: "vouchers/:id", isActive: true },
@@ -174,8 +180,17 @@ export class SeederService {
                 { name: "Xóa yêu thích theo ID", codeName: 'DELETE_FAVORITE_BY_ID', method: "DELETE", endpoint: "favorite/:id", isActive: true },
                 { name: "Lấy danh sách yêu thích theo người dùng", codeName: 'GET_FAVORITES_BY_USER', method: "GET", endpoint: "favorite/user", isActive: true },
                 // transactions
-                { name: "Xem lịch sử giao dịch", codeName: 'GET_TRANSACTION_HISTORY', method: "GET", endpoint: "transaction-history", isActive: true }
-
+                { name: "Xem lịch sử giao dịch", codeName: 'GET_TRANSACTION_HISTORY', method: "GET", endpoint: "transaction-history", isActive: true },
+                // inventory
+                { name: "Xem danh sách kho", codeName: 'GET_INVENTORY', method: "GET", endpoint: "inventory", isActive: true },
+                
+                // payment method
+                { name: "Xem danh sách phương thức thanh toán", codeName: 'GET_PAYMENT_METHOD', method: "GET", endpoint: "payment", isActive: true },
+                { name: "Xem phương thức thanh toán theo ID", codeName: 'GET_PAYMENT_METHOD_BY_ID', method: "GET", endpoint: "payment/:id", isActive: true },
+                { name: "Tạo mới thức thanh toán", codeName: 'CREATE_PAYMENT_METHOD', method: "CREATE", endpoint: "payment", isActive: true },
+                { name: "Chỉnh sửa thức thanh toán", codeName: 'UPDATE_PAYMENT_METHOD', method: "PATCH", endpoint: "payment/id", isActive: true },
+                { name: "Khôi phục thức thanh toán", codeName: 'RECOVER_PAYMENT_METHOD', method: "PATCH", endpoint: "payment/recover/id", isActive: true },
+                { name: "Xoá thức thanh toán", codeName: 'DELETE_PAYMENT_METHOD', method: "DELETE", endpoint: "payment/:id", isActive: true },
             ];
 
             for(const item of listFunctionAPIEndpoint){
@@ -231,8 +246,10 @@ export class SeederService {
                 "CREATE_FUNCTION",
                 "RECOVER_FUNCTION",
                 "DELETE_FUNCTION",
-                "ASSIGN_PERMISSIONS",
-                "UPDATE_PERMISSIONS",
+                "GET_PERMISSION",
+                "GET_PERMISSION_BY_ROLE",
+                "CREATE_PERMISSION",
+                "CHANGE_STATUS_PERMISSION",
                 "GET_PRODUCTS",
                 "VIEW_PRODUCT",
                 "VIEW_PRODUCT_DETAILS",
@@ -251,6 +268,7 @@ export class SeederService {
                 "GET_DISCOUNTS",
                 "VIEW_DISCOUNT",
                 "CREATE_DISCOUNT",
+                "UPDATE_DISCOUNT",
                 "RECOVER_DISCOUNT",
                 "DELETE_DISCOUNT",
                 "GET_CATEGORIES",
@@ -263,6 +281,8 @@ export class SeederService {
                 "GET_REVIEWS_BY_PRODUCT",
                 "GET_REVIEWS",
                 "CREATE_REVIEW",
+                "UPDATE_REVIEW",
+                "DELETE_REVIEW",
                 "GET_SUPPLIERS",
                 "GET_DELETED_SUPPLIERS",
                 "GET_SUPPLIER_BY_ID",
@@ -286,6 +306,7 @@ export class SeederService {
                 "GET_VOUCHERS",
                 "GET_VOUCHER_BY_ID",
                 "CREATE_VOUCHER",
+                "UPDATE_VOUCHER",
                 "USE_VOUCHER",
                 "RECOVER_VOUCHER",
                 "DELETE_VOUCHER",
@@ -310,6 +331,13 @@ export class SeederService {
                 "DELETE_FAVORITE_BY_ID",
                 "GET_FAVORITES_BY_USER",
                 "GET_TRANSACTION_HISTORY",
+                "GET_INVENTORY",
+                "GET_PAYMENT_METHOD",
+                "GET_PAYMENT_METHOD_BY_ID",
+                "CREATE_PAYMENT_METHOD",
+                "UPDATE_PAYMENT_METHOD",
+                "RECOVER_PAYMENT_METHOD",
+                "DELETE_PAYMENT_METHOD",
             ]
 
             const listPermissionsManageProduct = [
@@ -331,6 +359,7 @@ export class SeederService {
                 "UPDATE_ATTRIBUTE",
                 "GET_DISCOUNTS",
                 "VIEW_DISCOUNT",
+                "UPDATE_DISCOUNT",
                 "CREATE_DISCOUNT",
                 "GET_CATEGORIES",
                 "VIEW_DELETED_CATEGORIES",
@@ -340,6 +369,8 @@ export class SeederService {
                 "GET_REVIEWS_BY_PRODUCT",
                 "GET_REVIEWS",
                 "CREATE_REVIEW",
+                "UPDATE_REVIEW",
+                "DELETE_REVIEW",
                 "GET_CART",
                 "GET_NOTIFICATIONS",
                 "MARK_NOTIFICATION_READ",
@@ -437,6 +468,7 @@ export class SeederService {
                 "DELETE_FAVORITE_BY_ID",
                 "GET_FAVORITES_BY_USER",
                 "GET_TRANSACTION_HISTORY",
+                "GET_INVENTORY"
             ]
 
             const listPermissionSupplier = [
@@ -497,9 +529,12 @@ export class SeederService {
                 "GET_REVIEWS_BY_PRODUCT",
                 "GET_REVIEWS",
                 "CREATE_REVIEW",
+                "UPDATE_REVIEW",
+                "DELETE_REVIEW",
                 "GET_CART",
                 "GET_VOUCHER_BY_ID",
                 "CREATE_VOUCHER",
+                "UPDATE_VOUCHER",
                 "GET_NOTIFICATIONS",
                 "CREATE_NOTIFICATION",
                 "MARK_NOTIFICATION_READ",
@@ -535,6 +570,8 @@ export class SeederService {
                 "GET_REVIEWS_BY_PRODUCT",
                 "GET_REVIEWS",
                 "CREATE_REVIEW",
+                "UPDATE_REVIEW",
+                "DELETE_REVIEW",
                 "GET_CART",
                 "CREATE_CART",
                 "UPDATE_CART_PRODUCT",

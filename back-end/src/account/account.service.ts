@@ -25,6 +25,7 @@ export class AccountService extends BaseService<Accounts> {
 
     @Inject(forwardRef(() =>AuthService))
     private authService: AuthService,
+    
     private mailService: MailService,
     private readonly dataSource: DataSource,
   ){

@@ -5,12 +5,16 @@ import { UpdateCartDto } from './dto/update-cart.dto';
 import { plainToInstance } from 'class-transformer';
 import { Cart } from './entities/cart.entity';
 import { AuthGuardCustom } from 'src/auth/auth.guard';
+import { PermissionsGuard } from 'src/auth/permisson.guard';
+import { Permissions } from 'src/auth/permission.decorator';
 
 @Controller('cart')
+@UseGuards(AuthGuardCustom)
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
-  @UseGuards(AuthGuardCustom)
+  @UseGuards(PermissionsGuard)
+  @Permissions("CREATE_CART")
   @Post()
   create(
     @Req() req: Request,
@@ -21,7 +25,8 @@ export class CartController {
     return this.cartService.createCart(createCartDto);
   }
   
-  @UseGuards(AuthGuardCustom)
+  @UseGuards(PermissionsGuard)
+  @Permissions("INCREASE_CART_PRODUCT")
   @Patch('increase/:id')
   increaseQuantity(
     @Param('id') id: string,
@@ -31,7 +36,8 @@ export class CartController {
     return this.cartService.increaseQuantity(id, accountsId);
   }
 
-  @UseGuards(AuthGuardCustom)
+  @UseGuards(PermissionsGuard)
+  @Permissions("DECREASE_CART_PRODUCT")
   @Patch('decrease/:id')
   decreaseQuantity(
     @Param('id') id: string,
@@ -42,7 +48,8 @@ export class CartController {
   }
 
 
-  @UseGuards(AuthGuardCustom)
+  @UseGuards(PermissionsGuard)
+  @Permissions("GET_CART")
   @Get()
   findAll(
     @Req() req: Request,
@@ -67,7 +74,9 @@ export class CartController {
   // findOne(@Param('id') id: string) {
   //   return this.cartService.findOne(id);
   // }
-  @UseGuards(AuthGuardCustom)
+
+  @UseGuards(PermissionsGuard)
+  @Permissions("UPDATE_CART_PRODUCT")
   @Patch(':id')
   update(
     @Req() req: Request,
@@ -78,8 +87,8 @@ export class CartController {
     return this.cartService.updateQuantity(id, updateCartDto);
   }
   
-  @UseGuards(AuthGuardCustom)
-
+  @UseGuards(PermissionsGuard)
+  @Permissions("DELETE_CART_PRODUCT")
   @Delete(':id')
   deleteSoft(@Param('id') id: string, @Req() req: Request) {
     let accountsId = req['user'].id

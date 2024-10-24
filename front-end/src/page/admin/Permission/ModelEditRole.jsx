@@ -107,12 +107,9 @@ const ModelEditRole = ({ data }) => {
     const fetchAPI = async () => {
       try {
         const roleCodeName = data?.codeName;
-        console.log(roleCodeName)
         const response = await GetAllPermissionByRoleAPI(roleCodeName);
         if (response && response.data && response.status === 200) {
           const { statusCode, status, data } = response.data;
-          console.log(data);
-          // dispatch(initDataPermission({ data }));
           setDataPermission(data);
         }
       } catch (error) {

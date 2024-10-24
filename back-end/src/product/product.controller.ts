@@ -1,15 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFile, UseInterceptors, UploadedFiles, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFile, UseInterceptors, UploadedFiles, Query, UseGuards } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { plainToInstance } from 'class-transformer';
 import { Products } from './entities/products.entity';
+import { AuthGuardCustom } from 'src/auth/auth.guard';
+import { PermissionsGuard } from 'src/auth/permisson.guard';
+import { Permissions } from 'src/auth/permission.decorator';
 
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
+  @UseGuards(PermissionsGuard)
+  @UseGuards(AuthGuardCustom)
+  @Permissions("CREATE_PRODUCT")
   @Post()
   @UseInterceptors(FilesInterceptor('files'))
   createProduct(@UploadedFiles() files: Array<Express.Multer.File>, @Body() createProductDto: CreateProductDto) {
@@ -42,15 +48,25 @@ export class ProductController {
     return this.productService.findOne(id);
   }
 
+  @UseGuards(PermissionsGuard)
+  @UseGuards(AuthGuardCustom)
+  @Permissions("UPDATE_PRODUCT")
   @Patch(':id')
   updateProduct(@UploadedFiles() files: Array<Express.Multer.File>, @Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productService.updateProduct(id,files, updateProductDto);
   }
+
+  @UseGuards(PermissionsGuard)
+  @UseGuards(AuthGuardCustom)
+  @Permissions("RECOVER_PRODUCT")
   @Patch('recover/:id')
   recover( @Param('id') id: string) {
     return this.productService.recover(id);
   }
 
+  @UseGuards(PermissionsGuard)
+  @UseGuards(AuthGuardCustom)
+  @Permissions("DELETE_PRODUCT")
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.productService.deleteSoft(id);
