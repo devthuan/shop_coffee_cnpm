@@ -38,7 +38,7 @@ export class BillController {
     @Query() query: Record<string, any>
 
   ) {
-    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+    const {search : _search, page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
     limit = limit > 100 ? limit = 100 : limit;
     let data = this.billService.findAll(search, page, limit, sortBy, sortOrder, filters);
     return plainToInstance(Bills, data)
@@ -55,7 +55,7 @@ export class BillController {
     @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',
     @Query() query: Record<string, any>
   ) {
-    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+    const { search : _search, page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
     limit = limit > 100 ? limit = 100 : limit;
     let accountId = request['user'].id;  // get accountId from token
     let data = this.billService.getBillByAccount(accountId,search, page, limit, sortBy, sortOrder, filters);

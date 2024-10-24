@@ -29,7 +29,7 @@ export class TransactionHistoryController {
     @Query() query: Record<string, any>
 
   ) {
-    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+    const {search : _search, page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
     limit = limit > 100 ? 100 : limit;
     let data = this.transactionHistoryService.findAll(search, page, limit, sortBy, sortOrder, filters);
     return plainToInstance(TransactionHistory, data)

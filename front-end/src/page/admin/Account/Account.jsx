@@ -14,8 +14,6 @@ import ModelAddAccount from "./ModelAddAccount";
 import ModelEditAccount from "./ModelEditAccount";
 import Loading from "~/components/Loading/Loading";
 import { HandleApiError } from "~/Utils/HandleApiError";
-import { GetAllRole } from "~/services/PermissionService";
-import { initDataRole } from "~/redux/features/Roles/rolesSilce";
 
 const cx = classNames.bind(styles);
 export const Account = () => {
@@ -31,17 +29,32 @@ export const Account = () => {
     currentPage: 1,
     limit: 10,
   });
+  const [sortOption, setSortOption] = useState("");
+  const [filterOption, setFilterOption] = useState("");
 
-  const filterItems = [
+
+  const listOptionSorts = [
     { value: "createdAt_ASC", label: "sắp xếp theo ngày tạo tăng dần" },
     { value: "createdAt_DESC", label: "sắp xếp theo ngày tạo giảm dần" },
+
+  ];
+
+  const listOptionFilters = [
     {
-      value: "isActive_ASC",
-      label: "sắp xếp theo trạng thái tài khoản blocked",
+      value: "filter_status_active",
+      label: "Lọc theo status active",
     },
     {
-      value: "isActive_DESC",
-      label: "sắp xếp theo trạng thái tài khoản active",
+      value: "filter_status_blocked",
+      label: "Lọc theo status block",
+    },
+    {
+      value: "filter_role_admin",
+      label: "Lọc theo quyền admin",
+    },
+    {
+      value: "filter_role_user",
+      label: "Lọc theo quyền người dùng",
     },
   ];
 
@@ -115,30 +128,48 @@ export const Account = () => {
     }));
   };
 
-  const handleFilter = async (e) => {
-    if (e === "createdAt_ASC") {
-      let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&sortBy=createdAt&sortOrder=ASC`;
-      const result = await GetAllAccountAPI(queryParams);
-
-      dispatch(initDataAccount(result.data));
-    } else if (e === "createdAt_DESC") {
-      let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&sortBy=createdAt&sortOrder=DESC`;
-      const result = await GetAllAccountAPI(queryParams);
-      dispatch(initDataAccount(result.data));
-    } else if (e === "isActive_ASC") {
-      let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&sortBy=isActive&sortOrder=ASC`;
-      const result = await GetAllAccountAPI(queryParams);
-      dispatch(initDataAccount(result.data));
-    } else if (e === "isActive_DESC") {
-      let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&sortBy=isActive&sortOrder=DESC`;
-      const result = await GetAllAccountAPI(queryParams);
-      dispatch(initDataAccount(result.data));
-    }
+  const handleSort = async (e) => {
+    setSortOption(e);
+    fetchAccounts(e, filterOption); // Pass both sort and filter options
   };
+
+  const handleFilter = async (e) => {
+    setFilterOption(e);
+    fetchAccounts(sortOption, e); // Pass both sort and filter options
+  };
+
+  const fetchAccounts = async (sortOption, filterOption) => {
+    let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
+
+    if (sortOption === "createdAt_ASC") {
+      queryParams += `&sortBy=createdAt&sortOrder=ASC`;
+    } else if (sortOption === "createdAt_DESC") {
+      queryParams += `&sortBy=createdAt&sortOrder=DESC`;
+    }
+
+    if (
+      filterOption === "isActive_true" ||
+      filterOption === "filter_status_active"
+    ) {
+      queryParams += `&isActive=true`;
+    } else if (
+      filterOption === "isActive_false" ||
+      filterOption === "filter_status_blocked"
+    ) {
+      queryParams += `&isActive=false`;
+    } else if (filterOption === "filter_role_admin") {
+      queryParams += `&role=ADMIN`;
+    } else if (filterOption === "filter_role_user") {
+      queryParams += `&role=USER`;
+    }
+
+    const result = await GetAllAccountAPI(queryParams);
+    dispatch(initDataAccount(result.data));
+  };
+
 
   useEffect(() => {
     const fetchData = async () => {
-      // dispatch(clearDataAccount());
       try {
         // API call here
         let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
@@ -161,25 +192,6 @@ export const Account = () => {
     }, 800);
   }, [optionLimit.limit, optionLimit.currentPage]);
 
-  //  useEffect(() => {
-  //    const fetchAPI = async () => {
-  //      try {
-  //        const response = await GetAllRole();
-  //        console.log(response.data.data);
-  //        if (response && response.data && response.status === 200) {
-  //          dispatch(initDataRole(response.data));
-  //        }
-  //      } catch (error) {
-  //        console.log(error);
-  //        const result = HandleApiError(error);
-  //        result
-  //          ? toast.error(result)
-  //          : toast.error("Có lỗi xảy ra, vui lòng thử lại");
-  //      }
-  //    };
-
-  //    fetchAPI();
-  //  }, [dispatch]);
 
   return (
     <>
@@ -190,66 +202,102 @@ export const Account = () => {
       ) : (
         <div className="mx-auto  md:pr-5">
           <div className=" ">
-            <div className="flex justify-center ">
-              <form
-                onSubmit={(e) => e.preventDefault()}
-                className="max-w-xl w-full px-4 mx-auto mt-5"
-              >
-                <div className="relative">
+            <h3 className="w-full text-center mt-3">Quản lý tài khoản </h3>
+            <div className="flex justify-between items-end mt-7">
+              <div className="flex justify-start items-end">
+                <div className="relative w-72 ">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 left-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+                    className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
                   >
                     <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      fillRule="evenodd"
+                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                      clipRule="evenodd"
                     />
                   </svg>
-                  <input
-                    onChange={(e) => handleSearch(e.target.value)}
-                    type="text"
-                    placeholder="Search"
-                    className="w-full py-1 pl-12 pr-4 text-[18px] text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
-                  />
+                  <select
+                    onChange={(e) => {
+                      handleSort(e.target.value);
+                    }}
+                    className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
+                  >
+                    {listOptionSorts &&
+                      listOptionSorts.length > 0 &&
+                      listOptionSorts.map((item) => {
+                        return (
+                          <option key={item.value} value={item.value}>
+                            {item.label}
+                          </option>
+                        );
+                      })}
+                  </select>
                 </div>
-              </form>
-            </div>
-            <div className="flex justify-between mt-7">
-              <div className="relative w-72 ">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <select
-                  onChange={(e) => {
-                    handleFilter(e.target.value);
-                  }}
-                  className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
-                >
-                  {filterItems &&
-                    filterItems.length > 0 &&
-                    filterItems.map((item) => {
-                      return (
-                        <option key={item.value} value={item.value}>
-                          {item.label}
-                        </option>
-                      );
-                    })}
-                </select>
+
+                <div className=" ">
+                  <form
+                    onSubmit={(e) => e.preventDefault()}
+                    className="max-w-xl w-full px-4 mx-auto mt-5"
+                  >
+                    <div className="relative">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 left-3"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                      <input
+                        onChange={(e) => handleSearch(e.target.value)}
+                        type="text"
+                        placeholder="Search"
+                        className="w-full py-1 pl-12 pr-4 text-[18px] text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
+                      />
+                    </div>
+                  </form>
+                </div>
+
+                <div className="relative w-50 ">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <select
+                    onChange={(e) => {
+                      handleFilter(e.target.value);
+                    }}
+                    className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
+                  >
+                    {listOptionFilters &&
+                      listOptionFilters.length > 0 &&
+                      listOptionFilters.map((item) => {
+                        return (
+                          <option key={item.value} value={item.value}>
+                            {item.label}
+                          </option>
+                        );
+                      })}
+                  </select>
+                </div>
               </div>
+
               <div className="">
                 <ModelAddAccount />
               </div>

@@ -29,7 +29,7 @@ export class InventoryController {
     @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',
     @Query() query: Record<string, any>
   ) {
-    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+    const {search : _search, page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
     limit > 100 ? limit = 100 : limit
     return this.inventoryService.findAll(search, page, limit, sortBy, sortOrder, filters);
   }

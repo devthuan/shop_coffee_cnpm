@@ -30,7 +30,7 @@ export class AccountController {
     @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',  // add sort query parameters here`
     @Query() query: Record<string, any> // Lấy tất cả query params còn lại
   ) {
-     const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+     const {search : _search, page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
     const data =  this.accountService.getAllAccount(search, page, limit, sortBy, sortOrder, filters);
     return plainToInstance(Accounts, data)
   }

@@ -31,7 +31,7 @@ export class ReviewsController {
     @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',
     @Query() query: Record<string, any>
   ) {
-    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+    const {search : _search, page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
     limit = limit > 100 ? 100 : limit;
     const data = this.reviewsService.findAll(search, page, limit, sortBy, sortOrder, filters);
     return plainToInstance(Reviews, data)

@@ -136,8 +136,14 @@ export class AccountService extends BaseService<Accounts> {
                 // Chuyển đổi giá trị 'true' hoặc 'false' thành boolean
                 if (value === 'true') value = true;
                 if (value === 'false') value = false;
+                if(key === 'role'){
+                  key = "codeName"
+                  query.andWhere(`role.${key} = :${key}`, { [key]: value });
+                  
+                }else {
+                  query.andWhere(`accounts.${key} = :${key}`, { [key]: value });
 
-                query.andWhere(`accounts.${key} = :${key}`, { [key]: value });
+                }
               }
             });
 

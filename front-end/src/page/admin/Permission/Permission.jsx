@@ -32,14 +32,7 @@ export const Permission = () => {
   const filterItems = [
     { value: "createdAt_ASC", label: "sắp xếp theo ngày tạo tăng dần" },
     { value: "createdAt_DESC", label: "sắp xếp theo ngày tạo giảm dần" },
-    {
-      value: "isActive_ASC",
-      label: "sắp xếp theo trạng thái tài khoản blocked",
-    },
-    {
-      value: "isActive_DESC",
-      label: "sắp xếp theo trạng thái tài khoản active",
-    },
+    
   ];
 
   const titleColumn = [
@@ -65,6 +58,21 @@ export const Permission = () => {
       }
     }
   };
+
+  const handleSorts = async(e) => {
+    let queryParams = "";
+    if (e === "createdAt_ASC") {
+      queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&sortBy=createdAt&sortOrder=ASC`;
+    } else if (e === "createdAt_DESC") {
+      queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&sortBy=createdAt&sortOrder=DESC`;
+    } else if (e === "isActive_true") {
+      queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&isActive=true`;
+    } else if (e === "isActive_false") {
+      queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&isActive=false`;
+    }
+    const result = await GetAllRole(queryParams);
+    dispatch(initDataRole(result.data));
+  }
 
 
 
@@ -124,65 +132,65 @@ export const Permission = () => {
       ) : (
         <div className="mx-auto  md:pr-5">
           <div className=" ">
-            <div className="flex justify-center ">
-              <form
-                onSubmit={(e) => e.preventDefault()}
-                className="max-w-xl w-full px-4 mx-auto mt-5"
-              >
-                <div className="relative">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 left-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                  <input
-                    onChange={(e) => handleSearch(e.target.value)}
-                    type="text"
-                    placeholder="Search"
-                    className="w-full py-1 pl-12 pr-4 text-[18px] text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
-                  />
-                </div>
-              </form>
+            <div className="flex justify-center mt-4">
+              <h3>Quản lý quyền</h3>
             </div>
             <div className="flex justify-between mt-7">
-              <div className="relative w-72 ">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                {/* <select
-                  onChange={(e) => {
-                    handleFilter(e.target.value);
-                  }}
-                  className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
-                >
-                  {filterItems &&
-                    filterItems.length > 0 &&
-                    filterItems.map((item) => {
-                      return (
-                        <option key={item.value} value={item.value}>
-                          {item.label}
-                        </option>
-                      );
-                    })}
-                </select> */}
+              <div className="flex ">
+                <div className="relative w-auto min-w-fit px-5  ">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <select
+                    onChange={(e) => {
+                      handleSorts(e.target.value);
+                    }}
+                    className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
+                  >
+                    {filterItems &&
+                      filterItems.length > 0 &&
+                      filterItems.map((item) => {
+                        return (
+                          <option key={item.value} value={item.value}>
+                            {item.label}
+                          </option>
+                        );
+                      })}
+                  </select>
+                </div>
+                <div className="max-w-xl w-full px-4 mx-auto ">
+                  <div className="relative">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 left-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                    <input
+                      onChange={(e) => handleSearch(e.target.value)}
+                      type="text"
+                      placeholder="Search"
+                      className="w-full py-1 pl-12 pr-4 text-[18px] text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
+                    />
+                  </div>
+                </div>
               </div>
               <div className="">
                 <ModelAddAccount />

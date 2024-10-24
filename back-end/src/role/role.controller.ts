@@ -33,7 +33,7 @@ export class RoleController {
     @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',
     @Query() query: Record<string, any> // Lấy tất cả query params còn lại
   ) {
-    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+    const {search : _search, page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
     limit = limit > 100 ? 100 : limit;
 
     const data = this.roleService.findAll(search, page, limit, sortBy, sortOrder, filters);

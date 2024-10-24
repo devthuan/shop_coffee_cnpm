@@ -49,7 +49,7 @@ export class CategoriesController {
     @Query() query: Record<string, any>
 
   ) {
-    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+    const { search : _search, page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
 
     limit = limit > 100 ? limit = 100 : limit;
     return this.categoriesService.findAllDeleted(search, page, limit, sortBy, sortOrder, filters);

@@ -62,7 +62,7 @@ export class CartController {
 
   ) {
 
-    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+    const { search : _search, page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
 
     limit = limit > 100 ? 100 : limit ;
     let accountId = req['user'].id

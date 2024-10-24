@@ -13,12 +13,12 @@ import {
   clearDataInventory,
   initDataInventory,
 } from "~/redux/features/Inventories/inventoriesSilce";
+import { ImportWarehouseModal } from "./ImportWarehouseModal";
 
 const cx = classNames.bind(styles);
 export const Warehouse = () => {
   const dispatch = useDispatch();
   const invetoriesData = useSelector((state) => state.inventories.data);
-  console.log(invetoriesData);
   const isLoading = useSelector((state) => state.inventories.loading);
   const isError = useSelector((state) => state.inventories.error);
   const total = useSelector((state) => state.inventories.total);
@@ -128,12 +128,37 @@ export const Warehouse = () => {
         </div>
       ) : (
         <div className="mx-auto  md:pr-5">
-          <div className=" ">
-            <div className="flex justify-center ">
-              <form
-                onSubmit={(e) => e.preventDefault()}
-                className="max-w-xl w-full px-4 mx-auto mt-5"
-              >
+          {/* box title */}
+          <div className="w-full flex justify-center py-3">
+            <h3>Title</h3>
+          </div>
+
+          {/* box button  */}
+          <div className="flex items-start justify-between ">
+            <div className="flex gap-x-3">
+              {/* box filter */}
+              <div className="relative w-52 max-w-full ">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <select className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2">
+                  <option>Project manager</option>
+                  <option>Software engineer</option>
+                  <option>IT manager</option>
+                  <option>UI / UX designer</option>
+                </select>
+              </div>
+              {/* box input search */}
+              <div className="max-w-lg">
                 <div className="relative">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -150,46 +175,18 @@ export const Warehouse = () => {
                     />
                   </svg>
                   <input
-                    onChange={(e) => handleSearch(e.target.value)}
                     type="text"
                     placeholder="Search"
-                    className="w-full py-1 pl-12 pr-4 text-[18px] text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
+                    className="w-72 max-w-md py-2 pl-12 pr-4 text-sm text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
                   />
                 </div>
-              </form>
-            </div>
-            <div className="flex justify-between mt-7">
-              <div className="relative w-72 ">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <select
-                  onChange={(e) => {
-                    handleFilter(e.target.value);
-                  }}
-                  className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
-                >
-                  {filterItems &&
-                    filterItems.length > 0 &&
-                    filterItems.map((item) => {
-                      return (
-                        <option key={item.value} value={item.value}>
-                          {item.label}
-                        </option>
-                      );
-                    })}
-                </select>
               </div>
-              <div className="">{/* <ModelAddAccount /> */}</div>
+            </div>
+
+            {/* box button create */}
+            <div className="mt-3 md:mt-0">
+              {/* import modal create */}
+              <ImportWarehouseModal />
             </div>
           </div>
           {isLoading ? (

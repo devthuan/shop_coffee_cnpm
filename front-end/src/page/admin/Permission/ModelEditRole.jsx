@@ -137,7 +137,7 @@ const ModelEditRole = ({ data }) => {
           <div className="bg-white rounded-md shadow-lg">
             <div className="flex items-center justify-between p-1 pl-4 border-b">
               <Dialog.Title className="text-lg font-medium text-gray-800 ">
-               Cập nhật danh sách quyền
+                Cập nhật danh sách quyền
               </Dialog.Title>
               <Dialog.Close className="p-2 text-gray-400 rounded-md hover:bg-gray-100">
                 <svg
@@ -155,34 +155,57 @@ const ModelEditRole = ({ data }) => {
               </Dialog.Close>
             </div>
             <Dialog.Description className="space-y-2 p-4 mt-3 text-[15.5px] leading-relaxed text-gray-500 max-h-[600px] overflow-y-auto">
-              <div className="max-h-svh grid grid-cols-3 gap-5">
+              <div className="max-h-svh">
                 {dataPermission &&
                   dataPermission.length > 0 &&
-                  dataPermission.map((item, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="w-full px-4 mx-auto border rounded-md flex justify-start items-center py-2"
-                      >
-                        <label className="inline-flex items-center cursor-pointer">
-                          <input
-                            onChange={(e) =>
-                              handleCheckbox(item.id, e.target.checked)
-                            }
-                            type="checkbox"
-                            name={item.id}
-                            value={item.isActive}
-                            checked={item.isActive}
-                            className="sr-only peer"
-                          />
-                          <div className="relative w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                          <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                            {item.functions.name}
-                          </span>
-                        </label>
+                  // Group dataPermission by module
+                  (() => {
+                    const groupedData = dataPermission.reduce((acc, item) => {
+                      const moduleName = item.functions.module;
+
+                      if (!acc[moduleName]) {
+                        acc[moduleName] = [];
+                      }
+
+                      acc[moduleName].push(item);
+                      return acc;
+                    }, {});
+
+                  
+                    return Object.keys(groupedData).map((module, index) => (
+                      <div className="">
+                        <h3 className="text-black text-lg mt-2">{module}</h3>
+                        <div
+                          key={index}
+                          className="module-group  grid grid-cols-3 gap-2  "
+                        >
+                          {groupedData[module].map((item, idx) => (
+                            <div
+                              key={idx}
+                              className="w-full px-4 mx-auto border rounded-md flex justify-start items-center py-2"
+                            >
+                              <label className="inline-flex items-center cursor-pointer">
+                                <input
+                                  onChange={(e) =>
+                                    handleCheckbox(item.id, e.target.checked)
+                                  }
+                                  type="checkbox"
+                                  name={item.id}
+                                  value={item.isActive}
+                                  checked={item.isActive}
+                                  className="sr-only peer"
+                                />
+                                <div className="relative w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                  {item.functions.name}
+                                </span>
+                              </label>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    );
-                  })}
+                    ));
+                  })()}
               </div>
             </Dialog.Description>
             <div className="flex justify-end items-center gap-3 p-4 border-t">

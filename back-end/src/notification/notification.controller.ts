@@ -44,7 +44,7 @@ export class NotificationController {
     @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',
     @Query() query: Record<string, any>
   ) {
-    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+    const {search : _search, page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
     limit > 100? limit = 100 : limit;
     const data = this.notificationService.findAll(search, page, limit, sortBy, sortOrder, filters);
     return plainToInstance(Notification, data);
@@ -62,7 +62,7 @@ export class NotificationController {
     @Query() query: Record<string, any>
 
   ) {
-    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+    const {search : _search, page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
     limit > 100? limit = 100 : limit;
     let accountId = request['user'].id;
     const data = this.notificationService.allNotificationByAccount(accountId, search, page, limit, sortBy, sortOrder, filters);

@@ -33,7 +33,7 @@ export class FavoriteController {
     @Query() query: Record<string, any>
 
   ) {
-    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+    const {search : _search, page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
 
     limit = limit > 100? 100 : limit;
     let data =  this.favoriteService.findAll(search, page, limit, sortBy, sortOrder, filters);
@@ -53,7 +53,7 @@ export class FavoriteController {
     @Query() query: Record<string, any>
 
   ) {
-    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+    const {search : _search, page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
 
     let accountId = request['user'].id;
     let data =  this.favoriteService.getListFavoriteByAccount(accountId, search, page, limit, sortBy, sortOrder, filters);

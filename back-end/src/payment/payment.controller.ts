@@ -32,7 +32,7 @@ export class PaymentController {
     @Query() query: Record<string, any>
 
   ) {
-    const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+    const { search : _search, page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
     limit > 100? limit = 100 : limit;
     let data = this.paymentService.findAll(search, page, limit, sortBy, sortOrder, filters);
     return plainToInstance(Payments, data)

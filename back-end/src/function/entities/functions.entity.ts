@@ -12,6 +12,9 @@ export class Functions extends BaseEntity {
     codeName: string;
 
     @Column()
+    module: string;
+
+    @Column()
     method: string;
 
     @Column()
