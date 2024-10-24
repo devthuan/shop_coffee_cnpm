@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { SupplierService } from './supplier.service';
-import { CreateSupplierDto } from './dto/create-supplier.dto';
+import { CreateDetailSupplier, CreateSupplierDto } from './dto/create-supplier.dto';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
 import { plainToInstance } from 'class-transformer';
 import { Supplier } from './entities/supplier.entity';
@@ -11,7 +11,12 @@ export class SupplierController {
 
   @Post()
   create(@Body() createSupplierDto: CreateSupplierDto) {
-    return this.supplierService.create(createSupplierDto);
+    return this.supplierService.createSupplier(createSupplierDto);
+  }
+
+  @Post('detail-supplier')
+  addDetailSupplier(@Body() createDetailSupplier: CreateDetailSupplier) {
+    return this.supplierService.addDetailSupplier(createDetailSupplier);
   }
 
   @Get()
@@ -41,13 +46,13 @@ export class SupplierController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    const data = this.supplierService.findOne(id);
+    const data = this.supplierService.getDetailSupplier(id);
     return plainToInstance(Supplier, data)
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateSupplierDto: UpdateSupplierDto) {
-    return this.supplierService.update(id, updateSupplierDto);
+    return this.supplierService.updateSupplier(id, updateSupplierDto);
   }
   
   @Patch('recover/:id')
@@ -58,5 +63,9 @@ export class SupplierController {
   @Delete(':id')
   deletedSoft(@Param('id') id: string) {
     return this.supplierService.deleteSoft(id);
+  }
+  @Delete('detail/:id')
+  deletedSoftDetail(@Param('id') id: string) {
+    return this.supplierService.deleteSoftDetailSupplier(id);
   }
 }

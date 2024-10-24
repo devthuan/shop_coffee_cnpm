@@ -1,6 +1,7 @@
 import { BaseEntity } from "src/common/base.entity";
-import {  Column, Entity, OneToMany } from "typeorm";
+import {  Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { NotificationAccounts } from "./notification-account.entity";
+import { Accounts } from "src/auth/entities/accounts.entity";
 
 @Entity({name: "notification"})
 export class Notification extends BaseEntity {
@@ -16,6 +17,9 @@ export class Notification extends BaseEntity {
 
     @OneToMany(() => NotificationAccounts, notificationAccounts => notificationAccounts.notification)
     notificationAccounts: NotificationAccounts
+
+    @ManyToOne(() => Accounts, Accounts => Accounts.notification)
+    account: Accounts
 
 
 }

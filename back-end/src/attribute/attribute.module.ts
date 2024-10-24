@@ -6,7 +6,7 @@ import { Attributes } from './entities/attributes.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Attributes]), // Import module for TypeOrm and inject repository for any entity Attributes
+    TypeOrmModule.forFeature([Attributes]), 
   ],
   controllers: [AttributeController],
   providers: [AttributeService],

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/register.dto';
 import {  VerifyOtpDto } from './dto/verify-otp.dto';
@@ -6,6 +6,9 @@ import { EmailDto } from './dto/email.dto';
 import { LoginDto } from './dto/login.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { AuthGuard } from './auth.guard';
+import { plainToInstance } from 'class-transformer';
+import { Accounts } from './entities/accounts.entity';
+import { UpdateAuthDto } from './dto/update-auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -49,5 +52,6 @@ export class AuthController {
     return this.authService.forgotPassword(emailDto.email);
   }
 
+  
  
 }

@@ -12,10 +12,10 @@ export class Functions extends BaseEntity {
     codeName: string;
 
     @Column()
-    guardName: string;
+    method: string;
 
     @Column()
-    description: string;
+    endpoint: string;
 
     @Column({default: "1"})
     isActive: boolean;

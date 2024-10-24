@@ -6,7 +6,7 @@ export const RegisAPI = (email, username, password, confirmPassword) => {
 
 export const LoginAPI = (email, password) => {
   let ip = "0.0.0.0"
-  return api.post(`auth/login`,{email: email, password: password, ip: i} )
+  return api.post(`auth/login`,{email: email, password: password, ip: ip} )
 }
 
 export const SendOTPAPI = (email) =>{

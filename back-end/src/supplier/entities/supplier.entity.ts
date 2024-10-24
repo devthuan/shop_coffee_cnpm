@@ -1,5 +1,7 @@
 import { BaseEntity } from "src/common/base.entity";
-import { Column, Entity } from "typeorm";
+import { Column, Entity, OneToMany } from "typeorm";
+import { DetailSupplier } from "./detail-supplier.entity";
+import { ImportReceipts } from "src/import_receipt/entities/import_receipt.entity";
 
 
 @Entity({name: "supplier"})
@@ -37,6 +39,12 @@ export class Supplier extends BaseEntity {
     
     @Column({default: 1})
     isActive: boolean;
+
+    @OneToMany(() => DetailSupplier, detailSupplier => detailSupplier.supplier)
+    detailSupplier: DetailSupplier;
+
+    @OneToMany(() => ImportReceipts, ImportReceipts => ImportReceipts.supplier)
+    importReceipt: ImportReceipts;
 
 
 }

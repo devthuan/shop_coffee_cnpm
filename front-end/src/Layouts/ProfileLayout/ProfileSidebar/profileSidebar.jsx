@@ -2,23 +2,36 @@ import classNames from "classnames/bind";
 import styles from "./ProfileSidebar.module.scss"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle, faCircleExclamation, faCircleInfo, faDownload, faEnvelope, faGift, faHeart, faInfo, faLocation, faLocationDot, faSchoolCircleExclamation, faShield, faShieldHalved, faUser } from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from "react-redux";
 
 const cx = classNames.bind(styles)
 
 function ProfileSidebar() {
 
     const [imgUser, setImgUser] = []
-
-    
+    const id = useSelector((state) => state.userInfo.id)
+    const createdAt = useSelector((state) => state.userInfo.createdAt)
+    const updatedAt = useSelector((state) => state.userInfo.updatedAt)
+    const userName = useSelector((state) => state.userInfo.userName)
+    const email = useSelector((state) => state.userInfo.email)
+    const balance = useSelector((state) => state.userInfo.balance);
+    const ip = useSelector((state) => state.userInfo.ip);
+    const device = useSelector((state) => state.userInfo.device);
+    const typeLogin = useSelector((state) => state.userInfo.typeLogin);
+    const isActive = useSelector((state) => state.userInfo.isActive);
+    const lastLogin = useSelector((state) => state.userInfo.lastLogin);
+    const userInformation = useSelector((state) => state.userInfo.userInformation);
+    const isError = useSelector((state) => state.userInfo.error);
+    const isloading = useSelector((state) => state.userInfo.loading);
 
     return (<div className={cx("wrapper")}>
         <div className={cx("avatar")}>
             <div className={cx("avatar_content")}>
                 {imgUser ? <img src={imgUser} className={cx("img_user")} /> : <FontAwesomeIcon icon={faUser} className={cx("img_user")} />}
-                <div className={cx("name_user")}>Imran Khan</div>
+                <div className={cx("name_user")}>{userName}</div>
                 <div className={cx("register_login")}>
                     <div className={cx("register_login_text")}>Registered:</div>
-                    <div className={cx("register_login_date")}>17th may 20022</div>
+                    <div className={cx("register_login_date")}>{createdAt}</div>
                 </div>
             </div>
         </div>
