@@ -17,8 +17,21 @@ import { CategoriesModule } from './categories/categories.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { SupplierModule } from './supplier/supplier.module';
 import { NotificationModule } from './notification/notification.module';
-import { SubAttributeModule } from './sub-attribute/sub-attribute.module';
 import { CartModule } from './cart/cart.module';
+import { BillModule } from './bill/bill.module';
+import { PaymentModule } from './payment/payment.module';
+import { VoucherModule } from './voucher/voucher.module';
+import { InventoryModule } from './inventory/inventory.module';
+import { ImportReceiptModule } from './import_receipt/import_receipt.module';
+import { CommonModule } from './common/common.module';
+import { UserInformationModule } from './user-information/user-information.module';
+import { FavoriteModule } from './favorite/favorite.module';
+import { TransactionHistoryModule } from './transaction-history/transaction-history.module';
+import { AccountModule } from './account/account.module';
+import { SeederModule } from './seeder/seeder.module';
+import { PermissionsGuard } from './auth/permisson.guard';
+import { RoleModule } from './role/role.module';
+import { FunctionModule } from './function/function.module';
 
 
 @Module({
@@ -64,9 +77,22 @@ import { CartModule } from './cart/cart.module';
     ReviewsModule,
     SupplierModule,
     NotificationModule,
-    SubAttributeModule,
-    CartModule,],
+    CartModule,
+    BillModule,
+    PaymentModule,
+    VoucherModule,
+    InventoryModule,
+    ImportReceiptModule,
+    CommonModule,
+    UserInformationModule,
+    FavoriteModule,
+    TransactionHistoryModule,
+    AccountModule,
+    SeederModule,
+    RoleModule,
+    FunctionModule,
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, PermissionsGuard],
 })
 export class AppModule {}

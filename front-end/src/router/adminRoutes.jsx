@@ -1,3 +1,4 @@
+import Page404 from "~/components/Page404/Page404";
 import DashboardLayout from "~/Layouts/DashboardLayout/DashboardLayout";
 import { Account } from "~/page/admin/Account/Account";
 import { Attribute } from "~/page/admin/Attribute/Attribute";
@@ -12,6 +13,7 @@ import { Product } from "~/page/admin/Product/Product";
 import { Receipt } from "~/page/admin/Receipt/Receipt";
 import { Review } from "~/page/admin/Review/Review";
 import { Supplier } from "~/page/admin/Supplier/Supplier";
+import { Template } from "~/page/admin/Template/Template";
 import { Voucher } from "~/page/admin/Voucher/Voucher";
 import { Warehouse } from "~/page/admin/Warehouse/Warehouse";
 
@@ -20,7 +22,11 @@ export const adminRoutes = [
   { path: "/admin", component: Dashboard, layout: DashboardLayout },
   { path: "/admin/account", component: Account, layout: DashboardLayout },
   { path: "/admin/permission", component: Permission, layout: DashboardLayout },
-  { path: "/admin/notification", component: Notification, layout: DashboardLayout, },
+  {
+    path: "/admin/notification",
+    component: Notification,
+    layout: DashboardLayout,
+  },
   { path: "/admin/voucher", component: Voucher, layout: DashboardLayout },
   { path: "/admin/bill", component: Bill, layout: DashboardLayout },
   { path: "/admin/receipt", component: Receipt, layout: DashboardLayout },
@@ -32,4 +38,6 @@ export const adminRoutes = [
   { path: "/admin/attribute", component: Attribute, layout: DashboardLayout },
   { path: "/admin/discount", component: Discount, layout: DashboardLayout },
   { path: "/admin/review", component: Review, layout: DashboardLayout },
+  { path: "/admin/template", component: Template, layout: DashboardLayout },
+  { path: "*", component: Page404, layout: null },
 ];
