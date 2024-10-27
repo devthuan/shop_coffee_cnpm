@@ -11,10 +11,15 @@ import { DetailProduct } from "~/services/ProductService";
 import FeedBackProduct from "./FeedBackProduct";
 import DescriptionProduct from "./DescriptionProduct";
 import { useDispatch, useSelector } from "react-redux"; // Import các hook của Redux
-import { addToCart, removeFromCart, updateCartQuantity } from "../../redux/features/cart/cartSlice"; // Import các action
+import { AddToCart } from "~/services/CartService";
+import { addToCart } from "~/redux/features/cart/cartSlice";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import { HandleApiError } from "~/Utils/HandleApiError";
 
 const cx = classNames.bind(styles);
 export const Product = () => {
+  const navigate = useNavigate()
   const [product, setProduct] = useState({});
   const [statistical, setStatistical] = useState({})
   const [showDescription, setShowDescription] = useState(true);
@@ -22,14 +27,32 @@ export const Product = () => {
   const [textDescription, setTextDescription] = useState('gray')
   const [textFeedBack, setTextFeedBack] = useState('black')
   const [selectedAttribute, setSelectedAttribute] = useState(null);
-  // const [countReview, setCountReview] = useState(0)
 
-  const dispatch = useDispatch(); // Sử dụng dispatch để gửi action
-  const cart = useSelector((state) => state.cart); // Lấy dữ liệu giỏ hàng từ store
-  const handleAddToCart = () => {
-    dispatch(addToCart([product])); // Thêm sản phẩm vào giỏ
+  const dispatch = useDispatch();
+  const handleAddToCart = async (ProductAttributesId, quantity = 1) => {
+    try {
+      const response = await AddToCart({
+        ProductAttributesId,
+        quantity: quantity
+      })
+      console.log(response)
+      if (response && response.status === 201) {
+        toast.success("Thêm vào giỏ hàng thành công")
+      }
+     
+
+    }
+    catch (error) {
+      const result = HandleApiError(error);
+      if (result) {
+        toast.error(result);
+      } else {
+        toast.error("Có lỗi xảy ra, vui lòng thử lại");
+      }
+    }
+
+
   };
-
 
   var settings = {
     dots: true,
@@ -47,9 +70,9 @@ export const Product = () => {
     const fetchDetailProduct = async () => {
       try {
         const response = await DetailProduct();
-        console.log(response)
-        setProduct(response.product)
-        setStatistical(response.statistical)
+        console.log(response.data.product)
+        setProduct(response.data.product)
+        setStatistical(response.data.statistical)
       }
       catch (error) {
         console.log("Error when get detail product : ", error);
@@ -73,6 +96,7 @@ export const Product = () => {
     setTextDescription('gray')
     setTextFeedBack('black')
   }
+
   // click feedback 
   const clickFeedBack = () => {
     setShowFeedBack(true)
@@ -81,12 +105,11 @@ export const Product = () => {
     setTextFeedBack('gray')
   }
 
-  // const handleReviewCountChange = (count) => {
-  //   setCountReview(count);
-  // };
 
   return (
     <div className="">
+      <p onClick={() => navigate('../cart')}>Vào giỏ hàng</p>
+
       <div className={cx("mb-7")}>
         {product && statistical && product.images ? (
           <div className={cx("rounded-s-xl grid lg:grid-cols-11 max-sm:gap-7 border border-gray-200 mb-16")}>
@@ -113,36 +136,25 @@ export const Product = () => {
               <div className={cx("flex px-4 mt-4")}>
                 <div className={cx("w-1/2 mr-10")}>
                   <div className={cx("w-full flex items-center")}>
-                    <FontAwesomeIcon className={cx("text-yellow-300 pr-2 text-[19px]")} icon={faStar} />
-                    <p class="text-[#323134] text-[19px] font-semibold font-['Gordita'] leading-relaxed pr-2">({statistical.averageRating})</p>
-                    <p class="text-[#323134] text-[19px] font-normal font-['Gordita'] leading-relaxed pr-2">{statistical.totalReview}</p>
-                    <p style = {{ fontSize : '16px' }}>Customer Reviews</p>
+                    <div className="flex items-center">
+                      <FontAwesomeIcon className={cx("text-yellow-300 pr-2 text-[17px]")} icon={faStar} />
+                      <p class="text-[#323134] text-[17px] font-semibold font-['Gordita'] leading-relaxed pr-2">({statistical.averageRating})</p>
+                    </div>
+                    <div className="flex items-center">
+                      <p class="text-[#323134] text-[17px] font-normal font-['Gordita'] leading-relaxed pr-2">{statistical.totalReview}</p>
+                      <p style={{ fontSize: '17px' }}>Customer Reviews</p>
+                    </div>
                   </div>
                   <p class="w-full text-start text-[#000000] pt-6 text-[23px] font-semiblod font-['Gordita'] leading-9">Size/Weight</p>
                   <div class="flex justify-start mt-5">
-                    {/* <select class="w-[100px] h-[30px] text-[#010101]  text-[15px] font-medium font-['Gordita'] leading-snug border border-gray-200 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                      <option value="">Hạt</option>
-                      <option value="">Xay</option>
-                    </select> */}
                     <select value={selectedAttribute ? selectedAttribute.id : ""} onChange={handleAttributeChange} class=" w-[120px] text-[#000000] text-[17px] font-medium font-['Gordita'] leading-snug border border-gray-200 rounded-tr rounded-br px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                      <option>Chọn</option>
+                      <option value="">Chọn</option>
                       {product.productAttributes.map((item, index) => (
                         <option key={index} value={item.id}>{item.attributes.name}</option>
                       ))}
                     </select>
                   </div>
 
-                  {/* <div class="h-[34px] justify-start items-start gap-5 flex mt-4 ">
-                    <div class="px-3 py-1.5 bg-[#e3e0e0] rounded-md justify-start items-start gap-2.5 flex">
-                      <div class="text-[#9e9da8] text-[15px] font-medium font-['Gordita'] leading-snug">Small</div>
-                    </div>
-                    <div class="px-3 py-1.5 bg-[#e3e0e0] rounded-md justify-start items-start gap-2.5 flex">
-                      <div class="text-[#9e9da8] text-[15px] font-medium font-['Gordita'] leading-snug">Medium</div>
-                    </div>
-                    <div class="px-3 py-1.5 bg-[#e3e0e0] rounded-md justify-start items-start gap-2.5 flex">
-                      <div class="text-[#9e9da8] text-[15px] font-medium font-['Gordita'] leading-snug">Large</div>
-                    </div>
-                  </div> */}
                   {selectedAttribute && (
                     <div className={cx("w-full flex flex-wrap pt-4 ")}>
                       <p class="text-[#323134] text-2xl text-start font-normal font-['Gordita'] leading-relaxed pr-1">
@@ -158,13 +170,6 @@ export const Product = () => {
                     <p className="text-[19px]">Thể loại: </p>
                     <p class="text-[#232325] text-[19px] font-semibold font-['Gordita'] leading-relaxed pl-3">{product.category.name}</p>
                   </div>
-                  {/* <div class="h-[50px] flex flex-col justify-start items-start gap-1 pt-6">
-                    <div className={cx("flex items-center")}>
-                      <FontAwesomeIcon className={cx("text-gray-500")} icon={faCartShopping} />
-                      <p class="pl-3 text-[#1a162e] text-xl font-semibold font-['Gordita'] leading-relaxed">Delivery</p>
-                    </div>
-                    <p class="pl-10 text-[#1a162e] text-lg font-normal font-['Gordita'] leading-tight">From $6 for 1-3 days</p>
-                  </div> */}
 
                   {selectedAttribute && (
                     <div className={cx("flex items-center")}>
@@ -178,25 +183,31 @@ export const Product = () => {
                       <div class="justify-start items-start gap-2.5 inline-flex">
 
                         {selectedAttribute && (
-                          <div class="text-black text-[21px] font-medium font-['Gordita'] leading-normal">
+                          <div class={`text-black text-[21px] font-medium font-['Gordita'] leading-normal ${product?.productDiscount.length > 0 ? "line-through" : ""}`}>
                             {(selectedAttribute.sellPrice).toLocaleString('vi-VN')} đ
                           </div>
                         )}
 
-                        <div class="px-2 py-0.5 bg-white/80 justify-start items-start gap-2.5 flex">
-                          <div class="w-[30px] text-[21px] h-[17px] text-[#67b044] font-medium font-['Gordita'] leading-tight">10%</div>
-                        </div>
+                        {product.productDiscount.length > 0 && (
+                          <div class="px-2 py-0.5 bg-white/80 justify-start items-start gap-2.5 flex">
+                            <div class="w-[30px] text-[21px] h-[17px] text-[#67b044] font-medium font-['Gordita'] leading-tight">{product.productDiscount[0].value}%</div>
+                          </div>
+                        )}
                       </div>
 
                       {selectedAttribute && (
-                        <div class="text-black text-[21px] font-medium font-['Gordita'] leading-9">
-                          {(selectedAttribute.sellPrice - 10 / 100 * (selectedAttribute.sellPrice)).toLocaleString('vi-VN')} đ
+                        <div class="text-black text-[21px] font-medium font-['Gordita'] leading-9 ">
+                          {(selectedAttribute.sellPrice - (product?.productDiscount.length > 0 ? product.productDiscount[0].value : 0)  / 100 * (selectedAttribute.sellPrice)).toLocaleString('vi-VN')} đ
                         </div>
                       )}
                     </div>
                     <div class="w-full justify-start items-start gap-[19px] inline-flex">
                       <div style={{ width: '100%', height: '40px' }} class=" bg-[#ffb700] rounded-md justify-center items-center gap-2.5 inline-flex">
-                        <div onClick={() => handleAddToCart()} class=" text-[#1a162e] text-[16px] font-medium font-['Gordita'] leading-relaxed">Add to cart</div>
+                        <div 
+                          onClick={() => selectedAttribute ? handleAddToCart(selectedAttribute.id) : toast.error("Vui lòng chọn loại sản phẩm cần thêm vào giỏ hàng")} 
+                          class=" text-[#1a162e] text-[16px] font-medium font-['Gordita'] leading-relaxed cursor-pointer">
+                          Add to cart
+                        </div>
                       </div>
                       <div class="p-[10px] rounded-md border border-[#d2d1d6] justify-center items-center gap-2.5 flex">
                         <div class="w-6 h-6 px-[2.50px] py-[3px] justify-center items-center flex">
@@ -228,9 +239,23 @@ export const Product = () => {
         </div>
 
 
-        <DescriptionProduct show={showDescription} content={product.description} />
+        <DescriptionProduct show={showDescription} content={product?.description} />
         <FeedBackProduct show={showFeedBack} />
 
+        <ToastContainer
+          className="text-base"
+          fontSize="10px"
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
 
       </div>
     </div >

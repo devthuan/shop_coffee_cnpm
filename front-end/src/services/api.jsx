@@ -10,7 +10,8 @@ api.interceptors.request.use(
   async (config) => {
     // lấy token strong localStorage
     const tokenAndPermision = await getItemWithExpiration("token"); // Truy cập token từ Redux store
-    const token = tokenAndPermision[0];
+    // const token = tokenAndPermision[0];
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YmE0MjVjLTczZDctNDFkZi05MmVhLWE1N2VkNmJjYTc4ZCIsInVzZXJuYW1lIjoidGQiLCJlbWFpbCI6InRwdGFta2llbUBnbWFpbC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3Mjk2NTc4NzUsImV4cCI6MTc2NjY1Njg2NX0.25aReJ2kHXNAsYQYUbSl4zcC1Ls5-ZkcqIzNsmf_Yp0';
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }

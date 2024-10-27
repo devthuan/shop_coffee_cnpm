@@ -52,7 +52,6 @@ const Menu = (props) => {
 };
 
 const Sidebar = () => {
-
   const navigation = [
     {
       href: "/admin",
@@ -279,7 +278,7 @@ const Sidebar = () => {
 
   const navsFooter = [
     {
-      href: "javascript:void(0)",
+      href: "#",
       name: "Help",
       icon: (
         <svg
@@ -299,7 +298,7 @@ const Sidebar = () => {
       ),
     },
     {
-      href: "javascript:void(0)",
+      href: "#",
       name: "Settings",
       icon: (
         <svg
@@ -324,7 +323,7 @@ const Sidebar = () => {
       ),
     },
     {
-      href: "javascript:void(0)",
+      href: "#",
       name: "Logout",
       icon: (
         <svg
@@ -358,11 +357,11 @@ const Sidebar = () => {
   }, []);
 
   return (
-    <div className="w-full">
-      <nav className=" w-full  h-screen border-r bg-white space-y-4 ">
-        <div class="flex flex-col h-full">
-          <div className="h-20 flex items-center px-8">
-            <a href="javascript:void(0)" className="flex-none">
+    <div className="fixed  top-0 left-0 bottom-0 h-full">
+      <nav className=" w-full  h-screen border-r bg-white space-y-1 ">
+        <div className="flex flex-col h-full">
+          <div className="h-20 flex items-center px-4">
+            <a href="#" className="flex-none">
               Welcome to oshi
             </a>
           </div>
@@ -427,7 +426,7 @@ const Sidebar = () => {
                       Oshi
                     </span>
                     <a
-                      href="javascript:void(0)"
+                      href="#"
                       className="block mt-px text-gray-600 hover:text-indigo-600 text-xs"
                     >
                       View profile

@@ -13,6 +13,12 @@ export class CreateFunctionDto {
     guardName: string;
 
     @IsString()
+    method: string;
+
+    @IsString()
+    endpoint: string;
+
+    @IsString()
     description: string;
 
 

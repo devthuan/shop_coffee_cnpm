@@ -1,4 +1,5 @@
-import { IsEmail, IsNumber, IsPhoneNumber, IsString } from "class-validator";
+import { Type } from "class-transformer";
+import { IsArray, IsEmail, IsNumber, IsPhoneNumber, IsString, Min } from "class-validator";
 
 export class CreateSupplierDto {
     @IsString()
@@ -33,5 +34,36 @@ export class CreateSupplierDto {
     @IsString()
     bankAddress: string;
 
+    @IsArray()
+    @Type(()=> DetailSupplier)
+    detailSuppliers: DetailSupplier[];
     
+}
+
+class DetailSupplier {
+    @IsNumber()
+    @Min(0)
+    price: number;
+
+    supplierId: string;
+
+    @IsString()
+    productAttributeId: string;
+
+}
+
+
+export class CreateDetailSupplier {
+     
+    @IsNumber()
+    @Min(0)
+    price: number;
+
+    @IsString()
+    supplierId: string;
+
+    @IsString()
+    productAttributeId: string;
+
+
 }

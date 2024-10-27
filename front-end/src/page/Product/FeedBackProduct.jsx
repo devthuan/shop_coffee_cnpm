@@ -13,11 +13,8 @@ export default function FeedBackProduc({ show }) {
             try {
                 const response = await EvaluateProduct();
                 console.log(response)
-                setEvaluates(response)
-                // if(response)
-                // {
-                //     countReviewer(response.data[0].reviews.length)
-                // }
+                setEvaluates(response.data)
+                
             }
             catch (error) {
                 console.log("Error when get evaluate product : ", error);

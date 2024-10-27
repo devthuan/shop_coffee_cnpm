@@ -3,39 +3,17 @@
 import api from "./api";
 
 // code demo
-export const DetailProduct = async() => {
-  try 
-  {
-    const response = await api.get(`products/detail/d45da10e-1e3a-4a6c-8923-0840e1003774`)
-    return response.data
-  }
-  catch(error)
-  {
-    console.error("Error when get data of detail product : ", error);
-  }
+export const DetailProduct = async () => {
+  // return await api.get(`products/detail/895a4090-8eee-4e11-888c-42e3a9f3323a`)
+  return await api.get(`products/detail/2fa2d5ec-b092-4cd4-ba34-8bc82ae9273e`)
+
 };
 
 
-export const EvaluateProduct = async() => {
-  try 
-  {
-    const response = await api.get(`reviews/by-product/d45da10e-1e3a-4a6c-8923-0840e1003774`)
-    return response.data;
-  }
-  catch(error)
-  {
-    console.log("Error when get data of evaluate product : ", error)
-  }
+export const EvaluateProduct = async () => {
+  return await api.get(`reviews/by-product/2fa2d5ec-b092-4cd4-ba34-8bc82ae9273e`)
 }
 
-export const DiscountProduct = async() => {
-  try 
-  {
-    const response = await api.get(`discount`)
-    return response.data;
-  }
-  catch(error)
-  {
-    console.log("Error when get data of evaluate product : ", error)
-  }
+export const DiscountProduct = async () => {
+  return await api.get(`discount`)
 }

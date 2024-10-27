@@ -28,9 +28,10 @@ export const cartSlice = createSlice({
     // add cart
     addToCart: (state, action) => {
       const newItem = action.payload;
-      const existingItem = state.items.find((item) => item.id === newItem.id);
+      console.log(newItem)
+      const existingItem = state.data.find((item) => item.id === newItem.id);
       if (!existingItem) {
-        state.items.push({
+        state.data.push({
           ...newItem,
           quantity: 1,
         });
@@ -42,44 +43,37 @@ export const cartSlice = createSlice({
       state.totalPrice += newItem.price;
     },
 
-    removeFromCart: (state, action) => {
-      const id = action.payload;
-      const existingItem = state.items.find((item) => item.id === id);
+    deleteCart: (state, action) => {
+      const id = action.payload.id;
+      const existingItem = state.data.find((item) => item.id === id);
 
       if (existingItem) {
-        state.totalQuantity -= existingItem.quantity;
-        state.totalPrice -= existingItem.price * existingItem.quantity;
-        state.items = state.items.filter((item) => item.id !== id);
+        state.data = state.data.filter((item) => item.id !== id);
       }
     },
 
 
     increaseCart: (state, action) => {
-      const { id } = action.payload;
+      const id = action.payload.id
       state.data.map((cart, index) => {
-        if(cart.id != id)
-        {
+        if (cart.id === id) {
           state.data[index].quantity += 1
         }
       })
     },
 
     decreaseCart: (state, action) => {
-      const { id } = action.payload;
+      const id = action.payload.id
+      console.log(id)
       state.data.map((cart, index) => {
-        if(cart.id != id)
-        {
-          if(state.data[index].quantity === 1)
-          {
-            return;
-          }
+        if (cart.id === id) {
           state.data[index].quantity -= 1
         }
       })
-    }
+    },
   },
 });
 
-export const { initCart, addToCart, removeFromCart , increaseCart, decreaseCart} = cartSlice.actions;
+export const { initCart, addToCart, deleteCart, increaseCart, decreaseCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

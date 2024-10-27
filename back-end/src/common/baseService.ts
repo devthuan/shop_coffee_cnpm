@@ -22,6 +22,14 @@ export class BaseService<T extends BaseEntity> {
           if (createDto['code']) {
             queryBuilder.orWhere('entity.code = :code', { code: createDto['code'] })
           }
+          
+          if (createDto['codeName']) {
+            queryBuilder.orWhere('entity.codeName = :codeName', { codeName: createDto['codeName'] })
+          }
+          
+          if (createDto['guardName']) {
+            queryBuilder.orWhere('entity.guardName = :guardName', { guardName: createDto['guardName'] })
+          }
 
           queryBuilder.andWhere('entity.deletedAt is null')
           
@@ -149,6 +157,7 @@ export class BaseService<T extends BaseEntity> {
     try {
       const findData = await this.repository.createQueryBuilder('entity')
         .where('entity.id = :id', {id})
+        .andWhere('entity.deletedAt is null')
         .getOne()
 
       if(!findData){
@@ -167,7 +176,9 @@ export class BaseService<T extends BaseEntity> {
         queryBuilder.andWhere('entity.deletedAt is null')
 
         const existingEntity = await queryBuilder.getOne();
+
       if(existingEntity ) {
+        
         throw new ConflictException('Name or code is already taken')
       }
     }
@@ -189,6 +200,10 @@ export class BaseService<T extends BaseEntity> {
 
   async deleteSoft(id: string): Promise<object> {
     try {
+      const entityName = this.repository.target instanceof Function 
+      ? this.repository.target.name 
+      : this.repository.target;
+
       const data = await this.repository.createQueryBuilder('entity')
       .where('entity.id = :id', {id})
       .andWhere('entity.deletedAt IS NULL')
@@ -201,7 +216,7 @@ export class BaseService<T extends BaseEntity> {
       data.deletedAt = new Date();
       await this.repository.save(data);
 
-      return { message: 'Delete success' }
+      return { message: `Delete ${entityName} success` }
 
 
     } catch (error) {
@@ -211,6 +226,10 @@ export class BaseService<T extends BaseEntity> {
 
   async recover(id: string): Promise<object> {
     try {
+      const entityName = this.repository.target instanceof Function 
+      ? this.repository.target.name 
+      : this.repository.target;
+
       const data = await this.repository.createQueryBuilder('entity')
         .where('entity.id = :id', {id})
         .andWhere('entity.deletedAt is not null')
@@ -222,9 +241,52 @@ export class BaseService<T extends BaseEntity> {
         
         data.deletedAt = null
         await this.repository.save(data);
-        return {message: "recover data successfully."}
+        return {message: `recover ${entityName} successfully.`}
     } catch (error) {
       CommonException.handle(error)
+    }
+  }
+
+  async checkExisting(data: { name?: string; code?: string; id?: string }): Promise<boolean> {
+    try {
+      const query =  this.repository.createQueryBuilder('entity')
+      .where('entity.deletedAt is null');
+      if (data.name) {
+        query.andWhere('entity.name = :name ', { name: data.name})
+      }
+      if(data.code) {
+        query.andWhere('entity.code = :code ', { code: data.code})
+      }
+      if(data.id) {
+        query.andWhere('entity.id!= :id ', { id: data.id})
+      }
+      // Nếu cả name và code đều không có giá trị thì sẽ không trả về kết quả hợp lệ
+      if (!data.name && !data.code && !data.code) {
+        return false;
+      }
+      const check = await query.getOne();
+       
+       return!!check;
+    } catch (error) {
+      CommonException.handle(error)
+      return false;
+    }
+  }
+  async checkExistingCommon(data: { column?: string, value: string,  id?: string }): Promise<boolean> {
+    try {
+      const query =  this.repository.createQueryBuilder('entity')
+      .where('entity.deletedAt is null');
+      if (data.column) {
+        query.andWhere(`entity.${data.column} = :value `, { value: data.value})
+      }
+      
+    
+      const check = await query.getOne();
+       
+       return!!check;
+    } catch (error) {
+      CommonException.handle(error)
+      return false;
     }
   }
 }

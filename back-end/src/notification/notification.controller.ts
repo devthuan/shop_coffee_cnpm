@@ -1,17 +1,32 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Req, BadRequestException } from '@nestjs/common';
 import { NotificationService } from './notification.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { plainToInstance } from 'class-transformer';
 import { Notification } from './entities/notification.entity';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { CommonException } from 'src/common/exception';
 
 @Controller('notification')
 export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
 
+  @UseGuards(AuthGuard)
   @Post()
-  create(@Body() createNotificationDto: CreateNotificationDto) {
+  create(@Req() request: Request, @Body() createNotificationDto: CreateNotificationDto) {
+    console.log(createNotificationDto.roleId)
+    try {
+      if(createNotificationDto.typeSend === "role" && !createNotificationDto.roleId){
+      throw new BadRequestException("roleId is required for role type notification")
+    }
+     if(createNotificationDto.typeSend === "user" && !createNotificationDto.userId){
+      throw new BadRequestException("userId is required for user type notification")
+    }
+    createNotificationDto.accountId = request['user'].id
     return this.notificationService.create(createNotificationDto);
+    } catch (error) {
+      CommonException.handle(error)
+    }
   }
 
   @Get()
@@ -25,6 +40,20 @@ export class NotificationController {
     const data = this.notificationService.findAll(search, page, limit, sortBy, sortOrder);
     return plainToInstance(Notification, data);
   }
+  @UseGuards(AuthGuard)
+  @Get('user')
+  allNotificationByAccount(
+    @Req() request: Request,
+    @Query('search') search: string,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('sortBy') sortBy: string,
+    @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC'
+  ) {
+    let accountId = request['user'].id;
+    const data = this.notificationService.allNotificationByAccount(accountId, search, page, limit, sortBy, sortOrder);
+    return plainToInstance(Notification, data);
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -33,11 +62,21 @@ export class NotificationController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateNotificationDto: UpdateNotificationDto) {
-    return this.notificationService.update(id, updateNotificationDto);
+    return this.notificationService.updateNoti(id, updateNotificationDto);
+  }
+  @Patch('read/:id')
+  readNotification(@Param('id') id: string) {
+    return this.notificationService.readNotification(id);
   }
 
   @Delete(':id')
   deleteSoft(@Param('id') id: string) {
-    return this.notificationService.deleteSoft(id);
+    return this.notificationService.deleteSoftNotification(id);
+  }
+  @UseGuards(AuthGuard)
+  @Delete('/user/:id')
+  deleteSoftUser(@Req() request: Request, @Param('id') id: string) {
+    let accountId = request['user'].id
+    return this.notificationService.deleteSoftUser(id, accountId);
   }
 }
