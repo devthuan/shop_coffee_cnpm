@@ -17,21 +17,18 @@ export const ReceiptModelEdit = ({ data }) => {
   const [detailReceipt, setDetailReceipt] = useState({});
 
   const handleBtnUpdate = async (statusReceipt) => {
-    
     try {
-        const response = await ChangeStatusReceiptAPI(data.id, statusReceipt);
-        if (response && response.data) {
-          const { statusCode, status, message } = response.data;
-            dispatch(changeStatusReceipt({ id: data.id, status: statusReceipt }));
-            toast.success("Cập nhật trạng thái thành công");
-        }
-        
-      } catch (error) {
-        const { message, status } = HandleApiError(error);
-        if (status === "error") {
-        }
+      const response = await ChangeStatusReceiptAPI(data.id, statusReceipt);
+      if (response && response.data) {
+        const { statusCode, status, message } = response.data;
+        dispatch(changeStatusReceipt({ id: data.id, status: statusReceipt }));
+        toast.success("Cập nhật trạng thái thành công");
       }
-    
+    } catch (error) {
+      const { message, status } = HandleApiError(error);
+      if (status === "error") {
+      }
+    }
   };
 
   useEffect(() => {

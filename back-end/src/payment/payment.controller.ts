@@ -10,7 +10,7 @@ import { PermissionsGuard } from 'src/auth/permisson.guard';
 import { Request, Response } from 'express';
 
 @Controller('payment')
-// @UseGuards(AuthGuardCustom)
+@UseGuards(AuthGuardCustom)
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
@@ -88,8 +88,6 @@ export class PaymentController {
     return this.paymentService.deleteSoft(id);
   }
 
-  // vnpay
-  
 
  
 }
