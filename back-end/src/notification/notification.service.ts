@@ -33,7 +33,9 @@ export class NotificationService extends BaseService<Notification> {
     page : number = 1,
     limit : number = 10,
     sortBy : string = 'createdAt',
-    sortOrder: 'ASC' | 'DESC' = 'ASC'
+    sortOrder: 'ASC' | 'DESC' = 'ASC',
+    filters: Record<string, any> = {} // Nhận filters từ controller
+
     ): Promise<{ total: number;  currentPage: number; totalPage: number; limit : number; data: NotificationAccounts[]}>{
     try {
 
@@ -45,6 +47,19 @@ export class NotificationService extends BaseService<Notification> {
       if (search) {
         notificationAccounts.andWhere('notification.title LIKE :search', { search: `%${search}%` });
       }
+
+      // Filter conditions
+      Object.keys(filters).forEach((key) => {
+        if (filters[key] !== undefined && filters[key] !== null) {
+          let value = filters[key];
+          
+          // Chuyển đổi giá trị 'true' hoặc 'false' thành boolean
+          if (value === 'true') value = true;
+          if (value === 'false') value = false;
+
+          notificationAccounts.andWhere(`notificationAccounts.${key} = :${key}`, { [key]: value });
+        }
+      });
 
       const total = await notificationAccounts.getCount();
       const totalPage = Math.ceil(total / limit);

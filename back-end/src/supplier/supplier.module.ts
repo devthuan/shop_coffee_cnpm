@@ -5,11 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Supplier } from './entities/supplier.entity';
 import { DetailSupplier } from './entities/detail-supplier.entity';
 import { ProductModule } from 'src/product/product.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Supplier, DetailSupplier]),
-    
+      AuthModule,
     forwardRef(() => ProductModule)
   ],
   controllers: [SupplierController],

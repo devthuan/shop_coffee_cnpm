@@ -24,6 +24,7 @@ export class SupplierService extends BaseService<Supplier> {
     super(supplierRepository)
   }
 
+
   async createSupplier(createSupplierDto: CreateSupplierDto): Promise<Supplier> {
     const queryRunner = this.dataSource.createQueryRunner()
     try {
@@ -121,19 +122,85 @@ export class SupplierService extends BaseService<Supplier> {
   }
   }
 
-  async getDetailSupplier(supplierId: string): Promise<Supplier>{
+  // async findAll(
+  //     search: string,
+  //     page : number = 1,
+  //     limit : number = 10,
+  //     sortBy : string = 'createdAt',
+  //     sortOrder: 'ASC' | 'DESC' = 'ASC',
+  //     filters: Record<string, any> = {} // Nhận filters từ controller
+  //   ): Promise<{ total: number;  currentPage: number; totalPage: number; limit : number; data: T[]}> 
+  //   { 
+  //   try {
+  //       const queryBuilder = this.supplierRepository.createQueryBuilder('supplier')
+  //         .leftJoinAndSelect('supplier.detailSupplier', 'detailSupplier')
+  //         .leftJoinAndSelect('detailSupplier.productAttribute', 'productAttribute')
+  //         .leftJoinAndSelect('productAttribute.attributes', 'attributes')
+  //         .leftJoinAndSelect('productAttribute.products', 'products')
+  //         .where('supplier.deletedAt IS NULL')
+
+  //         if (search) {
+  //           queryBuilder.andWhere('entity.name LIKE :search', { search: `%${search}%` });
+  //         }
+
+  //          // Filter conditions
+  //           Object.keys(filters).forEach((key) => {
+  //             if (filters[key] !== undefined && filters[key] !== null) {
+  //               let value = filters[key];
+                
+  //               // Chuyển đổi giá trị 'true' hoặc 'false' thành boolean
+  //               if (value === 'true') value = true;
+  //               if (value === 'false') value = false;
+
+  //               queryBuilder.andWhere(`entity.${key} = :${key}`, { [key]: value });
+  //             }
+  //           });
+
+  //         // count total
+  //         const total = await queryBuilder.getCount();
+
+  //        // pagination page
+  //         const data = await queryBuilder
+  //           .skip((page - 1) * limit) // Bỏ qua các bản ghi đã được hiển thị
+  //           .take(limit) // Giới hạn số bản ghi trả về
+  //           .orderBy(`entity.${sortBy}`, sortOrder) // Sắp xếp theo trường chỉ định
+  //           .getMany(); // Lấy danh sách bản ghi
+
+
+  //     const totalPage = Math.ceil(total / limit);
+
+  //     return {
+  //       total,
+  //       totalPage,
+  //       currentPage: +page,
+  //       limit: +limit,
+  //       data
+  //     }
+  //   } catch (error) {
+  //     CommonException.handle(error)
+  //   }
+  // }
+
+  async getDetailSupplier(supplierId: string): Promise<Supplier[]>{
     try {
-      const supplier = await this.supplierRepository.createQueryBuilder('supplier')
-        .leftJoinAndSelect('supplier.detailSupplier', 'detailSupplier')
+      const supplier = await this.supplierRepository
+        .createQueryBuilder('supplier')
+        .leftJoinAndSelect('supplier.detailSupplier', 'detailSupplier', 
+          `detailSupplier.version = (
+            SELECT MAX(ds.version)
+            FROM detailSupplier ds
+            WHERE ds.productAttributeId = detailSupplier.productAttributeId
+            AND ds.deletedAt IS NULL
+          )`
+        )
         .leftJoinAndSelect('detailSupplier.productAttribute', 'productAttribute')
         .leftJoinAndSelect('productAttribute.attributes', 'attributes')
         .leftJoinAndSelect('productAttribute.products', 'products')
         .where('supplier.id = :supplierId', { supplierId })
         .andWhere('supplier.deletedAt IS NULL')
         .andWhere('detailSupplier.deletedAt IS NULL')
-        .orderBy('detailSupplier.version', 'DESC')
-        .limit(1)
-        .getOne();
+        .getMany();
+
 
         if (!supplier) {
           throw new BadRequestException('Supplier not found');

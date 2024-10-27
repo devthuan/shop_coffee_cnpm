@@ -41,9 +41,10 @@ export class ReviewsService extends BaseService<Reviews> {
     // Check if the account bought the product before
     for (let bill of accounts.bills) {
       for (let detail of bill.billDetails) {
-          if(detail.productAttributes.products.id === createReview.productId){
+          if(detail.productAttributes.products.id === createReview.productsId){
              hasBoughtProduct = true;
               break;
+
           }
        
       }
@@ -53,7 +54,7 @@ export class ReviewsService extends BaseService<Reviews> {
     throw new BadRequestException('Account has not bought this product');
   }
     const products = await this.productRepository.createQueryBuilder('products')
-     .where('products.id = :id', {id: createReview.productId})
+     .where('products.id = :id', {id: createReview.productsId})
      .andWhere('products.deletedAt IS NULL')
      .getOne();
       

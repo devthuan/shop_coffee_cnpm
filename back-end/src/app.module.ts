@@ -29,6 +29,9 @@ import { FavoriteModule } from './favorite/favorite.module';
 import { TransactionHistoryModule } from './transaction-history/transaction-history.module';
 import { AccountModule } from './account/account.module';
 import { SeederModule } from './seeder/seeder.module';
+import { PermissionsGuard } from './auth/permisson.guard';
+import { RoleModule } from './role/role.module';
+import { FunctionModule } from './function/function.module';
 
 
 @Module({
@@ -87,8 +90,10 @@ import { SeederModule } from './seeder/seeder.module';
     TransactionHistoryModule,
     AccountModule,
     SeederModule,
+    RoleModule,
+    FunctionModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, PermissionsGuard],
 })
 export class AppModule {}

@@ -1,15 +1,17 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable, UseGuards } from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { Accounts } from 'src/auth/entities/accounts.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { BaseService } from 'src/common/baseService';
-import { Roles } from 'src/role-permission/entities/roles.entity';
 import { CommonException } from 'src/common/exception';
 import { AuthService } from 'src/auth/auth.service';
 import { UserInformation } from 'src/user-information/entities/user-information.entity';
 import { MailService } from 'src/mail/mail.service';
+import { PermissionsGuard } from 'src/auth/permisson.guard';
+import { Permissions } from 'src/auth/permission.decorator';
+import { Roles } from 'src/role/entities/roles.entity';
 
 @Injectable()
 export class AccountService extends BaseService<Accounts> {
@@ -21,7 +23,9 @@ export class AccountService extends BaseService<Accounts> {
     @InjectRepository(UserInformation)
     private readonly userInformationRepository: Repository<UserInformation>,  // inject account repository here`
 
+    @Inject(forwardRef(() =>AuthService))
     private authService: AuthService,
+    
     private mailService: MailService,
     private readonly dataSource: DataSource,
   ){
@@ -110,7 +114,8 @@ export class AccountService extends BaseService<Accounts> {
       page : number = 1,
       limit : number = 10,
       sortBy : string = 'createdAt',
-      sortOrder: 'ASC' | 'DESC' = 'ASC'
+      sortOrder: 'ASC' | 'DESC' = 'ASC',
+      filters: Record<string, any> = {} // Nhận filters từ controller
     ): Promise<{ message: string; total: number;  currentPage: number; totalPage: number; limit : number; data: Accounts[]}> {
       try {
         const query = this.accountsRepository.createQueryBuilder('accounts')
@@ -122,6 +127,25 @@ export class AccountService extends BaseService<Accounts> {
             query
              .andWhere('LOWER(accounts.email) LIKE LOWER(:search) OR LOWER(accounts.username) LIKE LOWER(:search) ', { search: `%${search}%` })
           }
+
+          // Filter conditions
+            Object.keys(filters).forEach((key) => {
+              if (filters[key] !== undefined && filters[key] !== null) {
+                let value = filters[key];
+                
+                // Chuyển đổi giá trị 'true' hoặc 'false' thành boolean
+                if (value === 'true') value = true;
+                if (value === 'false') value = false;
+                if(key === 'role'){
+                  key = "codeName"
+                  query.andWhere(`role.${key} = :${key}`, { [key]: value });
+                  
+                }else {
+                  query.andWhere(`accounts.${key} = :${key}`, { [key]: value });
+
+                }
+              }
+            });
 
         const [result, total] = await query
             .skip((page - 1) * limit)

@@ -68,7 +68,8 @@ export const Pagination = ({
   }, [limit]);
 
   return (
-    <div className="max-w-screen-xl mx-auto mt-5 px-4 text-gray-600 md:px-8">
+
+    <div className="max-w-screen-2xl mx-auto mt-5 px-4 text-gray-600 md:px-8">
       <div className="hidden justify-end text-sm md:flex gap-x-10">
         <div className="flex justify-center items-center gap-x-6">
           <div className="relative w-16 max-w-full mx-auto">
@@ -101,6 +102,7 @@ export const Pagination = ({
           </div>
           <p>
             Showing {optionLimit * (currentPage - 1) + 1} - {" "}
+
             {Math.min(optionLimit * currentPage, totalItems)} of {totalItems}
           </p>
         </div>
@@ -124,25 +126,6 @@ export const Pagination = ({
         </div>
       </div>
 
-      {/* On mobile version */}
-      {/* <div className="flex items-center justify-between text-sm text-gray-600 font-medium md:hidden">
-        <p
-          className="px-4 py-2 border rounded-lg duration-150 hover:bg-gray-50"
-          onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
-        >
-          Previous
-        </p>
-        <div className="font-medium">SHOWING 1-10 OF 120</div>
-
-        <p
-          onClick={() =>
-            currentPage < totalPage && handlePageClick(currentPage + 1)
-          }
-          className="px-4 py-2 border rounded-lg duration-150 hover:bg-gray-50"
-        >
-          Next
-        </p>
-      </div> */}
     </div>
   );
 };

@@ -48,7 +48,9 @@ export class DiscountService extends BaseService<ProductDiscount> {
     page : number = 1,
     limit : number = 10,
     sortBy : string = 'createdAt',
-    sortOrder: 'ASC' | 'DESC' = 'ASC'
+    sortOrder: 'ASC' | 'DESC' = 'ASC',
+    filters: Record<string, any> = {} // Nhận filters từ controller
+
   ): Promise<{ total: number;  totalPage: number; currentPage: number; limit : number; data: ProductDiscount[]}>{
    try {
         const queryBuilder = this.discountRepository.createQueryBuilder('productDiscount')
@@ -59,6 +61,18 @@ export class DiscountService extends BaseService<ProductDiscount> {
           if (search) {
             queryBuilder.andWhere('productDiscount.name LIKE :search', { search: `%${search}%` });
           }
+          // Filter conditions
+            Object.keys(filters).forEach((key) => {
+              if (filters[key] !== undefined && filters[key] !== null) {
+                let value = filters[key];
+                
+                // Chuyển đổi giá trị 'true' hoặc 'false' thành boolean
+                if (value === 'true') value = true;
+                if (value === 'false') value = false;
+
+                queryBuilder.andWhere(`productDiscount.${key} = :${key}`, { [key]: value });
+              }
+            });
 
           // count total
           const total = await queryBuilder.getCount();

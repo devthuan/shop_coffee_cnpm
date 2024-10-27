@@ -243,7 +243,9 @@ export class CartService  {
     limit: number,
     sortBy : string = 'createdAt',
     sortOrder: 'ASC' | 'DESC' = 'ASC',
-    accountId: string): Promise<{ message: string; total: number;  currentPage: number; totalPage: number; limit : number; data: Cart[]}> {
+    accountId: string,
+    filters: Record<string, any> = {} // Nhận filters từ controller
+  ): Promise<{ message: string; total: number;  currentPage: number; totalPage: number; limit : number; data: Cart[]}> {
     try {
       const queryBuilder = this.cartRepository.createQueryBuilder('cart')
        .where('cart.deletedAt is null')
@@ -258,6 +260,19 @@ export class CartService  {
         if (search) {
             queryBuilder.andWhere('products.name LIKE :search', { search: `%${search}%` });
           }
+
+        // Filter conditions
+          Object.keys(filters).forEach((key) => {
+            if (filters[key] !== undefined && filters[key] !== null) {
+              let value = filters[key];
+              
+              // Chuyển đổi giá trị 'true' hoặc 'false' thành boolean
+              if (value === 'true') value = true;
+              if (value === 'false') value = false;
+
+              queryBuilder.andWhere(`cart.${key} = :${key}`, { [key]: value });
+            }
+          });
 
           // count total
           const total = await queryBuilder.getCount();

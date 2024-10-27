@@ -26,6 +26,7 @@ const ModelEditAccount = ({ data }) => {
     created_at: "",
   });
 
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({
@@ -36,6 +37,9 @@ const ModelEditAccount = ({ data }) => {
 
   const handleSubmitUpdate = async () => {
     try {
+      const findRole = dataRole.filter(
+        (role) => role.codeName === formData.role
+      );
       const response = await UpdateAccountAPI(formData.id, {
         userName: formData.userName,
         role: formData.role,
@@ -48,7 +52,7 @@ const ModelEditAccount = ({ data }) => {
             updateAccount({
               id: formData.id,
               userName: formData.userName,
-              role: formData.role,
+              role: findRole[0],
             })
           );
           toast.success(message);
@@ -69,7 +73,6 @@ const ModelEditAccount = ({ data }) => {
 
     try {
       const response = await ResetPasswordAPI(formData.id);
-      console.log(response);
 
       if (response && response.data) {
         const { statusCode, status, message, data } = response.data;
@@ -115,7 +118,7 @@ const ModelEditAccount = ({ data }) => {
       id: data.id,
       email: data.email,
       userName: data.userName,
-      role: data.role.name,
+      role: data.role.codeName,
       balance: data.balance,
       ip: data.ip,
       typeLogin: data.typeLogin,
@@ -200,13 +203,15 @@ const ModelEditAccount = ({ data }) => {
                   <select
                     onChange={handleInputChange}
                     name="role"
-                    defaultValue={formData.role}
+                    value={formData.role}
                     className="w-full pr-12 pl-3 py-2 mt-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                   >
                     {dataRole &&
                       dataRole.length > 0 &&
                       dataRole.map((item) => {
-                        return <option value={item.name}>{item.name}</option>;
+                        return (
+                          <option key={item.codeName} value={item.codeName}>{item.name}</option>
+                        );
                       })}
                   </select>
                 </div>

@@ -154,7 +154,10 @@ export class BillService extends BaseService<Bills> {
 
   
     } catch (error) {
+      await queryRunner.rollbackTransaction()
       CommonException.handle(error)
+    } finally {
+      await queryRunner.release()
     }
   }
 
@@ -164,15 +167,33 @@ export class BillService extends BaseService<Bills> {
     page : number = 1,
     limit : number = 10,
     sortBy : string = 'createdAt',
-    sortOrder: 'ASC' | 'DESC' = 'ASC'
+    sortOrder: 'ASC' | 'DESC' = 'ASC',
+    filters: Record<string, any> = {} // Nhận filters từ controller
+
     ): Promise<{ message: string; total: number;  currentPage: number; totalPage: number; limit : number; data: Bills[]}>
     {
 
       try {
-        const bills = await this.billsRepository.createQueryBuilder('bills')
+        const bills =  this.billsRepository.createQueryBuilder('bills')
         .where('bills.accountId = :accountId', {accountId: accountId })
         .andWhere('bills.deletedAt IS NULL');
 
+         if (search) {
+            bills.andWhere('entity.name LIKE :search', { search: `%${search}%` });
+          }
+
+        // Filter conditions
+          Object.keys(filters).forEach((key) => {
+            if (filters[key] !== undefined && filters[key] !== null) {
+              let value = filters[key];
+              
+              // Chuyển đổi giá trị 'true' hoặc 'false' thành boolean
+              if (value === 'true') value = true;
+              if (value === 'false') value = false;
+
+              bills.andWhere(`bills.${key} = :${key}`, { [key]: value });
+            }
+          });
         
 
         // count total

@@ -105,7 +105,8 @@ const ModelAddAccount = () => {
     const fetchAPI = async () => {
       dispatch(clearDataRole());
       try {
-        const response = await GetAllRole();
+        let queryParams = "";
+        const response = await GetAllRole(queryParams);
         if (response && response.data && response.status === 200) {
           dispatch(initDataRole(response.data));
         }
@@ -181,7 +182,11 @@ const ModelAddAccount = () => {
                     {dataRole &&
                       dataRole.length > 0 &&
                       dataRole.map((item) => {
-                        return <option value={item.name}>{item.name}</option>;
+                        return (
+                          <option key={item.codeName} value={item.codeName}>
+                            {item.name}
+                          </option>
+                        );
                       })}
                   </select>
                 </div>
