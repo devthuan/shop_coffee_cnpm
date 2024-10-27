@@ -10,18 +10,18 @@ import {
   initDataSupplier,
 } from "~/redux/features/Suppliers/suppliersSlice";
 import { HandleApiError } from "~/Utils/HandleApiError";
+import { CreateReceiptAPI } from "~/services/ReceiptServer";
+import { toast } from "react-toastify";
+import { addReceipt, initDataReceipt } from "~/redux/features/Receipts/ReceiptsSlice";
 
-export const ImportWarehouseModal = () => {
+export const ReceiptModalCreate = () => {
   const dispatch = useDispatch();
   const dataSupplier = useSelector((item) => item.suppliers.data).filter(
     (item) => item.detailSupplier.length > 0
   );
-
+  const [supplier, setSupplier] = useState();
   const [detailSupplier, setDetailSupplier] = useState();
-  const [countRow, setCountRow] = useState(1);
-  const [selectedProduct, setSelectedProduct] = useState(0);
-  const [quantity, setQuantity] = useState();
-  const [countCol, setCountCol] = useState(3); // Số lượng hàng
+
   const [dataForm, setDataForm] = useState([
     {
       id: 0,
@@ -51,6 +51,7 @@ export const ImportWarehouseModal = () => {
   const handleChoseSupplier = async (e) => {
     console.log(dataForm);
     console.log(e.target.value);
+    setSupplier(e.target.value);
     try {
       const response = await GetDetailSupplierAPI(e.target.value);
       if (response.data && response.status === 200) {
@@ -85,7 +86,6 @@ export const ImportWarehouseModal = () => {
     );
   };
 
-
   const handleQuantityChange = (idx, e) => {
     const quantity = parseInt(e.target.value) || 0;
 
@@ -96,7 +96,26 @@ export const ImportWarehouseModal = () => {
   };
 
   const handleImportWarehouse = async () => {
-    console.log(dataForm);
+    try {
+      const response = await CreateReceiptAPI({
+        supplierId: supplier,
+        importReceiptDetails: dataForm.map((item) => ({
+          productAttributeId: item.productAttributeId,
+          price: item.price,
+          quantity: item.quantity,
+        })),
+      });
+
+      if (response && response.data) {
+        dispatch(addReceipt(response.data));
+        toast.success("Tạo phiếu nhập thành công.");
+      }
+    } catch (error) {
+       const { message, status } = HandleApiError(error);
+       if (status === "error") {
+         dispatch(initDataReceipt({ error: message }));
+       }
+    }
   };
 
   useEffect(() => {

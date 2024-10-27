@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Res, Req } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
@@ -7,9 +7,10 @@ import { Payments } from './entities/payment.entity';
 import { AuthGuardCustom } from 'src/auth/auth.guard';
 import { Permissions } from 'src/auth/permission.decorator';
 import { PermissionsGuard } from 'src/auth/permisson.guard';
+import { Request, Response } from 'express';
 
 @Controller('payment')
-@UseGuards(AuthGuardCustom)
+// @UseGuards(AuthGuardCustom)
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
@@ -38,6 +39,27 @@ export class PaymentController {
     return plainToInstance(Payments, data)
   }
 
+  @Get('/vnpay/create_payment_url')
+  createPaymentUrl(@Query('orderId') orderId: string, @Query('amount') amount: number, @Res() res: Response) {
+    const paymentUrl = this.paymentService.createPaymentUrl(orderId, amount);
+    console.log(paymentUrl)
+    return res.redirect(paymentUrl);
+  }
+
+  @Get('vnpay/vnpay_ipn')
+  async handleIpn(@Query() vnp_Params: any, @Res() res: Response) {
+      const result = await this.paymentService.handleIpn(vnp_Params);
+      res.status(200).json(result);
+  }
+
+  //  @Get('vnpay/vnpay_return')
+  // async vnpayReturn(@Req() req: Request, @Res() res: Response) {
+  //   const message = await this.paymentService.handleReturn(req.query);
+  //   return res.send(message);
+  // }
+
+  
+
   @UseGuards(PermissionsGuard)
   @Permissions("GET_PAYMENT_METHOD_BY_ID")
   @Get(':id')
@@ -65,4 +87,9 @@ export class PaymentController {
   deleteSoft(@Param('id') id: string) {
     return this.paymentService.deleteSoft(id);
   }
+
+  // vnpay
+  
+
+ 
 }

@@ -130,7 +130,7 @@ export const Warehouse = () => {
         <div className="mx-auto  md:pr-5">
           {/* box title */}
           <div className="w-full flex justify-center py-3">
-            <h3>Title</h3>
+            <h3>Quản lý kho</h3>
           </div>
 
           {/* box button  */}
