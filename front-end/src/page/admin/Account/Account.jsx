@@ -57,15 +57,15 @@ export const Account = () => {
   ];
 
   const titleColumn = [
-    "Username",
-    "Balance",
+    "Tài khoản",
+    "Số dư",
     "IP",
-    "Type Login",
-    "Status",
-    "Role",
-    "Created At",
-    "Last login",
-    "",
+    "Đăng nhập",
+    "Trạng thái",
+    "Quyền",
+    "ngày tạo",
+    "Đăng nhập cuối",
+    "Hành động",
   ];
 
   const handleSearch = async (e) => {
@@ -262,7 +262,7 @@ export const Account = () => {
                         <input
                           onChange={(e) => handleSearch(e.target.value)}
                           type="text"
-                          placeholder="Search"
+                          placeholder="Tìm kiếm ..."
                           className="w-full py-1 pl-12 pr-4 text-[18px] text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
                         />
                       </div>
@@ -381,7 +381,7 @@ export const Account = () => {
                               onClick={() => handleLockAccount(item)}
                               className="py-2  px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg"
                             >
-                              {item.isActive ? "lock" : "unlock"}
+                              {item.isActive ? "khoá" : "mở"}
                             </div>
                           </div>
                         </td>

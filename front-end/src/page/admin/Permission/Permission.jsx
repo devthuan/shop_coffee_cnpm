@@ -36,13 +36,13 @@ export const Permission = () => {
   ];
 
   const titleColumn = [
-    "Id",
-    "Tên role",
+    "ID",
+    "Tên quyền",
     "codeName",
-    "Status",
-    "updated At",
-    "createdAt At",
-    "",
+    "Trạng thái",
+    "Ngày cập nhật",
+    "Ngày tạo",
+    "Hành động",
   ];
 
   const handleSearch = async (e) => {
@@ -199,7 +199,7 @@ export const Permission = () => {
                   </div>
                 </div>
                 <div className="">
-                  <ModelAddAccount />
+                  {/* <ModelAddAccount /> */}
                 </div>
               </div>
 

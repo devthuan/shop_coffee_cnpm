@@ -30,9 +30,11 @@ export const Warehouse = () => {
     limit: 10,
   });
 
-  const filterItems = [
+  const listOptionSorts = [
     { value: "createdAt_ASC", label: "sắp xếp theo ngày tạo tăng dần" },
     { value: "createdAt_DESC", label: "sắp xếp theo ngày tạo giảm dần" },
+    // { value: "total_ASC", label: "sắp xếp tổng số lượng tăng dần" },
+    // { value: "total_DESC", label: "sắp xếp tổng số lượng giảm dần" },
   ];
 
   const titleColumn = [
@@ -41,8 +43,8 @@ export const Warehouse = () => {
     "Giá bán",
     "Giá nhập",
     "Số lượng",
-    "Created At",
-    "Updated At",
+    "Ngày tạo",
+    "Ngày cập nhật cuối",
   ];
 
   const handleSearch = async (e) => {
@@ -76,17 +78,19 @@ export const Warehouse = () => {
     }));
   };
 
-  const handleFilter = async (e) => {
+  const handleSort = async (e) => {
+    let queryParams = "";
     if (e === "createdAt_ASC") {
-      let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&sortBy=createdAt&sortOrder=ASC`;
-      const result = await GetAllInventory(queryParams);
-
-      dispatch(initDataInventory(result.data));
+      queryParams += `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&sortBy=createdAt&sortOrder=ASC`;
     } else if (e === "createdAt_DESC") {
-      let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&sortBy=createdAt&sortOrder=DESC`;
-      const result = await GetAllInventory(queryParams);
-      dispatch(initDataInventory(result.data));
+      queryParams += `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&sortBy=createdAt&sortOrder=DESC`;
+    } else if (e === "total_ASC") {
+      queryParams += `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&sortBy=quantity&sortOrder=ASC`;
+    } else if (e === "total_DESC") {
+      queryParams += `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&sortBy=quantity&sortOrder=DESC`;
     }
+    const result = await GetAllInventory(queryParams);
+    dispatch(initDataInventory(result.data));
   };
 
   useEffect(() => {
@@ -140,7 +144,7 @@ export const Warehouse = () => {
               <div className="flex items-start justify-between ">
                 <div className="flex gap-x-3">
                   {/* box filter */}
-                  <div className="relative w-52 max-w-full ">
+                  <div className="relative w-60 max-w-full ">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
@@ -153,11 +157,18 @@ export const Warehouse = () => {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <select className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2">
-                      <option>Project manager</option>
-                      <option>Software engineer</option>
-                      <option>IT manager</option>
-                      <option>UI / UX designer</option>
+                    <select
+                      onChange={(e) => handleSort(e.target.value)}
+                      className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
+                    >
+                      {listOptionSorts &&
+                        listOptionSorts.map((item) => {
+                          return (
+                            <option key={item.value} value={item.value}>
+                              {item.label}
+                            </option>
+                          );
+                        })}
                     </select>
                   </div>
                   {/* box input search */}

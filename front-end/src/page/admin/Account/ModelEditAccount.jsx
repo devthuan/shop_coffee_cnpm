@@ -133,7 +133,7 @@ const ModelEditAccount = ({ data }) => {
   return (
     <Dialog.Root>
       <Dialog.Trigger className=" py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg">
-        Edit
+        Sửa
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 w-full h-full bg-black opacity-40" />
@@ -142,7 +142,7 @@ const ModelEditAccount = ({ data }) => {
           <div className="bg-white rounded-md shadow-lg">
             <div className="flex items-center justify-between p-1 pl-4 border-b">
               <Dialog.Title className="text-lg font-medium text-gray-800 ">
-                Edit account
+                Chỉnh sửa tài khoản 
               </Dialog.Title>
               <Dialog.Close className="p-2 text-gray-400 rounded-md hover:bg-gray-100">
                 <svg
@@ -199,7 +199,7 @@ const ModelEditAccount = ({ data }) => {
                 </div>
 
                 <div>
-                  <label className="text-gray-600 select ">Role</label>
+                  <label className="text-gray-600 select ">Quyền</label>
                   <select
                     onChange={handleInputChange}
                     name="role"
@@ -217,7 +217,7 @@ const ModelEditAccount = ({ data }) => {
                 </div>
 
                 <div>
-                  <label className="text-gray-600">Balance</label>
+                  <label className="text-gray-600">Số dư</label>
                   <div className="relative max-w-xs mt-2">
                     <input
                       readOnly="true"
@@ -241,7 +241,7 @@ const ModelEditAccount = ({ data }) => {
                   </div>
                 </div>
                 <div>
-                  <label className="text-gray-600">Type login</label>
+                  <label className="text-gray-600">Kiểu đăng nhập</label>
                   <div className="relative max-w-xs mt-2">
                     <input
                       readOnly="true"
@@ -253,7 +253,7 @@ const ModelEditAccount = ({ data }) => {
                   </div>
                 </div>
                 <div>
-                  <label className="text-gray-600">Status</label>
+                  <label className="text-gray-600">Trạng thái</label>
                   <div className="relative max-w-xs mt-2">
                     <input
                       readOnly="true"
@@ -265,7 +265,7 @@ const ModelEditAccount = ({ data }) => {
                   </div>
                 </div>
                 <div>
-                  <label className="text-gray-600">Last login</label>
+                  <label className="text-gray-600">Đăng nhập cuối</label>
                   <div className="relative max-w-xs mt-2">
                     <input
                       readOnly="true"
@@ -277,7 +277,7 @@ const ModelEditAccount = ({ data }) => {
                   </div>
                 </div>
                 <div>
-                  <label className="text-gray-600">Created At</label>
+                  <label className="text-gray-600">Ngày tạo</label>
                   <div className="relative max-w-xs mt-2">
                     <input
                       readOnly="true"
@@ -289,7 +289,7 @@ const ModelEditAccount = ({ data }) => {
                   </div>
                 </div>
                 <div>
-                  <label className="text-gray-600">Updated At</label>
+                  <label className="text-gray-600">Ngày cập nhật cuối</label>
                   <div className="relative max-w-xs mt-2">
                     <input
                       readOnly="true"
@@ -301,13 +301,13 @@ const ModelEditAccount = ({ data }) => {
                   </div>
                 </div>
                 <div className="col-span-3">
-                  <label className="text-gray-600">Provider password</label>
+                  <label className="text-gray-600">Cung cấp mật khẩu</label>
                   <div className="relative max-w-xs mt-2">
                     <button
                       onClick={() => handleResetPassword()}
                       className="px-4 py-2 text-indigo-600 bg-indigo-50 rounded-lg duration-150 hover:bg-indigo-100 active:bg-indigo-200"
                     >
-                      {isProcessing ? "Processing..." : "Reset Password"}
+                      {isProcessing ? "Đang sử lý..." : "Cấp mật khẩu mới"}
                     </button>
                   </div>
                 </div>
@@ -319,7 +319,7 @@ const ModelEditAccount = ({ data }) => {
                   onClick={() => handleSubmitUpdate()}
                   className="px-3 py-1 t text-xl text-white bg-green-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2 "
                 >
-                  Update
+                  Cập nhật
                 </button>
               </Dialog.Close>
               <Dialog.Close asChild>
@@ -327,7 +327,7 @@ const ModelEditAccount = ({ data }) => {
                   className="px-3 py-1 text-xl text-gray-800 border rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2"
                   aria-label="Close"
                 >
-                  Cancel
+                  Đóng
                 </button>
               </Dialog.Close>
             </div>
