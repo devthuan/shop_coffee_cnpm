@@ -67,12 +67,10 @@ export const Account = () => {
     "Đăng nhập cuối",
     "Hành động",
   ];
-
   const handleSearch = async (e) => {
     try {
       let queryParams = `search=${e}&limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
       const result = await GetAllAccountAPI(queryParams);
-
       dispatch(initDataAccount(result.data));
     } catch (error) {
       const result = HandleApiError(error);

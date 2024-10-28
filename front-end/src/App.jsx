@@ -4,6 +4,7 @@ import DefaultLayout from "./Layouts/DefaultLayout/DefaultLayout";
 import { publicRoutes } from "./router/publicRoutes";
 import { privateRoutes } from "./router/privateRoutes";
 import { adminRoutes } from "./router/adminRoutes";
+
 function App() {
   return (
     <Router>
@@ -77,5 +78,6 @@ function App() {
     </Router>
   );
 }
+
 
 export default App;

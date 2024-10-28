@@ -11,7 +11,6 @@ export const Pagination = ({
   const [pages, setPages] = useState(["1", "2", "3", , "...", "8", "9", "10"]);
   const [currentPage, setCurrentPage] = useState(current);
   const [optionLimit, setOptionLimit] = useState(limit);
-
   const filterItems = [
     { value: "10" },
     { value: "1" },
