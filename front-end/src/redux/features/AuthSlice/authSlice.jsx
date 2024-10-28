@@ -6,6 +6,7 @@ const initialState = {
   email: null,
   token: null,
   data: [],
+  permission: [],
   isLogin: false,
   loading: true,
   error: null,
@@ -26,6 +27,9 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    initDataPermission: (state, action) => {
+      state.permission = action.payload;
+    },
     setLogin(state, action) {
       state.token = action.payload.token;
       state.email = action.payload.email;
@@ -64,6 +68,12 @@ const authSlice = createSlice({
   // },
 });
 
-export const { setLoading, setToken, setError, clearAuth, setLogin } =
-  authSlice.actions;
+export const {
+  initDataPermission,
+  setLoading,
+  setToken,
+  setError,
+  clearAuth,
+  setLogin,
+} = authSlice.actions;
 export default authSlice.reducer;

@@ -4,6 +4,7 @@ import DefaultLayout from "./Layouts/DefaultLayout/DefaultLayout";
 import { publicRoutes } from "./router/publicRoutes";
 import { privateRoutes } from "./router/privateRoutes";
 import { adminRoutes } from "./router/adminRoutes";
+import { ProtectRoutesAdmin } from "./router/ProtectRoutesAdmin";
 
 function App() {
   return (
@@ -66,9 +67,11 @@ function App() {
                 key={i}
                 path={route.path}
                 element={
-                  <Layout>
-                    <Page />
-                  </Layout>
+                    <ProtectRoutesAdmin>
+                      <Layout>
+                          <Page />
+                      </Layout>
+                    </ProtectRoutesAdmin>
                 }
               />
             );
@@ -78,6 +81,5 @@ function App() {
     </Router>
   );
 }
-
 
 export default App;

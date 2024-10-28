@@ -9,8 +9,14 @@ import { ToastContainer, toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { LoginAPI } from "~/services/AuthService";
 import { useDispatch } from "react-redux";
-import { setLogin } from "~/redux/features/AuthSlice/authSlice";
+import {
+  initDataPermission,
+  setLogin,
+} from "~/redux/features/AuthSlice/authSlice";
 import { setItemWithExpiration } from "~/services/localStorage";
+import { HandleApiError } from "~/Utils/HandleApiError";
+import { jwtDecode } from "jwt-decode";
+import { GetAllPermissionByRoleAPI } from "~/services/PermissionService";
 
 const cx = classNames.bind(styles);
 export const Login = () => {
@@ -29,7 +35,6 @@ export const Login = () => {
       return;
     }
     try {
-
       const response = await LoginAPI(email, password);
       if (response && response.data) {
         console.log(response.data);
@@ -39,6 +44,9 @@ export const Login = () => {
         if (statusCode === 200 && status === "success") {
           const accessToken = data.accessToken;
 
+          // giai ma token
+          const { id, email, role, username } = await jwtDecode(accessToken);
+          console.log(role);
           // Lưu access token vào Redux store
           dispatch(
             setLogin({
@@ -47,26 +55,37 @@ export const Login = () => {
             })
           );
 
-          // lưu access token vào local storage
-          setItemWithExpiration("token", accessToken, 2);
-          setItemWithExpiration("email", email, 2);
-          toast.success("Đăng nhập thành công.");
-          setTimeout(() => {
-            navigate("/");
-          }, 1500);
+          const responsePermission = await GetAllPermissionByRoleAPI(role);
+          // lưu quyền vào Redux store
+          if (responsePermission && responsePermission.data) {
+            console.log(responsePermission.data);
+            dispatch(initDataPermission(responsePermission.data.data));
+
+            setItemWithExpiration(
+              "permissions",
+              responsePermission.data.data,
+              2
+            );
+
+            // lưu access token vào local storage
+
+            setItemWithExpiration("role", role, 2);
+            setItemWithExpiration("token", accessToken, 2);
+            setItemWithExpiration("email", email, 2);
+            toast.success("Đăng nhập thành công.");
+
+            setTimeout(() => {
+              navigate("/");
+            }, 1500);
+          }
         } else if (statusCode === 401 && status === "error") {
           setError(message);
         }
       }
     } catch (err) {
-
-      // Xử lý các lỗi 4xx or 5xx
-      const { statusCode, error, message } = err.response.data;
-      if (statusCode === 400) {
-        setError(message[0]);
-      }
-      if (err.status === 500) {
-        setError("Server đang bận. Vui lòng thử lại sau.");
+      const { message, status } = HandleApiError(error);
+      if (status === "error") {
+        dispatch(setError({ error: message }));
       }
     } finally {
       setTimeout(() => {

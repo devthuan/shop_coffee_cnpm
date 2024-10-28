@@ -17,6 +17,8 @@ import { Template } from "~/page/admin/Template/Template";
 import { Voucher } from "~/page/admin/Voucher/Voucher";
 import { Warehouse } from "~/page/admin/Warehouse/Warehouse";
 
+
+
 //  routes for admin
 export const adminRoutes = [
   { path: "/admin", component: Dashboard, layout: DashboardLayout },
@@ -41,3 +43,5 @@ export const adminRoutes = [
   { path: "/admin/template", component: Template, layout: DashboardLayout },
   { path: "*", component: Page404, layout: null },
 ];
+
+

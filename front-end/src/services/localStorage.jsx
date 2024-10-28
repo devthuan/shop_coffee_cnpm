@@ -12,7 +12,7 @@ function setItemWithExpiration(key, value, expirationInHour) {
 }
 
 // Lấy item từ localStorage và kiểm tra thời gian hết hạn
-async function getItemWithExpiration(key) {
+function getItemWithExpiration(key) {
   const item = JSON.parse(localStorage.getItem(key));
   if (item && item.expirationTime > new Date().getTime()) {
     return item.value;
@@ -27,6 +27,5 @@ async function getItemWithExpiration(key) {
     return false;
   }
 }
-
 
 export { setItemWithExpiration, getItemWithExpiration };
