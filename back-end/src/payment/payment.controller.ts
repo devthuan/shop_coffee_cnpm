@@ -52,11 +52,10 @@ export class PaymentController {
       res.status(200).json(result);
   }
 
-  //  @Get('vnpay/vnpay_return')
-  // async vnpayReturn(@Req() req: Request, @Res() res: Response) {
-  //   const message = await this.paymentService.handleReturn(req.query);
-  //   return res.send(message);
-  // }
+   @Get('momo')
+   vnpayReturn() {
+    return  this.paymentService.momoPayment();
+  }
 
   
 

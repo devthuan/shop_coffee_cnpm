@@ -96,7 +96,7 @@ const ModelEditAccount = ({ data }) => {
     const fetchAPI = async () => {
       dispatch(clearDataRole());
       try {
-        const response = await GetAllRole();
+        const response = await GetAllRole("");
         if (response && response.data && response.status === 200) {
           dispatch(initDataRole(response.data));
         }

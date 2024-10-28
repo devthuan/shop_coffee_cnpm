@@ -91,9 +91,7 @@ export const Warehouse = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      // load = true
       try {
-        // API call here
         let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
         const response = await GetAllInventory(queryParams);
         if (response.status === 200 && response.data.data) {
@@ -132,137 +130,143 @@ export const Warehouse = () => {
           <div className="w-full flex justify-center py-3">
             <h3>Quản lý kho</h3>
           </div>
-
-          {/* box button  */}
-          <div className="flex items-start justify-between ">
-            <div className="flex gap-x-3">
-              {/* box filter */}
-              <div className="relative w-52 max-w-full ">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <select className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2">
-                  <option>Project manager</option>
-                  <option>Software engineer</option>
-                  <option>IT manager</option>
-                  <option>UI / UX designer</option>
-                </select>
-              </div>
-              {/* box input search */}
-              <div className="max-w-lg">
-                <div className="relative">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 left-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                  <input
-                    type="text"
-                    placeholder="Search"
-                    className="w-72 max-w-md py-2 pl-12 pr-4 text-sm text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* box button create */}
-            <div className="mt-3 md:mt-0">
-              {/* import modal create */}
-              <ImportWarehouseModal />
-            </div>
-          </div>
           {isLoading ? (
-            <div className="h-full w-full flex justify-center items-center">
+            <div className="flex justify-center items-center h-64">
               <Loading />
             </div>
           ) : (
-            <div className="mt-5 shadow-sm border rounded-lg overflow-x-auto">
-              <table className="w-full table-auto text-sm text-left">
-                <thead className="bg-gray-50 text-gray-600 font-medium border-b">
-                  <tr>
-                    {titleColumn &&
-                      titleColumn.length > 0 &&
-                      titleColumn.map((item) => {
-                        return (
-                          <th key={item} className="py-3 px-2">
-                            {item}
-                          </th>
-                        );
-                      })}
-                  </tr>
-                </thead>
-
-                <tbody className="text-gray-600 divide-y">
-                  {invetoriesData?.map((item, idx) => (
-                    <tr key={idx}>
-                      <td className="flex items-center gap-x-3 py-3 px-2 whitespace-nowrap">
-                        <img
-                          src={
-                            item.products?.images?.url
-                              ? item.products?.images?.url
-                              : "https://randomuser.me/api/portraits/men/86.jpg"
-                          }
-                          className="w-10 h-10 rounded-full"
+            <>
+              {/* box button  */}
+              <div className="flex items-start justify-between ">
+                <div className="flex gap-x-3">
+                  {/* box filter */}
+                  <div className="relative w-52 max-w-full ">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <select className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2">
+                      <option>Project manager</option>
+                      <option>Software engineer</option>
+                      <option>IT manager</option>
+                      <option>UI / UX designer</option>
+                    </select>
+                  </div>
+                  {/* box input search */}
+                  <div className="max-w-lg">
+                    <div className="relative">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 left-3"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                         />
-                        <div>
-                          <span className="block text-gray-700 text-sm font-medium">
-                            {item?.products?.name}
-                          </span>
-                          <span className="block text-gray-700 text-xs">
-                            {item?.products?.category?.name}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-2 py-4 whitespace-nowrap">
-                        {item.attributes.name}
-                      </td>
-                      <td className="px-2 py-4 whitespace-nowrap">
-                        {item.sellPrice}
-                      </td>
-                      <td className="px-2 py-4 whitespace-nowrap">
-                        {item.buyPrice}
-                      </td>
-                      <td className="px-2 py-4 whitespace-nowrap ">
-                        {item.quantity}
-                      </td>
-                      <td className="px-2 py-4 whitespace-nowrap">
-                        {new Date(item.createdAt).toLocaleString()}
-                      </td>
-                      <td className="px-2 py-4 whitespace-nowrap">
-                        {new Date(item.updatedAt).toLocaleString()}
-                      </td>
+                      </svg>
+                      <input
+                        type="text"
+                        placeholder="Search"
+                        className="w-72 max-w-md py-2 pl-12 pr-4 text-sm text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* box button create */}
+                <div className="mt-3 md:mt-0">
+                  {/* import modal create */}
+                  <ImportWarehouseModal />
+                </div>
+              </div>
+
+              <div className="mt-5 shadow-sm border rounded-lg overflow-x-auto">
+                <table className="w-full table-auto text-sm text-left">
+                  <thead className="bg-gray-50 text-gray-600 font-medium border-b">
+                    <tr>
+                      {titleColumn &&
+                        titleColumn.length > 0 &&
+                        titleColumn.map((item) => {
+                          return (
+                            <th key={item} className="py-3 px-2">
+                              {item}
+                            </th>
+                          );
+                        })}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+
+                  <tbody className="text-gray-600 divide-y">
+                    {invetoriesData?.map((item, idx) => (
+                      <tr key={idx}>
+                        <td className="flex items-center gap-x-3 py-3 px-2 whitespace-nowrap">
+                          <img
+                            src={
+                              item.products?.images?.url
+                                ? item.products?.images?.url
+                                : "https://randomuser.me/api/portraits/men/86.jpg"
+                            }
+                            className="w-10 h-10 rounded-full"
+                          />
+                          <div>
+                            <span className="block text-gray-700 text-sm font-medium">
+                              {item?.products?.name}
+                            </span>
+                            <span className="block text-gray-700 text-xs">
+                              {item?.products?.category?.name}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-2 py-4 whitespace-nowrap">
+                          {item.attributes.name}
+                        </td>
+                        <td className="px-2 py-4 whitespace-nowrap">
+                          {item.sellPrice}
+                        </td>
+                        <td className="px-2 py-4 whitespace-nowrap">
+                          {item.buyPrice}
+                        </td>
+                        <td className="px-2 py-4 whitespace-nowrap ">
+                          {item.quantity}
+                        </td>
+                        <td className="px-2 py-4 whitespace-nowrap">
+                          {new Date(item.createdAt).toLocaleString()}
+                        </td>
+                        <td className="px-2 py-4 whitespace-nowrap">
+                          {new Date(item.updatedAt).toLocaleString()}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
           )}
-          <Pagination
-            totalItems={total}
-            current={currentPage}
-            totalPage={totalPage}
-            limit={limit}
-            onPageChange={handlePageChange}
-            onLimitChange={handleLimitChange}
-          />
+          {isLoading ? (
+            ""
+          ) : (
+            <Pagination
+              totalItems={total}
+              current={currentPage}
+              totalPage={totalPage}
+              limit={limit}
+              onPageChange={handlePageChange}
+              onLimitChange={handleLimitChange}
+            />
+          )}
           <ToastContainer
             className="text-base"
             fontSize="10px"

@@ -94,42 +94,86 @@ export class PaymentService extends BaseService<Payments> {
       }
     }
 
-  //  async handleReturn(vnp_Params: any): Promise<any> {
-  //       const secureHash = vnp_Params['vnp_SecureHash'];
-        
-  //       delete vnp_Params['vnp_SecureHash'];
-  //       delete vnp_Params['vnp_SecureHashType'];
-
-  //       const sortedParams = this.sortObject(vnp_Params);
-  //       const secretKey = this.vnpHashSecret
-  //       const signData = querystring.stringify(sortedParams);
-
-  //       const hmac = crypto.createHmac('sha512', secretKey);
-  //       const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
-
-  //       if (secureHash === signed) {
-  //           // Kiểm tra dữ liệu trong DB có hợp lệ không
-  //           return { code: vnp_Params['vnp_ResponseCode'], isValid: true };
-  //       } else {
-  //           return { code: '97', isValid: false };
-  //       }
-  //   }
-
   sortObject(obj: any): any {
-  let sorted = {};
-  let str = [];
-  let key;
-  for (key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      str.push(encodeURIComponent(key));
+    let sorted = {};
+    let str = [];
+    let key;
+    for (key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        str.push(encodeURIComponent(key));
+      }
+    }
+    str.sort();
+    for (key = 0; key < str.length; key++) {
+      sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
+    }
+    return sorted;
+  }
+
+  async momoPayment() : Promise<any> {
+        //https://developers.momo.vn/#/docs/en/aiov2/?id=payment-method
+    //parameters
+    var accessKey = 'F8BBA842ECF85';
+    var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
+    var orderInfo = 'pay with MoMo';
+    var partnerCode = 'MOMO';
+    var redirectUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
+    var ipnUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
+    var requestType = "payWithMethod";
+    var amount = '50000';
+    var orderId = partnerCode + new Date().getTime();
+    var requestId = orderId;
+    var extraData ='';
+    var paymentCode = 'T8Qii53fAXyUftPV3m9ysyRhEanUs9KlOPfHgpMR0ON50U10Bh+vZdpJU7VY4z+Z2y77fJHkoDc69scwwzLuW5MzeUKTwPo3ZMaB29imm6YulqnWfTkgzqRaion+EuD7FN9wZ4aXE1+mRt0gHsU193y+yxtRgpmY7SDMU9hCKoQtYyHsfFR5FUAOAKMdw2fzQqpToei3rnaYvZuYaxolprm9+/+WIETnPUDlxCYOiw7vPeaaYQQH0BF0TxyU3zu36ODx980rJvPAgtJzH1gUrlxcSS1HQeQ9ZaVM1eOK/jl8KJm6ijOwErHGbgf/hVymUQG65rHU2MWz9U8QUjvDWA==';
+    var orderGroupId ='';
+    var autoCapture =true;
+    var lang = 'vi';
+
+    //before sign HMAC SHA256 with format
+    //accessKey=$accessKey&amount=$amount&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType
+    var rawSignature = "accessKey=" + accessKey + "&amount=" + amount + "&extraData=" + extraData + "&ipnUrl=" + ipnUrl + "&orderId=" + orderId + "&orderInfo=" + orderInfo + "&partnerCode=" + partnerCode + "&redirectUrl=" + redirectUrl + "&requestId=" + requestId + "&requestType=" + requestType;
+    //puts raw signature
+    console.log("--------------------RAW SIGNATURE----------------")
+    console.log(rawSignature)
+    //signature
+    const crypto = require('crypto');
+    var signature = crypto.createHmac('sha256', secretKey)
+        .update(rawSignature)
+        .digest('hex');
+    console.log("--------------------SIGNATURE----------------")
+    console.log(signature)
+
+    //json object send to MoMo endpoint
+    const requestBody = JSON.stringify({
+        partnerCode : partnerCode,
+        partnerName : "Test",
+        storeId : "MomoTestStore",
+        requestId : requestId,
+        amount : amount,
+        orderId : orderId,
+        orderInfo : orderInfo,
+        redirectUrl : redirectUrl,
+        ipnUrl : ipnUrl,
+        lang : lang,
+        requestType: requestType,
+        autoCapture: autoCapture,
+        extraData : extraData,
+        orderGroupId: orderGroupId,
+        signature : signature
+    });
+    //Create the HTTPS objects
+   try {
+        const result = await axios.post('https://test-payment.momo.vn:443/v2/gateway/api/create', requestBody, {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        return result.data;
+    } catch (error) {
+        console.error("Error calling MoMo API:", error);
+        throw new Error(`MoMo API call failed: ${error.response?.data || error.message}`);
     }
   }
-  str.sort();
-  for (key = 0; key < str.length; key++) {
-    sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
-  }
-  return sorted;
-}
 
 
 }

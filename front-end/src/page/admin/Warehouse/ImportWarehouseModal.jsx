@@ -13,7 +13,7 @@ import { HandleApiError } from "~/Utils/HandleApiError";
 
 export const ImportWarehouseModal = () => {
   const dispatch = useDispatch();
-  const dataSupplier = useSelector((item) => item.suppliers.data).filter(
+  const dataSupplier = useSelector((item) => item.suppliers.data)?.filter(
     (item) => item.detailSupplier.length > 0
   );
 

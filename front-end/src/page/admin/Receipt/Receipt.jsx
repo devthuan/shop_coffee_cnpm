@@ -16,6 +16,7 @@ import {
   GetDetailReceiptAPI,
 } from "~/services/ReceiptServer";
 import { toast, ToastContainer } from "react-toastify";
+import Loading from "~/components/Loading/Loading";
 
 const cx = classNames.bind(styles);
 export const Receipt = () => {
@@ -60,30 +61,38 @@ export const Receipt = () => {
   ];
 
   const fetchReceipt = async () => {
-    let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
+    try {
+        let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
 
-    if (sortOption === "createdAt_ASC") {
-      queryParams += `&sortBy=createdAt&sortOrder=ASC`;
-    } else if (sortOption === "createdAt_DESC") {
-      queryParams += `&sortBy=createdAt&sortOrder=DESC`;
-    } else if (sortOption === "total_ASC") {
-      queryParams += `&sortBy=totalAmount&sortOrder=ASC`;
-    } else if (sortOption === "total_DESC") {
-      queryParams += `&sortBy=totalAmount&sortOrder=DESC`;
+        if (sortOption === "createdAt_ASC") {
+          queryParams += `&sortBy=createdAt&sortOrder=ASC`;
+        } else if (sortOption === "createdAt_DESC") {
+          queryParams += `&sortBy=createdAt&sortOrder=DESC`;
+        } else if (sortOption === "total_ASC") {
+          queryParams += `&sortBy=totalAmount&sortOrder=ASC`;
+        } else if (sortOption === "total_DESC") {
+          queryParams += `&sortBy=totalAmount&sortOrder=DESC`;
+        }
+
+        if (filterOption === "filter_pending") {
+          queryParams += `&status=pending`;
+        } else if (filterOption === "filter_approved") {
+          queryParams += `&status=approved`;
+        } else if (filterOption === "filter_rejected") {
+          queryParams += `&status=rejected`;
+        } else if (filterOption === "all") {
+          queryParams += ``;
+        }
+
+        const result = await GetAllReceiptAPI(queryParams);
+        dispatch(initDataReceipt(result.data));
+    } catch (error) {
+       const result = HandleApiError(error);
+       result
+         ? toast.error(result)
+         : toast.error("Có lỗi xảy ra, vui lòng thử lại");
     }
-
-    if (filterOption === "filter_pending") {
-      queryParams += `&status=pending`;
-    } else if (filterOption === "filter_approved") {
-      queryParams += `&status=approved`;
-    } else if (filterOption === "filter_rejected") {
-      queryParams += `&status=rejected`;
-    } else if (filterOption === "all") {
-      queryParams += ``;
-    }
-
-    const result = await GetAllReceiptAPI(queryParams);
-    dispatch(initDataReceipt(result.data));
+  
   };
 
   const handleFilter = (e) => {
@@ -125,7 +134,11 @@ export const Receipt = () => {
   };
 
   useEffect(() => {
-    fetchReceipt();
+    dispatch(clearDataReceipt());
+    setTimeout(() => {
+      fetchReceipt();
+    }, 800);
+ 
   }, [sortOption, filterOption, optionLimit]);
 
   useEffect(() => {
@@ -145,7 +158,9 @@ export const Receipt = () => {
       }
     };
 
-    fetchData();
+    setTimeout(() => {
+      fetchData();
+    }, 800);
   }, [optionLimit.limit, optionLimit.currentPage]);
 
   // Array chứa danh sách tiêu đề bảng
@@ -160,185 +175,208 @@ export const Receipt = () => {
   ];
 
   return (
-    <div className="max-w-full mx-auto px-4 ">
-      {/* box title */}
-      <div className="w-full flex justify-center py-3">
-        <h3>Quản lý phiếu nhập</h3>
-      </div>
-
-      {/* box button  */}
-      <div className="flex items-start justify-between ">
-        <div className="flex gap-x-3">
-          {/* box sort */}
-          <div className="relative w-60 max-w-full ">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <select
-              onChange={(e) => handleSort(e.target.value)}
-              className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
-            >
-              {listOptionSorts &&
-                listOptionSorts.map((item) => {
-                  return (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  );
-                })}
-            </select>
+    <>
+      {isError ? (
+        <div className="relative w-full h-full flex justify-center items-center">
+          {isError}
+        </div>
+      ) : (
+        <div className="max-w-full mx-auto px-4 ">
+          {/* box title */}
+          <div className="w-full flex justify-center py-3">
+            <h3>Quản lý phiếu nhập</h3>
           </div>
-          {/* box input search */}
-          <div className="max-w-lg">
-            <div className="relative">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 left-3"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-              <input
-                onChange={(e) => handleSearch(e.target.value)}
-                type="text"
-                placeholder="Search"
-                className="w-72 max-w-md py-2 pl-12 pr-4 text-sm text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
-              />
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <Loading />
             </div>
-          </div>
-          {/* box filter */}
-          <div className="relative w-60 max-w-full ">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <select
-              onChange={(e) => handleFilter(e.target.value)}
-              className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
-            >
-              {listOptionFilters &&
-                listOptionFilters.map((item) => {
-                  return (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  );
-                })}
-            </select>
-          </div>
-        </div>
-
-        {/* box button create */}
-        <div className="mt-3 md:mt-0">
-          {/* import modal create */}
-          <ReceiptModalCreate />
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className="mt-4  h-max overflow-auto">
-        <table className="w-full table-auto text-sm text-left">
-          <thead className="bg-gray-50 text-gray-600 font-medium border-b">
-            <tr>
-              {tableTitles &&
-                tableTitles.length > 0 &&
-                tableTitles.map((item, index) => {
-                  return (
-                    <th key={index} className="py-3 pr-6">
-                      {item}
-                    </th>
-                  );
-                })}
-            </tr>
-          </thead>
-          <tbody className="text-gray-600 divide-y">
-            {dataImportReceipts &&
-              dataImportReceipts.map((item, idx) => (
-                <tr key={idx}>
-                  <td className="pr-6 py-4 whitespace-nowrap ">{item.id}</td>
-                  <td className="pr-6 py-4 whitespace-nowrap">
-                    {item?.account?.email}
-                  </td>
-                  <td className="pr-6 py-4 whitespace-nowrap">
-                    {item?.supplier?.name}
-                  </td>
-                  <td className="pr-6 py-4 whitespace-nowrap">
-                    {item.totalAmount}
-                  </td>
-                  <td className="pr-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-3 py-2 rounded-full font-semibold text-xs ${
-                        item.status === "approved"
-                          ? "text-green-600 bg-green-50"
-                          : item.status === "pending"
-                          ? "text-yellow-600 bg-yellow-50"
-                          : "text-red-600 bg-red-50"
-                      }`}
+          ) : (
+            <>
+              {/* box button  */}
+              <div className="flex items-start justify-between ">
+                <div className="flex gap-x-3">
+                  {/* box sort */}
+                  <div className="relative w-60 max-w-full ">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
                     >
-                      {item.status}
-                    </span>
-                  </td>
-                  <td className="pr-6 py-4 whitespace-nowrap">
-                    {new Date(item.createdAt).toLocaleString()}
-                  </td>
-                  <td className="text-right px-6 whitespace-nowrap">
-                    <div className="max-w-5 flex justify-center items-center">
-                      <p className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
-                        <ReceiptModelEdit data={item} />
-                      </p>
+                      <path
+                        fillRule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <select
+                      onChange={(e) => handleSort(e.target.value)}
+                      className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
+                    >
+                      {listOptionSorts &&
+                        listOptionSorts.map((item) => {
+                          return (
+                            <option key={item.value} value={item.value}>
+                              {item.label}
+                            </option>
+                          );
+                        })}
+                    </select>
+                  </div>
+                  {/* box input search */}
+                  <div className="max-w-lg">
+                    <div className="relative">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 left-3"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                      <input
+                        onChange={(e) => handleSearch(e.target.value)}
+                        type="text"
+                        placeholder="Search"
+                        className="w-72 max-w-md py-2 pl-12 pr-4 text-sm text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
+                      />
                     </div>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
-      <Pagination
-        totalItems={total}
-        current={currentPage}
-        totalPage={totalPage}
-        limit={limit}
-        onPageChange={handlePageChange}
-        onLimitChange={handleLimitChange}
-      />
-      <ToastContainer
-        className="text-base"
-        fontSize="10px"
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-    </div>
+                  </div>
+                  {/* box filter */}
+                  <div className="relative w-60 max-w-full ">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <select
+                      onChange={(e) => handleFilter(e.target.value)}
+                      className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
+                    >
+                      {listOptionFilters &&
+                        listOptionFilters.map((item) => {
+                          return (
+                            <option key={item.value} value={item.value}>
+                              {item.label}
+                            </option>
+                          );
+                        })}
+                    </select>
+                  </div>
+                </div>
+
+                {/* box button create */}
+                <div className="mt-3 md:mt-0">
+                  {/* import modal create */}
+                  <ReceiptModalCreate />
+                </div>
+              </div>
+
+              {/* Table */}
+              <div className="mt-4  h-max overflow-auto">
+                <table className="w-full table-auto text-sm text-left">
+                  <thead className="bg-gray-50 text-gray-600 font-medium border-b">
+                    <tr>
+                      {tableTitles &&
+                        tableTitles.length > 0 &&
+                        tableTitles.map((item, index) => {
+                          return (
+                            <th key={index} className="py-3 pr-6">
+                              {item}
+                            </th>
+                          );
+                        })}
+                    </tr>
+                  </thead>
+                  <tbody className="text-gray-600 divide-y">
+                    {dataImportReceipts &&
+                      dataImportReceipts.map((item, idx) => (
+                        <tr key={idx}>
+                          <td className="pr-6 py-4 whitespace-nowrap ">
+                            {item.id}
+                          </td>
+                          <td className="pr-6 py-4 whitespace-nowrap">
+                            {item?.account?.email}
+                          </td>
+                          <td className="pr-6 py-4 whitespace-nowrap">
+                            {item?.supplier?.name}
+                          </td>
+                          <td className="pr-6 py-4 whitespace-nowrap">
+                            {item.totalAmount}
+                          </td>
+                          <td className="pr-6 py-4 whitespace-nowrap">
+                            <span
+                              className={`px-3 py-2 rounded-full font-semibold text-xs ${
+                                item.status === "approved"
+                                  ? "text-green-600 bg-green-50"
+                                  : item.status === "pending"
+                                  ? "text-yellow-600 bg-yellow-50"
+                                  : "text-red-600 bg-red-50"
+                              }`}
+                            >
+                              {item.status}
+                            </span>
+                          </td>
+                          <td className="pr-6 py-4 whitespace-nowrap">
+                            {new Date(item.createdAt).toLocaleString()}
+                          </td>
+                          <td className="text-right px-6 whitespace-nowrap">
+                            <div className="max-w-5 flex justify-center items-center">
+                              <p className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
+                                <ReceiptModelEdit data={item} />
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+
+          {isLoading ? (
+            ""
+          ) : (
+            <Pagination
+              totalItems={total}
+              current={currentPage}
+              totalPage={totalPage}
+              limit={limit}
+              onPageChange={handlePageChange}
+              onLimitChange={handleLimitChange}
+            />
+          )}
+
+          <ToastContainer
+            className="text-base"
+            fontSize="10px"
+            position="top-right"
+            autoClose={2000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
+        </div>
+      )}
+    </>
   );
 };
