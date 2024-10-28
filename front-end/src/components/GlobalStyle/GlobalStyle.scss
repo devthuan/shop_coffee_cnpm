@@ -18,7 +18,14 @@
     --primary-color-background-1:#171C28;
     --primary-color-background-2:#292E39;
     --primary-color-hover:#77DAE6;
+
 }
+.dark {
+    --primary-color-text: #ffffff;
+    --primary-color-background-1: #171c28;
+    --primary-color-background-2: #292e39;
+    --primary-color-hover: #77DAE6;
+  }
 * {
     box-sizing: border-box;
     margin: 0;
