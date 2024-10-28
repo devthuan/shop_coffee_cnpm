@@ -93,39 +93,95 @@ align-items: center;
   z-index: 999; 
 }
 /* Spinner */
-.spinner {
-  border: 8px solid #f3f3f3;
-  border-top: 8px solid #3498db; 
-  border-radius: 50%;
-  width: 60px; 
-  height: 60px;
-  animation: spin 1s linear infinite; 
-  position: fixed; 
-  top: 50%; 
-  left: 50%; 
-  transform: translate(-50%, -50%); /* Đẩy về giữa */
-  z-index: 1000; /* Đảm bảo nó ở trên overlay */
-}
+// .spinner {
+//   border: 8px solid #f3f3f3;
+//   border-top: 8px solid #3498db; 
+//   border-radius: 50%;
+//   width: 60px; 
+//   height: 60px;
+//   animation: spin 1s linear infinite; 
+//   position: fixed; 
+//   top: 50%; 
+//   left: 50%; 
+//   transform: translate(-50%, -50%); /* Đẩy về giữa */
+//   z-index: 1000; /* Đảm bảo nó ở trên overlay */
+// }
 
 
+// @keyframes spin {
+//   0% {
+//     transform: rotate(0deg);
+//     border-top-color: #3498db;
+//   }
+//   25% {
+//     border-top-color: #e74c3c; 
+//   }
+//   50% {
+//     transform: rotate(180deg); 
+//     border-top-color: #f1c40f; 
+//   }
+//   75% {
+//     border-top-color: #2ecc71; 
+//   }
+//   100% {
+//     transform: rotate(360deg); 
+//     border-top-color: #3498db; 
+//   }
+// }
 @keyframes spin {
   0% {
-    transform: rotate(0deg);
-    border-top-color: #3498db;
-  }
-  25% {
-    border-top-color: #e74c3c; 
-  }
-  50% {
-    transform: rotate(180deg); 
-    border-top-color: #f1c40f; 
-  }
-  75% {
-    border-top-color: #2ecc71; 
+    transform: rotate(0);
   }
   100% {
-    transform: rotate(360deg); 
-    border-top-color: #3498db; 
+    transform: rotate(360deg);
   }
 }
 
+.spinner {
+  position: fixed;
+  width: 100px; /* Kích thước vừa phải hơn */
+  height: 100px;
+  top: 50%; /* Căn giữa theo trục dọc */
+  left: 50%; /* Căn giữa theo trục ngang */
+  transform: translate(-50%, -50%); /* Đảm bảo chính giữa */
+  z-index: 1003;
+}
+
+.spinner div:first-child {
+  display: block;
+  position: relative;
+  left: 50%;
+  top: 50%;
+  width: 60px; /* Kích thước spinner */
+  height: 60px;
+  margin: -50px 0 0 -50px; /* Điều chỉnh margin để căn giữa */
+  border-radius: 50%;
+  box-shadow: 0 3px 3px 0 rgba(255, 56, 106, 1);
+  transform: translate3d(0, 0, 0);
+  animation: spin 2s linear infinite;
+}
+
+.spinner div:first-child:after,
+.spinner div:first-child:before {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+}
+
+.spinner div:first-child:before {
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  box-shadow: 0 3px 3px 0 rgb(255, 185, 32);
+  animation: spin 3s linear infinite;
+}
+
+.spinner div:first-child:after {
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  bottom: 15px;
+  box-shadow: 0 3px 3px 0 rgba(0, 121, 255, 1);
+  animation: spin 1.5s linear infinite;
+}

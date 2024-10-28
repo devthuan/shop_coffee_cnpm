@@ -2,7 +2,6 @@ import productReducer from "~/redux/features/Product/PoductSlice"; // Đường 
 import { configureStore } from "@reduxjs/toolkit";
 import accountsReducer from "./features/Accounts/accountsSilce";
 import rolesReducer from "./features/Roles/rolesSilce";
-
 import permissionsReducer from "./features/Permissions/permissionsSilce";
 import inventoriesReducer from "./features/Inventories/inventoriesSilce";
 import suppliersReducer from "./features/Suppliers/suppliersSlice";
@@ -10,6 +9,7 @@ import receiptsReducer from "./features/Receipts/ReceiptsSlice";
 import catagoriesReducer from "./features/Categories/categoriesSlice";
 import userInfoReducer from "./features/UserInfor/User_InforSlice";
 import cartReducer from "./features/cart/cartSlice";
+import authReducer from "./features/AuthSlice/authSlice"; // Đường dẫn tới authSlice
 
 export const store = configureStore({
   reducer: {
@@ -23,5 +23,11 @@ export const store = configureStore({
     inventories: inventoriesReducer,
     suppliers: suppliersReducer,
     receipts: receiptsReducer,
+    auth: authReducer, 
+
+
   },
+
+  // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
 });
+
