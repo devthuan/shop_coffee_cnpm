@@ -9,6 +9,7 @@ import CartLayout from "~/Layouts/CartLayout/CartLayout";
 import ProductLayout from "~/Layouts/ProductLayout/ProductLayout";
 import Page404 from "~/components/Page404/Page404";
 import EditProfile from "~/page/Profile/EditProfile/editProfile";
+import Payment from "~/page/Payment/Payment";
 // routes for public
 export const publicRoutes = [
   { path: "/", component: Home },
@@ -18,5 +19,6 @@ export const publicRoutes = [
   { path: "/profile/editProfile", component: EditProfile, layout: ProfileLayout },
   { path: "/product", component: Product, layout: ProductLayout },
   { path: "/cart", component: Cart, layout: CartLayout },
+  {path : "/paynment", component : Payment, layout : ProductLayout},
   { path: "*", component: Page404, layout: null },
 ];

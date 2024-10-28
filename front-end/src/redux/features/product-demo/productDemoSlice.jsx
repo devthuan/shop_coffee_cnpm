@@ -32,8 +32,13 @@
 //   },
 // });
 
+<<<<<<< HEAD
 // // Action creators are generated for each case reducer function
 // export const { addProduct, addProductCake, removeProduct } =
 //   productSlice.actions;
+=======
+export const { addProduct, addProductCake, removeProduct } =
+  productSlice.actions;
+>>>>>>> dat
 
 // export default productSlice.reducer;
