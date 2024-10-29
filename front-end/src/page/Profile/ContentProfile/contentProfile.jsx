@@ -11,20 +11,23 @@ const cx = classNames.bind(styles)
 
 function ContentProfile() {
 
-    const id = useSelector((state) => state.userInfo.id)
-    const createdAt = useSelector((state) => state.userInfo.createdAt)
-    const updatedAt = useSelector((state) => state.userInfo.updatedAt)
-    const userName = useSelector((state) => state.userInfo.userName)
-    const email = useSelector((state) => state.userInfo.email)
-    const balance = useSelector((state) => state.userInfo.balance);
-    const ip = useSelector((state) => state.userInfo.ip);
-    const device = useSelector((state) => state.userInfo.device);
-    const typeLogin = useSelector((state) => state.userInfo.typeLogin);
-    const isActive = useSelector((state) => state.userInfo.isActive);
-    const lastLogin = useSelector((state) => state.userInfo.lastLogin);
+    // const id = useSelector((state) => state.userInfo.id)
+    // const createdAt = useSelector((state) => state.userInfo.createdAt)
+    // const updatedAt = useSelector((state) => state.userInfo.updatedAt)
+    // const userName = useSelector((state) => state.userInfo.userName)
+    // const email = useSelector((state) => state.userInfo.email)
+    // const balance = useSelector((state) => state.userInfo.balance);
+    // const ip = useSelector((state) => state.userInfo.ip);
+    // const device = useSelector((state) => state.userInfo.device);
+    // const typeLogin = useSelector((state) => state.userInfo.typeLogin);
+    // const isActive = useSelector((state) => state.userInfo.isActive);
+    // const lastLogin = useSelector((state) => state.userInfo.lastLogin);
     const userInformation = useSelector((state) => state.userInfo.userInformation);
+
     const isError = useSelector((state) => state.userInfo.error);
     const isloading = useSelector((state) => state.userInfo.loading);
+
+    console.log(userInformation)
 
     return (<div className={cx("wrapper")}>
         <div className={cx("content")}>
@@ -47,7 +50,7 @@ function ContentProfile() {
                                 Email Address
                             </div>
                             <div className={cx("info_disc")}>
-                               {email}
+                               {userInformation?.email || ""}
                             </div>
                         </div>
                     </li>
@@ -58,7 +61,7 @@ function ContentProfile() {
                                 Phone number
                             </div>
                             <div className={cx("info_disc")}>
-                                +000 11122 2345 657
+                               {userInformation?.phoneNumber || ""}
                             </div>
                         </div>
                     </li>
@@ -69,11 +72,10 @@ function ContentProfile() {
                                 Add an address
                             </div>
                             <div className={cx("info_disc")}>
-                                Bangladesh Embassy, Washington, DC 20008
+                               {userInformation?.address1 || userInformation?.address2 || ""}
                             </div>
                         </div>
                     </li>
-
                 </ul>
             </div>
 

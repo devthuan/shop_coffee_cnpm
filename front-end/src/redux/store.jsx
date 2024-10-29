@@ -5,14 +5,17 @@ import accountsReducer from "./features/Accounts/accountsSilce";
 import rolesReducer from "./features/Roles/rolesSilce";
 import catagoriesReducer from "./features/Categories/categoriesSlice"
 import userInfoReducer from "./features/UserInfor/User_InforSlice"
+import billReducer from '~/redux/features/Bill/billSilice';
 export const store = configureStore({
   reducer: {
     products: productReducer,
+    bill: billReducer,
     catagories: catagoriesReducer,
     userInfo: userInfoReducer,
     accounts: accountsReducer,
     roles: rolesReducer
   },
 });
+
 
 
