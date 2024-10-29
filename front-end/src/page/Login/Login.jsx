@@ -46,7 +46,7 @@ export const Login = () => {
 
           // giai ma token
           const { id, email, role, username } = await jwtDecode(accessToken);
-          console.log(role);
+
           // Lưu access token vào Redux store
           dispatch(
             setLogin({
@@ -54,6 +54,10 @@ export const Login = () => {
               email: email,
             })
           );
+
+          setItemWithExpiration("role", role, 2);
+          setItemWithExpiration("token", accessToken, 2);
+          setItemWithExpiration("email", email, 2);
 
           const responsePermission = await GetAllPermissionByRoleAPI(role);
           // lưu quyền vào Redux store
@@ -64,14 +68,12 @@ export const Login = () => {
             setItemWithExpiration(
               "permissions",
               responsePermission.data.data,
-              2
+              22
             );
 
             // lưu access token vào local storage
 
-            setItemWithExpiration("role", role, 2);
-            setItemWithExpiration("token", accessToken, 2);
-            setItemWithExpiration("email", email, 2);
+           
             toast.success("Đăng nhập thành công.");
 
             setTimeout(() => {

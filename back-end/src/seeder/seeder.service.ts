@@ -603,7 +603,7 @@ export class SeederService {
                 "DELETE_FAVORITE_BY_ID",
                 "GET_FAVORITES_BY_USER",
                 "GET_TRANSACTION_HISTORY",
-                "GET_PERMISSION_BY_ROLE"
+                "GET_PERMISSION_BYnpm_ROLE"
             ]
 
             // init permissions for admin

@@ -377,7 +377,7 @@ export const Account = () => {
                             </div>
                             <div
                               onClick={() => handleLockAccount(item)}
-                              className="py-2  px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg"
+                              className="py-2  px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer"
                             >
                               {item.isActive ? "khoá" : "mở"}
                             </div>

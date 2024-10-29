@@ -95,6 +95,10 @@ export class UserInformationService {
         throw new BadRequestException('Account not found');
       }
       let userInfo = account.userInformation
+
+      if(!userInfo.id) {
+        throw new BadRequestException('data in information not found');
+      }
     
       
       const result = await this.userInformationRepository.update(userInfo.id,updateUserInformationDto);
