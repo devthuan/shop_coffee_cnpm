@@ -13,13 +13,14 @@ import DescriptionProduct from "./DescriptionProduct";
 import { useDispatch, useSelector } from "react-redux"; // Import các hook của Redux
 import { AddToCart } from "~/services/CartService";
 import { addToCart } from "~/redux/features/cart/cartSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { HandleApiError } from "~/Utils/HandleApiError";
 
 const cx = classNames.bind(styles);
 export const Product = () => {
   const navigate = useNavigate()
+  const { id } = useParams(); 
   const [product, setProduct] = useState({});
   const [statistical, setStatistical] = useState({})
   const [showDescription, setShowDescription] = useState(true);
@@ -69,7 +70,7 @@ export const Product = () => {
   useEffect(() => {
     const fetchDetailProduct = async () => {
       try {
-        const response = await DetailProduct();
+        const response = await DetailProduct(id);
         console.log(response.data.product)
         setProduct(response.data.product)
         setStatistical(response.data.statistical)

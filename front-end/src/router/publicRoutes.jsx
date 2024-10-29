@@ -22,7 +22,7 @@ export const publicRoutes = [
     component: EditProfile,
     layout: ProfileLayout,
   },
-  { path: "/product", component: Product, layout: ProductLayout },
+  { path: "/product/:id", component: Product, layout: ProductLayout },
   { path: "/cart", component: Cart, layout: CartLayout },
   { path: "/paynment", component: Payment, layout: ProductLayout },
   { path: "/unauthorized", component: Authorized, layout: null },

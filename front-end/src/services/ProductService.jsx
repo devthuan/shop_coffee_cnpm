@@ -6,14 +6,14 @@ export const getALLProducts = (query) => {
 };
 
 // code demo
-export const DetailProduct = async () => {
+export const DetailProduct = async (id) => {
   // return await api.get(`products/detail/895a4090-8eee-4e11-888c-42e3a9f3323a`)
-  return await api.get(`products/detail/2fa2d5ec-b092-4cd4-ba34-8bc82ae9273e`);
+  return await api.get(`products/detail/${id}`);
 };
 
-export const EvaluateProduct = async () => {
+export const EvaluateProduct = async (id) => {
   return await api.get(
-    `reviews/by-product/2fa2d5ec-b092-4cd4-ba34-8bc82ae9273e`
+    `reviews/by-product/${id}`
   );
 };
 
