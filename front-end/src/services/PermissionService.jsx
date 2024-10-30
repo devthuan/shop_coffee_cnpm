@@ -1,7 +1,11 @@
 import api from "./api";
 
 export const GetAllRole = (query) => {
-  return api.get(`role?${query}`);
+  if (query) {
+    return api.get(`role?${query}`);
+  } else {
+    return api.get(`role`);
+  }
 };
 
 export const GetAllPermissionByRoleAPI = (role) => {

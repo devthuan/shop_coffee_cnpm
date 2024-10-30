@@ -1,7 +1,7 @@
 import classNames from "classnames/bind";
 import styles from "./Notification.module.scss";
-import { TemplateModelCreate } from "./TemplateModelCreate";
-import { TemplateModelEdit } from "./TemplateModelEdit";
+import { NotificationModelCreate } from "./NotificationModelCreate";
+import { NotificationModelEdit } from "./NotificationModelEdit";
 import { Pagination } from "~/components/Pagination/Pagination";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,6 +34,7 @@ export const Notification = () => {
     currentPage: 1,
     limit: 10,
   });
+  
   // Array chứa danh sách tiêu đề bảng
   const tableTitles = [
     "ID",
@@ -108,6 +109,19 @@ export const Notification = () => {
   const handleFilter = async (e) => {
     setFilterOption(e);
     fetchNotification(sortOption, e); // Pass both sort and filter options
+  };
+
+  const handleSearch = async (e) => {
+    try {
+      let queryParams = `search=${e}&limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
+      const result = await GetAllNotificationAPI(queryParams);
+      dispatch(initDataNotification(result.data));
+    } catch (error) {
+      const { message, status } = HandleApiError(error);
+      if (status === "error") {
+        dispatch(initDataNotification({ error: message }));
+      }
+    }
   };
 
   const fetchNotification = async (sortOption, filterOption) => {
@@ -251,8 +265,9 @@ export const Notification = () => {
                         />
                       </svg>
                       <input
+                        onChange={(e) => handleSearch(e.target.value)}
                         type="text"
-                        placeholder="Search"
+                        placeholder="Tìm kiếm"
                         className="w-72 max-w-md py-2 pl-12 pr-4 text-sm text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
                       />
                     </div>
@@ -293,7 +308,7 @@ export const Notification = () => {
                 {/* box button create */}
                 <div className="mt-3 md:mt-0">
                   {/* import modal create */}
-                  <TemplateModelCreate />
+                  <NotificationModelCreate />
                 </div>
               </div>
 
@@ -339,7 +354,7 @@ export const Notification = () => {
                           <td className="text-right px-6 whitespace-nowrap">
                             <div className="max-w-5 flex justify-center items-center">
                               <p className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
-                                <TemplateModelEdit data={item} />
+                                <NotificationModelEdit data={item} />
                               </p>
                               <p
                                 onClick={() => handleDeleteItem(item.id)}

@@ -6,7 +6,7 @@ import { UpdateNotificationAPI } from "~/services/NotificationServer";
 import { useDispatch } from "react-redux";
 import { updateNotification } from "~/redux/features/Notifications/NotificationsSilce";
 
-export const TemplateModelEdit = ({ data }) => {
+export const NotificationModelEdit = ({ data }) => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({});
 

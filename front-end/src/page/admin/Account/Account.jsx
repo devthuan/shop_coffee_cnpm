@@ -14,6 +14,7 @@ import ModelAddAccount from "./ModelAddAccount";
 import ModelEditAccount from "./ModelEditAccount";
 import Loading from "~/components/Loading/Loading";
 import { HandleApiError } from "~/Utils/HandleApiError";
+import { ProtectRoutesByRole } from "~/router/ProtectRoutesAdmin";
 
 const cx = classNames.bind(styles);
 export const Account = () => {
@@ -111,7 +112,6 @@ export const Account = () => {
     }
   };
 
-  // Callback function to update currentPage
   const handlePageChange = (newPage) => {
     setOptionLimit((prevData) => ({
       ...prevData,
@@ -119,7 +119,6 @@ export const Account = () => {
     }));
   };
 
-  // Callback function to update limit
   const handleLimitChange = (newLimit) => {
     setOptionLimit((prevData) => ({
       ...prevData,
@@ -378,7 +377,10 @@ export const Account = () => {
                         <td className=" px-2 py-4 whitespace-nowrap ">
                           <div className="flex">
                             <div>
-                              <ModelEditAccount data={item} />
+                              <ProtectRoutesByRole
+                                requiredPermission={"UPDATE_ACCOUNT"}
+                                children={<ModelEditAccount data={item} />}
+                              />
                             </div>
                             <div
                               onClick={() => handleLockAccount(item)}

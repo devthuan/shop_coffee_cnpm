@@ -8,8 +8,15 @@ export const GetAllNotificationByUserAPI = (query) => {
   return api.get(`notification?${query}`);
 };
 
-export const CreateNotificationAPI = ({ typeSend, title, content }) => {
-  return api.post(`notification`, { typeSend, title, content });
+export const CreateNotificationAPI = (data) => {
+  const { typeSend, roleId, email, title, content } = data;
+  if (typeSend === "role") {
+    return api.post(`notification`, { typeSend, roleId, title, content });
+  } else if (typeSend === "user") {
+    return api.post(`notification`, { typeSend, email, title, content });
+  } else {
+    return api.post(`notification`, { typeSend, title, content });
+  }
 };
 
 export const ReadNotificationAPI = (id) => {

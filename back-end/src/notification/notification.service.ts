@@ -193,7 +193,6 @@ export class NotificationService extends BaseService<Notification> {
 
       switch (createNotificationDto.typeSend){
         case 'all' : {
-          console.log(createNotificationDto.typeSend)
           const allAccounts = await this.accountRepository.createQueryBuilder('accounts')
           .where('accounts.deletedAt IS NULL')
           .andWhere('accounts.isActive = :isActive', { isActive: true})
@@ -218,7 +217,6 @@ export class NotificationService extends BaseService<Notification> {
           .andWhere('role.id = :roleId', { roleId: createNotificationDto.roleId})
           .getMany();
 
-          console.log(accountsByRole)
 
           if(accountsByRole.length === 0) {
             throw new BadRequestException('No account found with this role or role not found.');
