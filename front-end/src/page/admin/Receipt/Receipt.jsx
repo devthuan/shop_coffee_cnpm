@@ -306,7 +306,7 @@ export const Receipt = () => {
                       dataImportReceipts.map((item, idx) => (
                         <tr key={idx}>
                           <td className="pr-6 py-4 whitespace-nowrap ">
-                            {item.id}
+                            {item.id.slice(0, 8)} ...
                           </td>
                           <td className="pr-6 py-4 whitespace-nowrap">
                             {item?.account?.email}

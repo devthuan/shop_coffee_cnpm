@@ -39,6 +39,10 @@ export const Account = () => {
 
   const listOptionFilters = [
     {
+      value: "all",
+      label: "Tất cả",
+    },
+    {
       value: "filter_status_active",
       label: "Lọc theo status active",
     },
@@ -137,26 +141,27 @@ export const Account = () => {
   const fetchAccounts = async (sortOption, filterOption) => {
     let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
 
-    if (sortOption === "createdAt_ASC") {
-      queryParams += `&sortBy=createdAt&sortOrder=ASC`;
-    } else if (sortOption === "createdAt_DESC") {
-      queryParams += `&sortBy=createdAt&sortOrder=DESC`;
+    const sortOptionsMap = {
+      createdAt_ASC: "&sortBy=createdAt&sortOrder=ASC",
+      createdAt_DESC: "&sortBy=createdAt&sortOrder=DESC",
+    };
+
+    const filterOptionsMap = {
+      all: "",
+      isActive_true: "&isActive=true",
+      filter_status_active: "&isActive=true",
+      isActive_false: "&isActive=false",
+      filter_status_blocked: "&isActive=false",
+      filter_role_admin: "&role=ADMIN",
+      filter_role_user: "&role=USER",
+    };
+
+    if (sortOptionsMap[sortOption]) {
+      queryParams += sortOptionsMap[sortOption];
     }
 
-    if (
-      filterOption === "isActive_true" ||
-      filterOption === "filter_status_active"
-    ) {
-      queryParams += `&isActive=true`;
-    } else if (
-      filterOption === "isActive_false" ||
-      filterOption === "filter_status_blocked"
-    ) {
-      queryParams += `&isActive=false`;
-    } else if (filterOption === "filter_role_admin") {
-      queryParams += `&role=ADMIN`;
-    } else if (filterOption === "filter_role_user") {
-      queryParams += `&role=USER`;
+    if (filterOptionsMap[filterOption]) {
+      queryParams += filterOptionsMap[filterOption];
     }
 
     const result = await GetAllAccountAPI(queryParams);

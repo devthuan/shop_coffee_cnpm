@@ -10,6 +10,7 @@ import catagoriesReducer from "./features/Categories/categoriesSlice";
 import userInfoReducer from "./features/UserInfor/User_InforSlice";
 import cartReducer from "./features/cart/cartSlice";
 import authReducer from "./features/AuthSlice/authSlice"; // Đường dẫn tới authSlice
+import notificationReducer from "./features/Notifications/NotificationsSilce";
 
 export const store = configureStore({
   reducer: {
@@ -23,11 +24,9 @@ export const store = configureStore({
     inventories: inventoriesReducer,
     suppliers: suppliersReducer,
     receipts: receiptsReducer,
-    auth: authReducer, 
-
-
+    auth: authReducer,
+    notifications: notificationReducer,
   },
 
   // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
 });
-

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { BaseService } from 'src/common/baseService';
@@ -8,6 +8,7 @@ import { DataSource, Repository } from 'typeorm';
 import { CommonException } from 'src/common/exception';
 import { Accounts } from 'src/auth/entities/accounts.entity';
 import { NotificationAccounts } from './entities/notification-account.entity';
+import { RoleService } from 'src/role/role.service';
 
 @Injectable()
 export class NotificationService extends BaseService<Notification> {
@@ -22,10 +23,70 @@ export class NotificationService extends BaseService<Notification> {
 
     @InjectRepository(Accounts) private readonly accountRepository: Repository<Accounts>,
 
+    private roleService: RoleService,
+
     private readonly dataSource: DataSource
   ){
     super(notificationRepository)
   }
+
+  async findAll(
+      search: string,
+      page : number = 1,
+      limit : number = 10,
+      sortBy : string = 'createdAt',
+      sortOrder: 'ASC' | 'DESC' = 'ASC',
+      filters: Record<string, any> = {} // Nhận filters từ controller
+    ): Promise<{ total: number;  currentPage: number; totalPage: number; limit : number; data: Notification[]}> 
+    { 
+    try {
+        const queryBuilder = this.notificationRepository.createQueryBuilder('notification')
+        .leftJoinAndSelect('notification.account', 'account')
+
+          .where('notification.deletedAt IS NULL')
+
+          if (search) {
+            queryBuilder.andWhere('notification.title LIKE :search', { search: `%${search}%` });
+          }
+
+           // Filter conditions
+            Object.keys(filters).forEach((key) => {
+              if (filters[key] !== undefined && filters[key] !== null) {
+                let value = filters[key];
+                
+                // Chuyển đổi giá trị 'true' hoặc 'false' thành boolean
+                if (value === 'true') value = true;
+                if (value === 'false') value = false;
+
+                queryBuilder.andWhere(`notification.${key} = :${key}`, { [key]: value });
+              }
+            });
+
+          // count total
+          const total = await queryBuilder.getCount();
+
+         // pagination page
+          const data = await queryBuilder
+            .skip((page - 1) * limit) // Bỏ qua các bản ghi đã được hiển thị
+            .take(limit) // Giới hạn số bản ghi trả về
+            .orderBy(`notification.${sortBy}`, sortOrder) // Sắp xếp theo trường chỉ định
+            .getMany(); // Lấy danh sách bản ghi
+
+
+      const totalPage = Math.ceil(total / limit);
+
+      return {
+        total,
+        totalPage,
+        currentPage: +page,
+        limit: +limit,
+        data
+      }
+    } catch (error) {
+      CommonException.handle(error)
+    }
+  }
+  
 
   async allNotificationByAccount(
     accountId: string,
@@ -102,8 +163,27 @@ export class NotificationService extends BaseService<Notification> {
         throw new BadRequestException('Account not found or blocked.');
       }
 
+      let role = null
+      if(createNotificationDto.roleId){
+        role = await this.roleService.findOne(createNotificationDto.roleId);
+      }
+
+
+      // conver type send
+      let typeSend = createNotificationDto.typeSend;
+      if (createNotificationDto.roleId) {
+        typeSend = role.name
+      } else if (typeSend === "user") {
+        typeSend = account.email;
+      } else if (typeSend === "all") {
+        typeSend = "all";
+      } else {
+        throw new BadRequestException('Invalid typeSend');
+      }
+
       // create notification
       const notification = this.notificationRepository.create({
+        typeSend,
         title: createNotificationDto.title,
         content: createNotificationDto.content,
         account,
@@ -138,6 +218,8 @@ export class NotificationService extends BaseService<Notification> {
           .andWhere('role.id = :roleId', { roleId: createNotificationDto.roleId})
           .getMany();
 
+          console.log(accountsByRole)
+
           if(accountsByRole.length === 0) {
             throw new BadRequestException('No account found with this role or role not found.');
           }
@@ -156,7 +238,7 @@ export class NotificationService extends BaseService<Notification> {
         case 'user' : {
           const accountUser = await this.accountRepository.createQueryBuilder('accounts')
           .where('accounts.deletedAt IS NULL')
-          .andWhere('accounts.id = :id', {id: createNotificationDto.userId})
+          .andWhere('accounts.email = :email', {email: createNotificationDto.email})
           .andWhere('accounts.isActive = :isActive', { isActive: true})
           .getOne();
 
@@ -238,9 +320,11 @@ export class NotificationService extends BaseService<Notification> {
     }
   }
 
-  async updateNoti(id: string, updateNotificationDto: UpdateNotificationDto): Promise<{message: string}> {
+
+   async updateNoti(id: string, updateNotificationDto: UpdateNotificationDto) :Promise<any> {
     try {
-      // check notification is read
+
+       // check notification is read
       const notificationAccount = await this.notificationAccountRepository.createQueryBuilder('notificationAccounts')
         .leftJoinAndSelect('notificationAccounts.notification', 'notification') 
         .where('notificationAccounts.notificationId = :id', { id })
@@ -250,12 +334,28 @@ export class NotificationService extends BaseService<Notification> {
       if (notificationAccount) {
         throw new BadRequestException('Cannot edit the notification because someone has already read it.');
       }
-      await this.update(id, updateNotificationDto);
+
+      const result = await this.notificationRepository.createQueryBuilder('notification')
+        .where('notification.id = :id', {id})
+        .andWhere('notification.deletedAt is null')
+        .getOne();
+
+      if(!result){
+        throw new NotFoundException('Notification not found.')
+      }
+
+      result.title = updateNotificationDto.title
+      result.content = updateNotificationDto.content
+      result.updatedAt = new Date()
+      
+      await this.notificationRepository.save(result)
+
       return {
         message: 'Notification updated successfully.'
       }
+
     } catch (error) {
-      CommonException.handle(error);
+      CommonException.handle(error)
     }
   }
 

@@ -9,7 +9,7 @@ export class CreateNotificationDto {
     typeSend: string;
 
     @IsOptional()
-    userId: string;
+    email: string;
 
     @IsOptional()
     roleId: string;

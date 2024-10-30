@@ -18,13 +18,12 @@ export class NotificationController {
   @Permissions("CREATE_NOTIFICATION")
   @Post()
   create(@Req() request: Request, @Body() createNotificationDto: CreateNotificationDto) {
-    console.log(createNotificationDto.roleId)
     try {
       if(createNotificationDto.typeSend === "role" && !createNotificationDto.roleId){
       throw new BadRequestException("roleId is required for role type notification")
     }
-     if(createNotificationDto.typeSend === "user" && !createNotificationDto.userId){
-      throw new BadRequestException("userId is required for user type notification")
+     if(createNotificationDto.typeSend === "user" && !createNotificationDto.email){
+      throw new BadRequestException("email is required for user type notification")
     }
     createNotificationDto.accountId = request['user'].id
     return this.notificationService.create(createNotificationDto);

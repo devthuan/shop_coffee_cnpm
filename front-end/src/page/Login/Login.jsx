@@ -45,7 +45,7 @@ export const Login = () => {
           const accessToken = data.accessToken;
 
           // giai ma token
-          const { id, email, role, username } = await jwtDecode(accessToken);
+          const { id, email, role, username } =  jwtDecode(accessToken);
 
           // Lưu access token vào Redux store
           dispatch(
@@ -54,9 +54,8 @@ export const Login = () => {
               email: email,
             })
           );
-
           setItemWithExpiration("role", role, 2);
-          setItemWithExpiration("token", accessToken, 2);
+          await setItemWithExpiration("token", accessToken, 2);
           setItemWithExpiration("email", email, 2);
 
           const responsePermission = await GetAllPermissionByRoleAPI(role);

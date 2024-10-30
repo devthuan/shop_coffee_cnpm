@@ -198,9 +198,7 @@ export const Permission = () => {
                     </div>
                   </div>
                 </div>
-                <div className="">
-                  {/* <ModelAddAccount /> */}
-                </div>
+                <div className="">{/* <ModelAddAccount /> */}</div>
               </div>
 
               <div className="mt-5 shadow-sm border rounded-lg overflow-x-auto">
@@ -225,7 +223,7 @@ export const Permission = () => {
                       dataRole?.map((item, idx) => (
                         <tr key={idx}>
                           <td className="px-2 py-4 whitespace-nowrap">
-                            {item.id}
+                            {item.id.slice(0, 8)} ...
                           </td>
                           <td className="px-2 py-4 whitespace-nowrap">
                             {item.name}
