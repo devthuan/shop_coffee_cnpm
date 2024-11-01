@@ -11,6 +11,7 @@ import userInfoReducer from "./features/UserInfor/User_InforSlice";
 import cartReducer from "./features/cart/cartSlice";
 import authReducer from "./features/AuthSlice/authSlice"; // Đường dẫn tới authSlice
 import notificationReducer from "./features/Notifications/NotificationsSilce";
+import notificationUserReducer from "./features/Notifications/NotificationsUserSlice"; //
 
 export const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ export const store = configureStore({
     receipts: receiptsReducer,
     auth: authReducer,
     notifications: notificationReducer,
+    notificationUser: notificationUserReducer,
   },
 
   // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),

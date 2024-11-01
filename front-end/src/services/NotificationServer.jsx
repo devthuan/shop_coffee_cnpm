@@ -5,7 +5,7 @@ export const GetAllNotificationAPI = (query) => {
 };
 
 export const GetAllNotificationByUserAPI = (query) => {
-  return api.get(`notification?${query}`);
+  return api.get(`notification/user?${query}`);
 };
 
 export const CreateNotificationAPI = (data) => {
@@ -20,7 +20,7 @@ export const CreateNotificationAPI = (data) => {
 };
 
 export const ReadNotificationAPI = (id) => {
-  return api.patch(`notification/${id}`);
+  return api.patch(`notification/read/${id}`);
 };
 
 export const UpdateNotificationAPI = (id, { title, content }) => {
