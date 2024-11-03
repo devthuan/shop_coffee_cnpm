@@ -16,7 +16,7 @@ import {
 import { setItemWithExpiration } from "~/services/localStorage";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { jwtDecode } from "jwt-decode";
-import { GetAllPermissionByRoleAPI } from "~/services/PermissionService";
+import  { GetAllPermissionByRoleAPI }   from "~/services/PermissionService";
 
 const cx = classNames.bind(styles);
 export const Login = () => {
