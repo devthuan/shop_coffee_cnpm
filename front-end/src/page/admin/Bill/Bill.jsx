@@ -28,17 +28,13 @@ export const Bill = () => {
     limit: 10,
 });
 
-console.log(BillsData)
-
-
-
-
-
   const filterItems = [
     { value: "createdAt_ASC", label: "sắp xếp theo ngày tạo tăng dần" },
     { value: "createdAt_DESC", label: "sắp xếp theo ngày tạo giảm dần" },
   ];
 
+
+  
   const titleColumn = [
     "Username",
     "deliverPhone",
