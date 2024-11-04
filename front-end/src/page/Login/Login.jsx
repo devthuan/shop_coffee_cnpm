@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import {
   initDataPermission,
   setLogin,
+  // setError
 } from "~/redux/features/AuthSlice/authSlice";
 import { setItemWithExpiration } from "~/services/localStorage";
 import { HandleApiError } from "~/Utils/HandleApiError";
@@ -39,7 +40,6 @@ export const Login = () => {
       if (response && response.data) {
         console.log(response.data);
         const { statusCode, status, message, data } = response.data;
-
         // xử lý trường hợp thành công
         if (statusCode === 200 && status === "success") {
           const accessToken = data.accessToken;
@@ -55,7 +55,7 @@ export const Login = () => {
             })
           );
           setItemWithExpiration("role", role, 2);
-          await setItemWithExpiration("token", accessToken, 2);
+          setItemWithExpiration("token", accessToken, 2);
           setItemWithExpiration("email", email, 2);
 
           const responsePermission = await GetAllPermissionByRoleAPI(role);
@@ -86,7 +86,7 @@ export const Login = () => {
     } catch (err) {
       const { message, status } = HandleApiError(error);
       if (status === "error") {
-        dispatch(setError({ error: message }));
+        setError(message);
       }
     } finally {
       setTimeout(() => {
