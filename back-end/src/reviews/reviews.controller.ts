@@ -7,6 +7,7 @@ import { Reviews } from './entities/review.entity';
 import { AuthGuardCustom } from 'src/auth/auth.guard';
 import { Permissions } from 'src/auth/permission.decorator';
 import { PermissionsGuard } from 'src/auth/permisson.guard';
+import { ReplyReviewDto } from './dto/reply-review.dto';
 
 @Controller('reviews')
 export class ReviewsController {
@@ -19,6 +20,16 @@ export class ReviewsController {
   create(@Req() req, @Body() createReviewDto: CreateReviewDto) {
     createReviewDto.accountId = req.user.id
     const data = this.reviewsService.create(createReviewDto);
+    return plainToInstance(Reviews, data)
+  }
+
+  @UseGuards(PermissionsGuard)
+  @UseGuards(AuthGuardCustom)
+  // @Permissions("CREATE_REPLY_REVIEW")
+  @Post("reply")
+  createReply(@Req() req, @Body() replyReviewDto: ReplyReviewDto) {
+    replyReviewDto.accountId = req.user.id
+    const data = this.reviewsService.createReply(replyReviewDto);
     return plainToInstance(Reviews, data)
   }
 
