@@ -2,6 +2,12 @@ import productReducer from "~/redux/features/Product/PoductSlice"; // Đường 
 import { configureStore } from "@reduxjs/toolkit";
 import accountsReducer from "./features/Accounts/accountsSilce";
 import rolesReducer from "./features/Roles/rolesSilce";
+
+
+
+import billReducer from '~/redux/features/Bill/billSilice';
+import IdBillDetailReducer from '~/redux/features/IdBillDetail/IdBillDetailSlice';
+
 import permissionsReducer from "./features/Permissions/permissionsSilce";
 import inventoriesReducer from "./features/Inventories/inventoriesSilce";
 import suppliersReducer from "./features/Suppliers/suppliersSlice";
@@ -16,11 +22,14 @@ import notificationUserReducer from "./features/Notifications/NotificationsUserS
 export const store = configureStore({
   reducer: {
     products: productReducer,
+    bill: billReducer,
     catagories: catagoriesReducer,
     userInfo: userInfoReducer,
     cart: cartReducer,
     accounts: accountsReducer,
     roles: rolesReducer,
+    idBillDetails: IdBillDetailReducer,
+
     permissions: permissionsReducer,
     inventories: inventoriesReducer,
     suppliers: suppliersReducer,
@@ -28,7 +37,12 @@ export const store = configureStore({
     auth: authReducer,
     notifications: notificationReducer,
     notificationUser: notificationUserReducer,
+
   },
 
   // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
 });
+
+
+
+
