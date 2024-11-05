@@ -16,6 +16,8 @@ import { Supplier } from "~/page/admin/Supplier/Supplier";
 import { Voucher } from "~/page/admin/Voucher/Voucher";
 import { Warehouse } from "~/page/admin/Warehouse/Warehouse";
 
+
+
 //  routes for admin
 export const adminRoutes = [
   { path: "/admin", component: Dashboard, layout: DashboardLayout },

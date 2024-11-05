@@ -16,6 +16,7 @@ const ModelEditBill = ({ data }) => {
         Edit
       </Dialog.Trigger>
       <Dialog.Portal>
+        
         <Dialog.Overlay className="fixed inset-0 w-full h-full bg-black opacity-40" />
 
         <Dialog.Content className=" fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-full max-w-3xl mx-auto px-4">

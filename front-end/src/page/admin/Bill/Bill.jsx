@@ -10,10 +10,10 @@ import { HandleApiError } from "~/Utils/HandleApiError";
 import { toast, ToastContainer } from "react-toastify";
 import ModelEditBill from "~/page/admin/Bill/ModelEditBills";
 import { Pagination } from "~/components/Pagination/Pagination";
+import BillDetails from "~/page/admin/Bill/BillDetails";
 const cx = classNames.bind(styles);
 export const Bill = () => {
   const dispatch = useDispatch();
-
   const BillsData = useSelector((state) => state.bill.data)
   const total = useSelector((state) => state.bill.total)
   const currentPage = useSelector((state) => state.bill.currentPage)
@@ -22,11 +22,11 @@ export const Bill = () => {
 
   const isError = useSelector((state) => state.bill.error);
   const isLoading = false;
-
+  const [showBillDetails, setShowBillDetails ] = useState(null)
   const [optionLimit, setOptionLimit] = useState({
     currentPage: 1,
     limit: 10,
-});
+  });
 
   const filterItems = [
     { value: "createdAt_ASC", label: "sắp xếp theo ngày tạo tăng dần" },
@@ -34,18 +34,19 @@ export const Bill = () => {
   ];
 
 
-  
+
   const titleColumn = [
+    "id",
     "Username",
     "deliverPhone",
     "deliverAddress",
     "total",
-    "totalDiscount",
-    "totalPayment",
+    // "totalDiscount",
+    // "totalPayment",
     "status",
-    "shippingMethod",
-    "createdAt",
-    "updatedAt",
+    // "shippingMethod",
+    // "createdAt",
+    // "updatedAt",
     "note",
   ];
 
@@ -58,7 +59,7 @@ export const Bill = () => {
       let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&sortBy=createdAt&sortOrder=DESC`;
       const result = await GetAllBillAPI(queryParams);
       dispatch(initDataBill(result.data));
-    } 
+    }
   };
 
   const handleSearch = async (e) => {
@@ -75,19 +76,19 @@ export const Bill = () => {
   };
 
 
-useEffect(() => {
-    const fetchDataBill= async () => {
-        try {
-            let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
-            const response = await GetAllBillAPI(queryParams)
-            dispatch(initDataBill(response.data))
-        } catch (error) {
-            if (error.request) {
-                dispatch(initDataBill({ error: "không có phản hồi từ server..." }));
-            }
-            const result = HandleApiError(error);
-            result ? toast.error(result) : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+  useEffect(() => {
+    const fetchDataBill = async () => {
+      try {
+        let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
+        const response = await GetAllBillAPI(queryParams)
+        dispatch(initDataBill(response.data))
+      } catch (error) {
+        if (error.request) {
+          dispatch(initDataBill({ error: "không có phản hồi từ server..." }));
         }
+        const result = HandleApiError(error);
+        result ? toast.error(result) : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+      }
     }
     dispatch(clearDataBill());
 
@@ -96,7 +97,7 @@ useEffect(() => {
     }, 800);
 
     return () => clearTimeout(timeoutId);
-}, [optionLimit, dispatch]);
+  }, [optionLimit, dispatch]);
 
   // Callback function to update currentPage
   const handlePageChange = (newPage) => {
@@ -115,8 +116,18 @@ useEffect(() => {
     }));
   };
 
+  // show bill details
+  const handleClickIDBill = (id) => {
+    setShowBillDetails(id)
+  }
+  const handleToggleBill = (e) => {
+    setShowBillDetails(null)
+    
+  }
+
   return (
     <>
+     {showBillDetails && <BillDetails billsID={showBillDetails} handleClickToggle={handleToggleBill}/>}
       {isError ? (
         <div className="w-full h-full flex justify-center items-center">
           {isError}
@@ -168,7 +179,7 @@ useEffect(() => {
                   />
                 </svg>
                 <select
-                   onChange={(e) => {
+                  onChange={(e) => {
                     handleFilter(e.target.value);
                   }}
                   className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
@@ -213,6 +224,9 @@ useEffect(() => {
                 <tbody className="text-gray-600 divide-y">
                   {BillsData?.map((item, idx) => (
                     <tr key={idx}>
+                      <td className="px-2 py-4 whitespace-nowrap w-[20px]  hover:text-blue-500 hover:underline cursor-pointer" onClick={() => handleClickIDBill(item.id)}>
+                        {item.id}
+                      </td>
                       <td className="px-2 py-4 whitespace-nowrap">
                         {item.fullName}
                       </td>
@@ -225,46 +239,43 @@ useEffect(() => {
                       <td className="px-2 py-4 whitespace-nowrap">
                         {item.total}
                       </td>
-                     
-                      <td className="px-2 py-4 whitespace-nowrap">
+
+                      {/* <td className="px-2 py-4 whitespace-nowrap">
                         {item.totalDiscount}
-                      </td>
-                      <td className="px-2 py-4 whitespace-nowrap">
+                      </td> */}
+                      {/* <td className="px-2 py-4 whitespace-nowrap">
                         {item.totalPayment}
-                      </td>
+                      </td> */}
                       <td className="px-2 py-4 whitespace-nowrap">
                         {item.status}
                       </td>
-                      <td className="px-2 py-4 whitespace-nowrap">
+                      {/* <td className="px-2 py-4 whitespace-nowrap">
                         {item.shippingMethod}
-                      </td>
+                      </td>       */}
 
-                      <td className="px-2 py-4 whitespace-nowrap">
+                      {/* <td className="px-2 py-4 whitespace-nowrap">
                       {new Date(item.createdAt).toLocaleString()}
                       </td>
                       <td className="px-2 py-4 whitespace-nowrap">
                       {new Date(item.updatedAt).toLocaleString() || ""}
-                      </td>
+                      </td> */}
                       <td className="px-2 py-4 whitespace-nowrap">
                         {item.note}
                       </td>
-                    
+
                       <td className="px-2 py-4 whitespace-nowrap">
                         <div>
-                            <ModelEditBill data={item} />
-                          </div>
+                          <ModelEditBill data={item} />
+                        </div>
                       </td>
-                    
-
                     </tr>
-
-
-
                   ))}
                 </tbody>
               </table>
             </div>
           )}
+
+         
           <Pagination
             totalItems={total}
             current={currentPage}

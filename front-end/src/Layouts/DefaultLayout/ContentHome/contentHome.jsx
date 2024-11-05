@@ -17,7 +17,7 @@ import Loading from "~/components/Loading/Loading";
 const cx = classNames.bind(styles)
 function ContentHome() {
     const dispatch = useDispatch();
-    const ProductsData = useSelector((state) => state.products.data)
+    const ProductsData = useSelector((state) => state.products.data) || []
     const total = useSelector((state) => state.products.total)
     const currentPage = useSelector((state) => state.products.currentPage)
     const totalPage = useSelector((state) => state.products.totalPage)
