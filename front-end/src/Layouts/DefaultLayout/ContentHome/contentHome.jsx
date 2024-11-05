@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 const cx = classNames.bind(styles);
 function ContentHome() {
 
+
     const dispatch = useDispatch();
     const ProductsData = useSelector((state) => state.products.data) || []
     const total = useSelector((state) => state.products.total)
@@ -29,6 +30,7 @@ function ContentHome() {
     const limit = useSelector((state) => state.products.limit)
     const isloading = useSelector((state) => state.products.loading);
     const isError = useSelector((state) => state.products.error);
+    const navigate = useNavigate();
   const [optionLimit, setOptionLimit] = useState({
     currentPage: 1,
     limit: 10,
@@ -115,7 +117,7 @@ function ContentHome() {
             ProductsData.map((item, i) => {
               return (
                 <li
-                  onClick={() => nagivate(`/product/${item.id}`)}
+                  onClick={() => navigate(`/product/${item.id}`)}
                   className={cx("item_product")}
                   key={i}
                 >

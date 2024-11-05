@@ -32,74 +32,6 @@ function ContentProfile() {
   const isError = useSelector((state) => state.userInfo.error);
   const isloading = useSelector((state) => state.userInfo.loading);
 
-<<<<<<< HEAD
-    // const id = useSelector((state) => state.userInfo.id)
-    // const createdAt = useSelector((state) => state.userInfo.createdAt)
-    // const updatedAt = useSelector((state) => state.userInfo.updatedAt)
-    // const userName = useSelector((state) => state.userInfo.userName)
-    // const email = useSelector((state) => state.userInfo.email)
-    // const balance = useSelector((state) => state.userInfo.balance);
-    // const ip = useSelector((state) => state.userInfo.ip);
-    // const device = useSelector((state) => state.userInfo.device);
-    // const typeLogin = useSelector((state) => state.userInfo.typeLogin);
-    // const isActive = useSelector((state) => state.userInfo.isActive);
-    // const lastLogin = useSelector((state) => state.userInfo.lastLogin);
-    const userInformation = useSelector((state) => state.userInfo.userInformation);
-
-    const isError = useSelector((state) => state.userInfo.error);
-    const isloading = useSelector((state) => state.userInfo.loading);
-
-    console.log(userInformation)
-
-    return (<div className={cx("wrapper")}>
-        <div className={cx("content")}>
-            <div className={cx("container")}>
-                <div className={cx("header")}>
-                    <div className={cx("header_title")}>
-                        <div className={cx("header_name")}>Account info</div>
-                        <div className={cx("header_disc")}>Addresses, contact information and password</div>
-                    </div>
-                    <Link to="/profile/editProfile">
-                        <FontAwesomeIcon icon={faGear} className={cx("btn_gear")} />
-                    </Link>
-
-                </div>
-                <ul className={cx("list_profile")}>
-                    <li className={cx("item_profile")}>
-                        <div className={cx("item_profile_icon")}> <FontAwesomeIcon icon={faEnvelope} /> </div>
-                        <div className={cx("item_profile_info")}>
-                            <div className={cx("info_name")}>
-                                Email Address
-                            </div>
-                            <div className={cx("info_disc")}>
-                               {userInformation?.email || ""}
-                            </div>
-                        </div>
-                    </li>
-                    <li className={cx("item_profile")}>
-                        <div className={cx("item_profile_icon")}> <FontAwesomeIcon icon={faPhoneVolume} /> </div>
-                        <div className={cx("item_profile_info")}>
-                            <div className={cx("info_name")}>
-                                Phone number
-                            </div>
-                            <div className={cx("info_disc")}>
-                               {userInformation?.phoneNumber || ""}
-                            </div>
-                        </div>
-                    </li>
-                    <li className={cx("item_profile")}>
-                        <div className={cx("item_profile_icon")}> <FontAwesomeIcon icon={faLocationDot} /> </div>
-                        <div className={cx("item_profile_info")}>
-                            <div className={cx("info_name")}>
-                                Add an address
-                            </div>
-                            <div className={cx("info_disc")}>
-                               {userInformation?.address1 || userInformation?.address2 || ""}
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-=======
   return (
     <div className={cx("wrapper")}>
       <div className={cx("content")}>
@@ -110,7 +42,6 @@ function ContentProfile() {
               <div className={cx("header_disc")}>
                 Addresses, contact information and password
               </div>
->>>>>>> dev
             </div>
             <Link to="/profile/editProfile">
               <FontAwesomeIcon icon={faGear} className={cx("btn_gear")} />

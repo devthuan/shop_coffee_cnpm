@@ -1,7 +1,7 @@
 
 
-import api from "./api";
+// import api from "./api";
 
-export const AddBill = async (data) => {
-    return await api.post(`bills`, data)
-}
+// export const AddBill = async (data) => {
+//     return await api.post(`bills`, data)
+// }
