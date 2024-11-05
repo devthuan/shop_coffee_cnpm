@@ -142,7 +142,7 @@ const ModelEditAccount = ({ data }) => {
           <div className="bg-white rounded-md shadow-lg">
             <div className="flex items-center justify-between p-1 pl-4 border-b">
               <Dialog.Title className="text-lg font-medium text-gray-800 ">
-                Chỉnh sửa tài khoản 
+                Chỉnh sửa tài khoản
               </Dialog.Title>
               <Dialog.Close className="p-2 text-gray-400 rounded-md hover:bg-gray-100">
                 <svg

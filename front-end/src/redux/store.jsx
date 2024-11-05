@@ -10,6 +10,7 @@ import catagoriesReducer from "./features/Categories/categoriesSlice";
 import userInfoReducer from "./features/UserInfor/User_InforSlice";
 import cartReducer from "./features/cart/cartSlice";
 import authReducer from "./features/AuthSlice/authSlice"; // Đường dẫn tới authSlice
+import vouchersReducer from "./features/Vouchers/voucherSlice"
 
 export const store = configureStore({
   reducer: {
@@ -24,6 +25,7 @@ export const store = configureStore({
     suppliers: suppliersReducer,
     receipts: receiptsReducer,
     auth: authReducer, 
+    vouchers : vouchersReducer
 
 
   },
