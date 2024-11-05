@@ -62,18 +62,18 @@ export const Bill = () => {
     }
   };
 
-  const handleSearch = async (e) => {
-    try {
-      let queryParams = `search=${e}&limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
-      const result = await GetAllBillAPI(queryParams);
-      dispatch(initDataBill(result.data));
-    } catch (error) {
-      const result = HandleApiError(error);
-      result
-        ? toast.error(result)
-        : toast.error("Có lỗi xảy ra, vui lòng thử lại");
-    }
-  };
+  // const handleSearch = async (e) => {
+  //   try {
+  //     let queryParams = `search=${e}&limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
+  //     const result = await GetAllBillAPI(queryParams);
+  //     dispatch(initDataBill(result.data));
+  //   } catch (error) {
+  //     const result = HandleApiError(error);
+  //     result
+  //       ? toast.error(result)
+  //       : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+  //   }
+  // };
 
 
   useEffect(() => {
@@ -135,7 +135,7 @@ export const Bill = () => {
       ) : (
         <div className="mx-auto  md:pr-5">
           <div className=" ">
-            <div className="flex justify-center ">
+            {/* <div className="flex justify-center ">
               <form
                 onSubmit={(e) => e.preventDefault()}
                 className="max-w-xl w-full px-4 mx-auto mt-5"
@@ -163,7 +163,7 @@ export const Bill = () => {
                   />
                 </div>
               </form>
-            </div>
+            </div> */}
             <div className="flex justify-between mt-7">
               <div className="relative w-72 ">
                 <svg
