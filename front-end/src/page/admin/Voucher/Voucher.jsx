@@ -1,7 +1,13 @@
 import classNames from "classnames/bind";
 import styles from "./Voucher.module.scss";
 import { useEffect, useMemo, useState } from "react";
-import { GetAllVoucher, GetVoucherById, RecoverVoucher, UseVoucher, DeleteVoucher } from "~/services/VoucherService";
+import {
+  GetAllVoucher,
+  GetVoucherById,
+  RecoverVoucher,
+  UseVoucher,
+  DeleteVoucher,
+} from "~/services/VoucherService";
 import {
   clearDataVoucher,
   initDataVoucher,
@@ -10,7 +16,6 @@ import {
   setLoading,
   updateVoucher,
   deleteVoucher,
-
 } from "~/redux/features/Vouchers/voucherSlice";
 import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,7 +24,6 @@ import ModelAddVoucher from "./ModelAddVoucher";
 import ModelEditVoucher from "./ModelEditVoucher";
 import Loading from "~/components/Loading/Loading";
 import { HandleApiError } from "~/Utils/HandleApiError";
-
 
 const cx = classNames.bind(styles);
 export const Voucher = () => {
@@ -56,7 +60,6 @@ export const Voucher = () => {
       value: "filter_expired",
       label: "Lọc theo trạng thái hết hạn",
     },
-
   ];
   const titleColumn = [
     "name",
@@ -83,32 +86,29 @@ export const Voucher = () => {
   };
   const handleDeleteVoucher = async (voucher) => {
     // Ngăn chặn nhấp chuột trong khi đang xử lý
-    dispatch(Loading(true))
+    // dispatch(Loading(true));
+    
     try {
       // Gọi API để xóa voucher
       const response = await DeleteVoucher(voucher.id);
       console.log(response); // Ghi nhật ký phản hồi từ API
+      
       // Kiểm tra phản hồi từ API
-      if (response && response.data) {
+      if (response && response.status === 200) {
         const { statusCode, status, message } = response.data;
-        if (statusCode === 200 && status === "success") {
-          // Hiển thị thông báo thành công
-          toast.success(message         
-         );
-          // Cập nhật danh sách voucher trong Redux để loại bỏ voucher
-          dispatch(removeVoucher(voucher.id)); // Sử dụng action removeVoucher đã định nghĩa
 
-        } else {
-          // Nếu không thành công, hiển thị thông báo lỗi
-          toast.error(message || "Đã xảy ra lỗi không xác định");
-        }
-      }
+        // Cập nhật danh sách voucher trong Redux để loại bỏ voucher
+        dispatch(removeVoucher(voucher.id)); // Sử dụng action removeVoucher đã định nghĩa
+        
+        // Hiển thị thông báo thành công
+        toast.success(message);
+      } 
     } catch (error) {
       console.log("Lỗi khi gọi API:", error);
       const result = HandleApiError(error);
       result
         ? toast.error(result)
-        : toast.error("Có lỗi xảy ra, vui lòng thử lại");      
+        : toast.error("Có lỗi xảy ra, vui lòng thử lại");
     }
   };
   // const handleRecoverVoucher = async (voucherId) => {
@@ -206,44 +206,43 @@ export const Voucher = () => {
 
     setTimeout(() => {
       fetchData();
-    }, 800);
+    }, 500);
   }, [optionLimit.limit, optionLimit.currentPage]);
 
+  // const handleUse = async (voucher) => {
+  //   try {
+  //     console.log("Using voucher ID:", voucher.id); // Kiểm tra ID voucher
+  //     if (!voucher.id) {
+  //       throw new Error("Voucher ID is undefined or invalid");
+  //     }
 
-  const handleUse = async (voucher) => {
-    try {
-      console.log("Using voucher ID:", voucher.id); // Kiểm tra ID voucher
-      if (!voucher.id) {
-        throw new Error("Voucher ID is undefined or invalid");
-      }
+  //     const response = await UseVoucher(voucher.id);
+  //     console.log("Response from UseVoucher:", response);
 
-      const response = await UseVoucher(voucher.id);
-      console.log("Response from UseVoucher:", response);
+  //     if (response && response.data) {
+  //       const { statusCode, status, message } = response.data;
 
-      if (response && response.data) {
-        const { statusCode, status, message } = response.data;
-
-        if (statusCode === 200) {
-          // update data in redux
-          dispatch(
-            updateStatusVoucher({
-              id: voucher.id,
-              status: voucher.isActive,
-            })
-          );
-          toast.success(message);
-        }
-      } else {
-        toast.error("Voucher update failed with no response data.");
-      }
-    } catch (error) {
-      console.log("Error occurred while using voucher:", error);
-      const result = HandleApiError(error);
-      result
-        ? toast.error(result)
-        : toast.error("Có lỗi xảy ra, vui lòng thử lại");
-    }
-  };
+  //       if (statusCode === 200) {
+  //         // update data in redux
+  //         dispatch(
+  //           updateStatusVoucher({
+  //             id: voucher.id,
+  //             status: voucher.isActive,
+  //           })
+  //         );
+  //         toast.success(message);
+  //       }
+  //     } else {
+  //       toast.error("Voucher update failed with no response data.");
+  //     }
+  //   } catch (error) {
+  //     console.log("Error occurred while using voucher:", error);
+  //     const result = HandleApiError(error);
+  //     result
+  //       ? toast.error(result)
+  //       : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+  //   }
+  // };
 
   return (
     <>
@@ -266,7 +265,6 @@ export const Voucher = () => {
                 <div className="flex justify-start items-end">
                   <div className="relative w-72 ">
                     <svg
-
                       xmlns="http://www.w3.org/2000/svg"
                       className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
                       viewBox="0 0 20 20"
@@ -381,23 +379,8 @@ export const Voucher = () => {
                   <tbody className="text-gray-600 divide-y">
                     {vouchersData?.map((item, idx) => (
                       <tr key={idx}>
-                        <td className="flex items-center gap-x-3 py-3 px-2 whitespace-nowrap">
-                          <img
-                            src={
-                              item.userInformation?.avatar
-                                ? item.userInformation?.avatar
-                                : "https://randomuser.me/api/portraits/men/86.jpg"
-                            }
-                            className="w-10 h-10 rounded-full"
-                          />
-                          <div>
-                            <span className="block text-gray-700 text-sm font-medium">
-                              {item.name}
-                            </span>
-                            {/* <span className="block text-gray-700 text-xs">
-                              {item.code}
-                            </span> */}
-                          </div>
+                        <td className="px-2 py-4 whitespace-nowrap">
+                          {item.name}
                         </td>
                         <td className="px-2 py-4 whitespace-nowrap">
                           {item.code}
@@ -411,8 +394,6 @@ export const Voucher = () => {
                         <td className="px-2 py-4 whitespace-nowrap">
                           {item.description}
                         </td>
-
-
                         <td className="px-2 py-4 whitespace-nowrap">
                           {new Date(item.startDate).toLocaleString()}
                         </td>
@@ -421,10 +402,11 @@ export const Voucher = () => {
                         </td>
                         <td className="px-2 py-4 whitespace-nowrap ">
                           <span
-                            className={`px-3 py-2 rounded-full font-semibold text-xs ${item.isActive
-                              ? "text-green-600 bg-green-50"
-                              : "text-red-600 bg-red-50"
-                              }`}
+                            className={`px-3 py-2 rounded-full font-semibold text-xs ${
+                              item.isActive
+                                ? "text-green-600 bg-green-50"
+                                : "text-red-600 bg-red-50"
+                            }`}
                           >
                             {item.isActive ? "activate" : "expire"}
                           </span>
@@ -440,18 +422,21 @@ export const Voucher = () => {
                             >
                               {item.isActive ? "Khóa" : "Áp Dụng"}
                             </div> */}
+
+                            {/*
                             <div
                               onClick={() => handleUse(item)}
                               className="py-2 px-3 font-medium text-blue-600 hover:text-blue-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer"
                             >
                               Sử Dụng
                             </div>
-                            <div
+                            */}
 
+                            <div
                               onClick={() => handleDeleteVoucher(item)}
                               className="py-2 px-3 font-medium text-blue-600 hover:text-blue-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer"
-                            >Xóa
-
+                            >
+                              Xóa
                             </div>
                           </div>
                         </td>
@@ -494,5 +479,3 @@ export const Voucher = () => {
     </>
   );
 };
-
-

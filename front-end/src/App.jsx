@@ -78,7 +78,7 @@ function App() {
             );
           })}
         </Routes>
-        <ToastContainer
+        {/* <ToastContainer
           position="top-right"
           autoClose={2000}
           hideProgressBar={false}
@@ -89,7 +89,7 @@ function App() {
           draggable
           pauseOnHover
           theme="light"
-        />
+        /> */}
       </div>
     </Router>
   );
