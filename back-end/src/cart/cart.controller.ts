@@ -4,13 +4,17 @@ import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 import { plainToInstance } from 'class-transformer';
 import { Cart } from './entities/cart.entity';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuardCustom } from 'src/auth/auth.guard';
+import { PermissionsGuard } from 'src/auth/permisson.guard';
+import { Permissions } from 'src/auth/permission.decorator';
 
 @Controller('cart')
+@UseGuards(AuthGuardCustom)
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
-  @UseGuards(AuthGuard)
+  @UseGuards(PermissionsGuard)
+  @Permissions("CREATE_CART")
   @Post()
   create(
     @Req() req: Request,
@@ -21,7 +25,8 @@ export class CartController {
     return this.cartService.createCart(createCartDto);
   }
   
-  @UseGuards(AuthGuard)
+  @UseGuards(PermissionsGuard)
+  @Permissions("INCREASE_CART_PRODUCT")
   @Patch('increase/:id')
   increaseQuantity(
     @Param('id') id: string,
@@ -31,7 +36,8 @@ export class CartController {
     return this.cartService.increaseQuantity(id, accountsId);
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(PermissionsGuard)
+  @Permissions("DECREASE_CART_PRODUCT")
   @Patch('decrease/:id')
   decreaseQuantity(
     @Param('id') id: string,
@@ -42,7 +48,8 @@ export class CartController {
   }
 
 
-  @UseGuards(AuthGuard)
+  @UseGuards(PermissionsGuard)
+  @Permissions("GET_CART")
   @Get()
   findAll(
     @Req() req: Request,
@@ -51,10 +58,15 @@ export class CartController {
     @Query('limit') limit: number = 10,
     @Query('sortBy') sortBy: string = 'createdAt',
     @Query('sortOrder') sortOrder: "ASC" | "DESC" = "DESC",
+    @Query() query: Record<string, any>
+
   ) {
+
+    const { search : _search, page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+
     limit = limit > 100 ? 100 : limit ;
     let accountId = req['user'].id
-    let data = this.cartService.findAll(search, page, limit, sortBy, sortOrder, accountId);
+    let data = this.cartService.findAll(search, page, limit, sortBy, sortOrder, accountId,filters);
     return plainToInstance(Cart, data)
   }
 
@@ -62,7 +74,9 @@ export class CartController {
   // findOne(@Param('id') id: string) {
   //   return this.cartService.findOne(id);
   // }
-  @UseGuards(AuthGuard)
+
+  @UseGuards(PermissionsGuard)
+  @Permissions("UPDATE_CART_PRODUCT")
   @Patch(':id')
   update(
     @Req() req: Request,
@@ -73,8 +87,8 @@ export class CartController {
     return this.cartService.updateQuantity(id, updateCartDto);
   }
   
-  @UseGuards(AuthGuard)
-
+  @UseGuards(PermissionsGuard)
+  @Permissions("DELETE_CART_PRODUCT")
   @Delete(':id')
   deleteSoft(@Param('id') id: string, @Req() req: Request) {
     let accountsId = req['user'].id

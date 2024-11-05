@@ -2,10 +2,12 @@ import { Controller, Get,  Param,  Query, UseGuards } from '@nestjs/common';
 import { TransactionHistoryService } from './transaction-history.service';
 import { plainToInstance } from 'class-transformer';
 import { TransactionHistory } from './entities/transaction-history.entity';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuardCustom } from 'src/auth/auth.guard';
+import { PermissionsGuard } from 'src/auth/permisson.guard';
+import { Permissions } from 'src/auth/permission.decorator';
 
 @Controller('transaction-history')
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuardCustom)
 export class TransactionHistoryController {
   constructor(private readonly transactionHistoryService: TransactionHistoryService) {}
 
@@ -15,6 +17,8 @@ export class TransactionHistoryController {
   //   return this.transactionHistoryService.create(createTransactionHistoryDto);
   // }
 
+  @UseGuards(PermissionsGuard)
+  @Permissions("GET_TRANSACTION_HISTORY")
   @Get()
   findAll(
     @Query('search') search : string,
@@ -22,11 +26,17 @@ export class TransactionHistoryController {
     @Query('limit') limit: number,
     @Query('sortBy') sortBy: string,
     @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',
+    @Query() query: Record<string, any>
+
   ) {
-    let data = this.transactionHistoryService.findAll(search, page, limit, sortBy, sortOrder);
+    const {search : _search, page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+    limit = limit > 100 ? 100 : limit;
+    let data = this.transactionHistoryService.findAll(search, page, limit, sortBy, sortOrder, filters);
     return plainToInstance(TransactionHistory, data)
   }
 
+  @UseGuards(PermissionsGuard)
+  @Permissions("GET_TRANSACTION_HISTORY")
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.transactionHistoryService.findOne(id);

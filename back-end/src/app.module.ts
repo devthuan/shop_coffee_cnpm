@@ -8,7 +8,6 @@ import { MailModule } from './mail/mail.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { RolePermissionModule } from './role-permission/role-permission.module';
 import { ProductModule } from './product/product.module';
-
 import * as redisStore from 'cache-manager-ioredis';
 import { CloudinaryModule } from 'nestjs-cloudinary';
 import { AttributeModule } from './attribute/attribute.module';
@@ -29,6 +28,9 @@ import { FavoriteModule } from './favorite/favorite.module';
 import { TransactionHistoryModule } from './transaction-history/transaction-history.module';
 import { AccountModule } from './account/account.module';
 import { SeederModule } from './seeder/seeder.module';
+import { PermissionsGuard } from './auth/permisson.guard';
+import { RoleModule } from './role/role.module';
+import { FunctionModule } from './function/function.module';
 
 
 @Module({
@@ -43,6 +45,7 @@ import { SeederModule } from './seeder/seeder.module';
       port: parseInt(process.env.REDIS_PORT),
       ttl: 600, // seconds
       isGlobal: true,
+      connectTimeout: 10000
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
@@ -86,8 +89,10 @@ import { SeederModule } from './seeder/seeder.module';
     TransactionHistoryModule,
     AccountModule,
     SeederModule,
+    RoleModule,
+    FunctionModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, PermissionsGuard],
 })
 export class AppModule {}

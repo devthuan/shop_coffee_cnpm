@@ -87,13 +87,14 @@ export class ProductService extends BaseService<Products> {
 
 
       // create product attribute
+        const productAttributes = [];
       if(createProductDto.attributes.length > 0) {
         for(const attribute of createProductDto.attributes) {
           const existingAttribute = await this.attributeService.findOne(attribute.attributeId);
           if (!existingAttribute) {
             throw new NotFoundException('Attribute not found');
           }
-  
+          // Add product attributes
            const newProductAttributeValue = await this.productAttributesRepository.create({
               sellPrice: 0,
               buyPrice: 0,
@@ -102,7 +103,7 @@ export class ProductService extends BaseService<Products> {
               products: newProduct
             })
             await queryRunner.manager.save(newProductAttributeValue);
-          
+            productAttributes.push(newProductAttributeValue);
         }
 
       }else {
@@ -110,6 +111,7 @@ export class ProductService extends BaseService<Products> {
       }
       
       // init images product
+      const productImages = [];
       if(files && files.length > 0){
         for(const file of files){
           const uploadedFile = await this.uploadFileCloudinary(file);
@@ -118,13 +120,18 @@ export class ProductService extends BaseService<Products> {
             products: newProduct
           })
           queryRunner.manager.save(newImages);
+          productImages.push(newImages);
 
         }
       }
 
+      // Add attributes and images to the newProduct object
+        newProduct['attributes'] = productAttributes;
+        newProduct['productImages'] = productImages;
+
       // commit transaction
       await queryRunner.commitTransaction();
-      return { message: 'Product created successfully' };
+      return { message: 'Product created successfully', data: newProduct };
 
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -251,13 +258,15 @@ export class ProductService extends BaseService<Products> {
         .leftJoinAndSelect('productAttributes.attributes', 'attributes')
         .leftJoinAndSelect('products.category', 'category')
         .leftJoinAndSelect('products.images', 'images')
-        .leftJoinAndSelect('products.reviews', 'reviews')       
+        .leftJoinAndSelect('products.reviews', 'reviews') 
+        .leftJoinAndSelect('products.productDiscount', 'productDiscount')       
         .where('products.id = :productId', { productId })
         .andWhere('products.deletedAt IS NULL')
         .andWhere('attributes.deletedAt IS NULL')
         .andWhere('productAttributes.deletedAt IS NULL')
         .andWhere('category.deletedAt IS NULL')
         .andWhere('images.deletedAt IS NULL')
+        .andWhere('productDiscount.deletedAt IS NULL')
         .getOne();
       
       const statisticalReview = await this.productRepository.createQueryBuilder('products')
@@ -325,6 +334,7 @@ export class ProductService extends BaseService<Products> {
       CommonException.handle(error);
     }
   }
+  
   async checkExistingProductAttributeNotQuantity(productAttributeId: string): Promise<ProductAttributes> {
 
     try {
@@ -402,16 +412,34 @@ export class ProductService extends BaseService<Products> {
     page : number = 1,
     limit : number = 10,
     sortBy : string = 'createdAt',
-    sortOrder: 'ASC' | 'DESC' = 'ASC'
+    sortOrder: 'ASC' | 'DESC' = 'ASC',
+    filters: Record<string, any> = {} // Nhận filters từ controller
+
   ): Promise<{ total: number;  currentPage: number; totalPage: number; limit : number; data: Products[]}> {
     try {
       const queryBuilder = this.productRepository.createQueryBuilder('products')
           .leftJoinAndSelect('products.images', 'images')
+          .leftJoinAndSelect('products.category', 'category')
+          .leftJoinAndSelect('products.productAttributes', 'productAttributes')
+          .leftJoinAndSelect('productAttributes.attributes', 'attributes')
           .where('products.deletedAt IS NULL');
 
           if (search) {
             queryBuilder.andWhere('products.name LIKE :search', { search: `%${search}%` });
           }
+
+           // Filter conditions
+            Object.keys(filters).forEach((key) => {
+              if (filters[key] !== undefined && filters[key] !== null) {
+                let value = filters[key];
+                
+                // Chuyển đổi giá trị 'true' hoặc 'false' thành boolean
+                if (value === 'true') value = true;
+                if (value === 'false') value = false;
+
+                queryBuilder.andWhere(`products.${key} = :${key}`, { [key]: value });
+              }
+            });
 
           // count total
           const total = await queryBuilder.getCount();

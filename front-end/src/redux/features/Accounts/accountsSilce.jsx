@@ -23,6 +23,7 @@ export const accountsSlice = createSlice({
       state.loading = false;
       state.error = action.payload?.error;
     },
+
     addAccount: (state, action) => {
       state.data.push(action.payload);
       state.loading = false;
@@ -44,17 +45,18 @@ export const accountsSlice = createSlice({
       let accountIndex = state?.data?.findIndex(
         (item) => item.id === action.payload.id
       );
-      console.log(accountIndex)
-      // console.log(action.payload.role)
+      console.log(accountIndex);
+      console.log(action.payload.role);
       // console.log(action.payload.userName);
       if (accountIndex !== -1) {
         state.data[accountIndex] = {
           ...state.data[accountIndex], // Keep other account properties
           userName: action.payload.userName, // Update the userName status
-          role: {
-            ...state.data[accountIndex].role, // Spread the current role object
-            name: action.payload.role,
-          },
+          // role: {
+          //   ...state.data[accountIndex].role, // Spread the current role object
+          //   name: action.payload.role,
+          // },
+          role: action.payload.role,
         };
       }
     },
@@ -66,6 +68,7 @@ export const accountsSlice = createSlice({
 
     clearDataAccount: (state, action) => {
       state.data = [];
+      state.permission = [];
       state.total = 0;
       state.currentPage = 0;
       state.totalPage = 0;

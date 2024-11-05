@@ -1,19 +1,22 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { RolePermissionService } from './role-permission.service';
 import { RolePermissionController } from './role-permission.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Accounts } from 'src/auth/entities/accounts.entity';
-import { Roles } from './entities/roles.entity';
-import { Functions } from './entities/functions.entity';
 import { RoleHasFunctions } from './entities/roles_has_functions.entity';
-import { RoleService } from './role.service';
-import { FunctionsService } from './function.service';
+import { Roles } from 'src/role/entities/roles.entity';
+import { Functions } from 'src/function/entities/functions.entity';
+import { AccountModule } from 'src/account/account.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Accounts, Roles, Functions, RoleHasFunctions])
+    TypeOrmModule.forFeature([Accounts, RoleHasFunctions, Roles, Functions]),
+    forwardRef(() => AuthModule)
+
   ],
   controllers: [RolePermissionController],
-  providers: [RolePermissionService, RoleService, FunctionsService],
+  providers: [RolePermissionService],
+  exports: [RolePermissionService]
 })
 export class RolePermissionModule {}

@@ -105,7 +105,8 @@ const ModelAddAccount = () => {
     const fetchAPI = async () => {
       dispatch(clearDataRole());
       try {
-        const response = await GetAllRole();
+        let queryParams = "";
+        const response = await GetAllRole(queryParams);
         if (response && response.data && response.status === 200) {
           dispatch(initDataRole(response.data));
         }
@@ -126,7 +127,7 @@ const ModelAddAccount = () => {
   return (
     <Dialog.Root>
       <Dialog.Trigger className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm">
-        Create Account
+        Tạo mới tài khoản 
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 w-full h-full bg-black opacity-40" />
@@ -135,7 +136,7 @@ const ModelAddAccount = () => {
           <div className="bg-white rounded-md shadow-lg">
             <div className="flex items-center justify-between p-1 pl-4 border-b">
               <Dialog.Title className="text-lg font-medium text-gray-800">
-                Create Account
+               Tạo mới tài khoản 
               </Dialog.Title>
               <Dialog.Close className="p-2 text-gray-400 rounded-md hover:bg-gray-100">
                 <svg
@@ -181,7 +182,11 @@ const ModelAddAccount = () => {
                     {dataRole &&
                       dataRole.length > 0 &&
                       dataRole.map((item) => {
-                        return <option value={item.name}>{item.name}</option>;
+                        return (
+                          <option key={item.codeName} value={item.codeName}>
+                            {item.name}
+                          </option>
+                        );
                       })}
                   </select>
                 </div>
@@ -198,7 +203,7 @@ const ModelAddAccount = () => {
                     <HalfRingLoading />
                   </div>
                 ) : (
-                  "Create"
+                  "Tạo mới"
                 )}
               </button>
               <Dialog.Close asChild>
@@ -206,7 +211,7 @@ const ModelAddAccount = () => {
                   className="px-3 py-1 text-xl text-gray-800 border rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2"
                   aria-label="Close"
                 >
-                  Cancel
+                  Đóng
                 </button>
               </Dialog.Close>
             </div>

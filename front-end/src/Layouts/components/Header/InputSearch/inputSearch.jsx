@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import Tippy from '@tippyjs/react/headless';
-import item_cf from "src/assets/images/item_sp.svg";
+import item_cf from "src/assets/images/item_cf.png";
 import { getALLProducts } from "~/services/ProductService";
 const cx = classNames.bind(styles);
 

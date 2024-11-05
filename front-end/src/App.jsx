@@ -4,6 +4,8 @@ import DefaultLayout from "./Layouts/DefaultLayout/DefaultLayout";
 import { publicRoutes } from "./router/publicRoutes";
 import { privateRoutes } from "./router/privateRoutes";
 import { adminRoutes } from "./router/adminRoutes";
+import { ProtectRoutesAdmin } from "./router/ProtectRoutesAdmin";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
@@ -66,18 +68,31 @@ function App() {
                 key={i}
                 path={route.path}
                 element={
-                  <Layout>
-                    <Page />
-                  </Layout>
+                  <ProtectRoutesAdmin>
+                    <Layout>
+                      <Page />
+                    </Layout>
+                  </ProtectRoutesAdmin>
                 }
               />
             );
           })}
         </Routes>
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </div>
     </Router>
   );
 }
-
 
 export default App;

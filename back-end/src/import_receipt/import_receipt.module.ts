@@ -8,12 +8,14 @@ import { Accounts } from 'src/auth/entities/accounts.entity';
 import { SupplierModule } from 'src/supplier/supplier.module';
 import { ProductService } from 'src/product/product.service';
 import { ProductModule } from 'src/product/product.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ImportReceipts, ImportReceiptDetail, Accounts]),
     forwardRef(() => ProductModule),
     forwardRef(() => SupplierModule),
+    AuthModule
   ],
   controllers: [ImportReceiptController],
   providers: [ImportReceiptService],
