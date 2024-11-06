@@ -8,7 +8,7 @@ import { HandleApiError } from "~/Utils/HandleApiError";
 import { useDispatch, useSelector } from "react-redux";
 import { initDataAttribute } from "~/redux/features/Attributes/attributesSlice";
 import { addProduct } from "~/redux/features/Products/productsSlice";
-import { initDataCategory } from "~/redux/features/Categories/categoriesSlice";
+import { initDataCatagories } from "~/redux/features/Categories/categoriesSlice";
 
 export const ModalAddProduct = () => {
   const dispatch = useDispatch()
@@ -25,7 +25,7 @@ export const ModalAddProduct = () => {
     const fetchData = async () => {
       const responseCategory = await GetAllCategory("limit=100");
       const responseAttribute = await GetAllAttribute("limit=100");
-      dispatch(initDataCategory(responseCategory.data))
+      dispatch(initDataCatagories(responseCategory.data))
       dispatch(initDataAttribute(responseAttribute.data))
 
       

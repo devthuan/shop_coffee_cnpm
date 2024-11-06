@@ -1,5 +1,5 @@
 import { Optional } from "@nestjs/common";
-import { IsIn, IsOptional, IsString } from "class-validator";
+import { IsEmail, IsIn, IsOptional, IsString, Min, MinLength } from "class-validator";
 
 
 export class CreateNotificationDto {
@@ -9,15 +9,18 @@ export class CreateNotificationDto {
     typeSend: string;
 
     @IsOptional()
-    userId: string;
+    @IsEmail()
+    email: string;
 
     @IsOptional()
     roleId: string;
     
     @IsString()
+    @MinLength(3)
     title: string;
 
     @IsString()
+    @MinLength(5)
     content: string;
 
 

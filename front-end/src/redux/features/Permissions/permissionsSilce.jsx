@@ -11,9 +11,7 @@ export const permissionsSlice = createSlice({
   initialState,
   reducers: {
     initDataPermission: (state, action) => {
-      state.data = action.payload?.data;
-      state.loading = false;
-      state.error = action.payload?.error;
+      state.data = action.payload;
     },
 
     addPermission: (state, action) => {

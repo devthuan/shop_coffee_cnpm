@@ -13,12 +13,12 @@ import { initDataProduct, deleteProduct } from "~/redux/features/Products/produc
 // const cx = classNames.bind(styles);
 export const Product = () => {
   const dispatch = useDispatch()
-  const products = useSelector(state => state.products.data)
-  const total = useSelector(state => state.products.total)
-  const totalPage = useSelector(state => state.products.totalPage)
-  const currentPage = useSelector(state => state.products.currentPage)
-  const limit = useSelector(state => state.products.limit)
-  const isLoading = useSelector(state => state.products.isLoading)
+  const products = useSelector(state => state.productss.data)
+  const total = useSelector(state => state.productss.total)
+  const totalPage = useSelector(state => state.productss.totalPage)
+  const currentPage = useSelector(state => state.productss.currentPage)
+  const limit = useSelector(state => state.productss.limit)
+  const isLoading = useSelector(state => state.productss.isLoading)
   const [optionLimit, setOptionLimit] = useState({
     currentPage: 1,
     limit: 10

@@ -384,6 +384,7 @@ export class SeederService {
                 "DELETE_FAVORITE_BY_ID",
                 "GET_FAVORITES_BY_USER",
                 "GET_TRANSACTION_HISTORY",
+                "GET_PERMISSION_BY_ROLE"
             ]
 
             const listPermissionStaffSales =[
@@ -426,6 +427,7 @@ export class SeederService {
                 "DELETE_FAVORITE_BY_ID",
                 "GET_FAVORITES_BY_USER",
                 "GET_TRANSACTION_HISTORY",
+                "GET_PERMISSION_BY_ROLE"
             ]
 
             const listPermissionManageWarehouse = [
@@ -468,7 +470,8 @@ export class SeederService {
                 "DELETE_FAVORITE_BY_ID",
                 "GET_FAVORITES_BY_USER",
                 "GET_TRANSACTION_HISTORY",
-                "GET_INVENTORY"
+                "GET_INVENTORY",
+                "GET_PERMISSION_BY_ROLE"
             ]
 
             const listPermissionSupplier = [
@@ -508,6 +511,7 @@ export class SeederService {
                 "DELETE_FAVORITE_BY_ID",
                 "GET_FAVORITES_BY_USER",
                 "GET_TRANSACTION_HISTORY",
+                "GET_PERMISSION_BY_ROLE"
             ]
 
             const listPermissionSupportUser = [
@@ -549,6 +553,7 @@ export class SeederService {
                 "DELETE_FAVORITE_BY_ID",
                 "GET_FAVORITES_BY_USER",
                 "GET_TRANSACTION_HISTORY",
+                "GET_PERMISSION_BY_ROLE"
             ]
 
             const listPermissionUser = [
@@ -598,6 +603,7 @@ export class SeederService {
                 "DELETE_FAVORITE_BY_ID",
                 "GET_FAVORITES_BY_USER",
                 "GET_TRANSACTION_HISTORY",
+                "GET_PERMISSION_BYnpm_ROLE"
             ]
 
             // init permissions for admin

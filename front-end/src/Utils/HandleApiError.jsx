@@ -3,7 +3,6 @@ import { ToastContainer, toast } from "react-toastify";
 export const HandleApiError = (err) => {
   if (err.response) {
     const { statusCode, error, message } = err.response.data;
-
     // Xử lý lỗi do response từ server
     const status = err?.response?.status;
     switch (status) {

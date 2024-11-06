@@ -6,13 +6,13 @@ import { GetAllAttribute } from "~/services/AttributeService";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { initDataCategory } from "~/redux/features/Categories/categoriesSlice";
+import { initDataCatagories } from "~/redux/features/Categories/categoriesSlice";
 import { initDataAttribute } from "~/redux/features/Attributes/attributesSlice";
 import { UpdateProduct } from "~/services/ProductService";
 import { updateProduct } from "~/redux/features/Products/productsSlice";
 export const ModalEditProduct = ({ data }) => {
   const dispatch = useDispatch();
-  const categories = useSelector(state => state.categories.data)
+  const categories = useSelector(state => state.catagories.data)
   const attributes = useSelector(state => state.attributes.data)
   const [selectedAttributes, setSelectedAttributes] = useState([]);
   const [formData, setFromData] = useState({
@@ -45,7 +45,7 @@ export const ModalEditProduct = ({ data }) => {
       try {
         const responseCategory = await GetAllCategory("limit=100");
         if (responseCategory && responseCategory.status === 200) {
-          dispatch(initDataCategory(responseCategory.data))
+          dispatch(initDataCatagories(responseCategory.data))
         }
         
         const responseAttribute = await GetAllAttribute("limit=100");

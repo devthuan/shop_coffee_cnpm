@@ -1,0 +1,131 @@
+
+.title-2{
+    display: flex;
+    flex-direction: column; 
+    justify-content: space-between;
+    align-items: center;
+    h2{
+      display: flex;
+    justify-content: center;
+    
+    
+    font-style:oblique ;
+    font-size: 15px;
+    color: #9E9DA8;
+    
+
+    }
+    img{
+      height: auto;
+    margin-left: auto;
+    }
+    
+}
+.top-name{
+  display: flex;
+  justify-content: center;
+  gap:50px;
+  h1{
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    gap:15px;
+    font-style:oblique ;
+    font-size: 20px;
+    font-weight: bold;
+  }
+}
+.title-1{
+  display: flex;
+flex-direction: column;
+align-items: center;
+
+  h3{ 
+    text-align: center;
+    /* Medium 15 */
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 22px;
+    color: #9E9DA8;
+    gap:30px;
+  }
+  h1{
+    text-align: center;
+    /* Medium 15 */
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 22px;
+    
+    gap:30px;
+  }
+}
+.bot-title{
+  display: flex;
+  justify-content: center;
+  position: relative;
+  bottom: 0;
+  p{
+    font-size: 15px;
+    color: #9E9DA8;
+
+  }
+}
+
+ 
+.container{
+ 
+  
+ justify-content: center;
+  margin-right: 30px;
+  width: 462px;
+  height: 642px;
+
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999; 
+}
+/* Spinner */
+.spinner {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db; 
+  border-radius: 50%;
+  width: 60px; 
+  height: 60px;
+  animation: spin 1s linear infinite; 
+  position: fixed; 
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%); /* Đẩy về giữa */
+  z-index: 1000; /* Đảm bảo nó ở trên overlay */
+}
+
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+    border-top-color: #3498db;
+  }
+  25% {
+    border-top-color: #e74c3c; 
+  }
+  50% {
+    transform: rotate(180deg); 
+    border-top-color: #f1c40f; 
+  }
+  75% {
+    border-top-color: #2ecc71; 
+  }
+  100% {
+    transform: rotate(360deg); 
+    border-top-color: #3498db; 
+  }
+}
+
