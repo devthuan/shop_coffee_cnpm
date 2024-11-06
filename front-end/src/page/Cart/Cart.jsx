@@ -170,7 +170,7 @@ export const Cart = () => {
               />
               <img
                 className="w-[15%] h-[120px]"
-                src={cart.productAttributes.products.images[0].urlImage}
+                // src={cart.productAttributes.products.images[0].urlImage}
                 alt=""
               />
               <div className={cx("justify-start py-3 px-2 w-[80%] ")}>
