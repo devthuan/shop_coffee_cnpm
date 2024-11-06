@@ -128,7 +128,7 @@ const ModelEditRole = ({ data }) => {
   return (
     <Dialog.Root>
       <Dialog.Trigger className=" py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg">
-        Detail
+        Chi tiết
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 w-full h-full bg-black opacity-40" />
@@ -210,19 +210,19 @@ const ModelEditRole = ({ data }) => {
             </Dialog.Description>
             <div className="flex justify-end items-center gap-3 p-4 border-t">
               <Dialog.Close asChild>
-                <button
+                {/* <button
                   onClick={() => handleSubmitUpdate()}
                   className="px-3 py-1 t text-xl text-white bg-green-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2 "
                 >
-                  Update
-                </button>
+                  Cập nhật
+                </button> */}
               </Dialog.Close>
               <Dialog.Close asChild>
                 <button
                   className="px-3 py-1 text-xl text-gray-800 border rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2"
                   aria-label="Close"
                 >
-                  Cancel
+                  Đóng
                 </button>
               </Dialog.Close>
             </div>

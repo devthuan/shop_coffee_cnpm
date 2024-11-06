@@ -18,7 +18,7 @@ export const Product = () => {
   const totalPage = useSelector(state => state.products.totalPage)
   const currentPage = useSelector(state => state.products.currentPage)
   const limit = useSelector(state => state.products.limit)
-  const isLoading = useSelector(state => state.products.isLoading)
+  const isLoading = useSelector(state => state.products.loading)
   const [optionLimit, setOptionLimit] = useState({
     currentPage: 1,
     limit: 10
@@ -36,6 +36,7 @@ export const Product = () => {
           queryParams += `&search=${search}`
         }
         const response = await GetAllProduct(queryParams)
+        console.log(response)
         if (response && response.status === 200) {
           dispatch(initDataProduct(response.data))
         }

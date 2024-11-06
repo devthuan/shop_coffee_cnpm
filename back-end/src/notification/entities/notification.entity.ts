@@ -7,6 +7,9 @@ import { Accounts } from "src/auth/entities/accounts.entity";
 export class Notification extends BaseEntity {
 
     @Column()
+    typeSend: string
+
+    @Column()
     title: string
 
     @Column()

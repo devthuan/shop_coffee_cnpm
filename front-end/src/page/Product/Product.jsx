@@ -13,13 +13,14 @@ import DescriptionProduct from "./DescriptionProduct";
 import { useDispatch, useSelector } from "react-redux"; // Import các hook của Redux
 import { AddToCart } from "~/services/CartService";
 import { addToCart } from "~/redux/features/cart/cartSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { HandleApiError } from "~/Utils/HandleApiError";
 
 const cx = classNames.bind(styles);
 export const Product = () => {
   const navigate = useNavigate()
+  const { id } = useParams(); 
   const [product, setProduct] = useState({});
   const [statistical, setStatistical] = useState({})
   const [showDescription, setShowDescription] = useState(true);
@@ -69,7 +70,7 @@ export const Product = () => {
   useEffect(() => {
     const fetchDetailProduct = async () => {
       try {
-        const response = await DetailProduct();
+        const response = await DetailProduct(id);
         console.log(response.data.product)
         setProduct(response.data.product)
         setStatistical(response.data.statistical)
@@ -111,6 +112,7 @@ export const Product = () => {
       <p onClick={() => navigate('../cart')}>Vào giỏ hàng</p>
 
       <div className={cx("mb-7")}>
+
         {product && statistical && product.images ? (
           <div className={cx("rounded-s-xl grid lg:grid-cols-11 max-sm:gap-7 border border-gray-200 mb-16")}>
             <div className={cx("lg:col-span-5")}>
@@ -229,6 +231,7 @@ export const Product = () => {
         <div
           className={cx("text-start grid lg:grid-cols-9 max-sm:grid-cols-4 grid-rows-1")}
         >
+
           <p onClick={() => clickDescription()} className={cx(`text-[20px] cursor-pointer text-${textDescription === 'gray' ? 'gray' : 'black'}-500`)}>Description</p>
           {/* <div className={cx("")}>Features</div> */}
           <div onClick={() => clickFeedBack()} className={cx(`text-[20px] flex items-center cursor-pointer text-${textFeedBack === 'gray' ? 'gray' : 'black'}-500`)}>

@@ -72,9 +72,9 @@ export class ProductController {
     return this.productService.deleteSoft(id);
   }
 
-  // @Post('upload')
-  // @UseInterceptors(FilesInterceptor('files'))
-  // uploadFile(@UploadedFiles() files: Array<Express.Multer.File>) {
-  //   return this.productService.uploadFileCloudinary(files[0]);
-  // }
+  @Post('upload')
+  @UseInterceptors(FilesInterceptor('files'))
+  uploadFile(@UploadedFiles() files: Array<Express.Multer.File>) {
+    return this.productService.uploadFileCloudinary(files[0]);
+  }
 }

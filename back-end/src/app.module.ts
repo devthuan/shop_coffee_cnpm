@@ -8,7 +8,6 @@ import { MailModule } from './mail/mail.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { RolePermissionModule } from './role-permission/role-permission.module';
 import { ProductModule } from './product/product.module';
-
 import * as redisStore from 'cache-manager-ioredis';
 import { CloudinaryModule } from 'nestjs-cloudinary';
 import { AttributeModule } from './attribute/attribute.module';

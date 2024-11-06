@@ -12,6 +12,8 @@ export class Reviews extends BaseEntity {
     @Column()
     comment: string;
 
+    @ManyToOne(() => Reviews, (review) => review.replies, { nullable: true })
+    parent: Reviews;
 
     @ManyToOne(() => Products, products => products.reviews)
     products: Products;
@@ -19,6 +21,10 @@ export class Reviews extends BaseEntity {
     @ManyToOne(() => Accounts, accounts => accounts.reviews)
     accounts: Accounts;
    
+
+    // Quan hệ đến các bình luận con (câu trả lời)
+    @OneToMany(() => Reviews, (review) => review.parent)
+    replies: Reviews[];
    
    
 

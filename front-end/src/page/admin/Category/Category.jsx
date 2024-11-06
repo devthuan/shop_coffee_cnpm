@@ -12,19 +12,19 @@ import { ToastContainer, toast } from "react-toastify";
 
 import { initDataProduct, deleteProduct } from "~/redux/features/Products/productsSlice";
 import { deleteCart } from "~/redux/features/cart/cartSlice";
-import { initDataCategory } from "~/redux/features/Categories/categoriesSlice";
+import { initDataCatagories } from "~/redux/features/Categories/categoriesSlice";
 import { DeleteCategory, GetAllCategory } from "~/services/CategoryService";
 import { deleteCategory } from "~/redux/features/Categories/categoriesSlice";
 // const cx = classNames.bind(styles);
 export const Category = () => {
   const dispatch = useDispatch()
-  const categories = useSelector(state => state.categories.data)
+  const categories = useSelector(state => state.catagories.data)
 
-  const total = useSelector(state => state.categories.total)
-  const totalPage = useSelector(state => state.categories.totalPage)
-  const currentPage = useSelector(state => state.categories.currentPage)
-  const limit = useSelector(state => state.categories.limit)
-  const isLoading = useSelector(state => state.categories.isLoading)
+  const total = useSelector(state => state.catagories.total)
+  const totalPage = useSelector(state => state.catagories.totalPage)
+  const currentPage = useSelector(state => state.catagories.currentPage)
+  const limit = useSelector(state => state.catagories.limit)
+  const isLoading = useSelector(state => state.catagories.loading)
   const [optionLimit, setOptionLimit] = useState({
     currentPage: 1,
     limit: 10
@@ -42,7 +42,7 @@ export const Category = () => {
     
     const response = await GetAllCategory(queryParams);
     if (response && response.status === 200) {
-      dispatch(initDataCategory(response.data));
+      dispatch(initDataCatagories(response.data));
     }
   };
 
