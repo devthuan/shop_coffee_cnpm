@@ -255,7 +255,7 @@ export class SupplierService extends BaseService<Supplier> {
     }
 
     // Check product attribute
-    const productAttribute = await this.productService.checkExistingProductAttribute(createDetailSupplier.productAttributeId);
+    const productAttribute = await this.productService.checkExistingProductAttributeNotQuantity(createDetailSupplier.productAttributeId);
     if (!productAttribute) {
       throw new BadRequestException('Product attribute not found');
     }
