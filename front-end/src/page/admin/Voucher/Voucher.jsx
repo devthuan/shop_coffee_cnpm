@@ -1,16 +1,15 @@
 import classNames from "classnames/bind";
 import styles from "./Voucher.module.scss";
 import { useEffect, useMemo, useState } from "react";
-import { GetAllVoucher, GetVoucherById, RecoverVoucher, UseVoucher, DeleteVoucher } from "~/services/VoucherService";
+import {
+
+  DeleteVoucher,
+  GetVoucherByQuery,
+} from "~/services/VoucherService";
 import {
   clearDataVoucher,
   initDataVoucher,
-  updateStatusVoucher,
   removeVoucher,
-  setLoading,
-  updateVoucher,
-  deleteVoucher,
-
 } from "~/redux/features/Vouchers/voucherSlice";
 import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,7 +18,6 @@ import ModelAddVoucher from "./ModelAddVoucher";
 import ModelEditVoucher from "./ModelEditVoucher";
 import Loading from "~/components/Loading/Loading";
 import { HandleApiError } from "~/Utils/HandleApiError";
-
 
 const cx = classNames.bind(styles);
 export const Voucher = () => {
@@ -38,25 +36,33 @@ export const Voucher = () => {
   const [sortOption, setSortOption] = useState("");
   const [filterOption, setFilterOption] = useState("");
   const listOptionSorts = [
-    { value: "createdAt_ASC", label: "Sắp xếp theo ngày tạo tăng dần" },
-    { value: "createdAt_DESC", label: "Sắp xếp theo ngày tạo giảm dần" },
-    { value: "updatedAt_ASC", label: "Sắp xếp theo ngày cập nhật tăng dần" },
-    { value: "updatedAt_DESC", label: "Sắp xếp theo ngày cập nhật giảm dần" },
+    {
+      value: "createdAt_ASC",
+      label: "Sắp xếp theo ngày tạo tăng dần"
+    },
+    {
+      value: "createdAt_DESC",
+      label: "Sắp xếp theo ngày tạo giảm dần"
+    },
+
   ];
   const listOptionFilters = [
     {
-      value: "filter_status_active",
-      label: "Lọc theo trạng thái active",
+      value: "filter_status_activate",
+      label: "Lọc theo trạng thái activate",
     },
     {
-      value: "filter_status_blocked",
-      label: "Lọc theo trạng thái blocked",
+      value: "filter_status_expire",
+      label: "Lọc theo trạng thái expire",
     },
     {
-      value: "filter_expired",
-      label: "Lọc theo trạng thái hết hạn",
+      value: "filter_status_upcoming", // Lọc theo các voucher chưa đến hạn
+      label: "Lọc theo trạng thái upcoming",
     },
-
+    {
+      value: "filter_status_past", // Lọc theo các voucher đã hết hạn
+      label: "Lọc theo trạng thái past",
+    },
   ];
   const titleColumn = [
     "name",
@@ -72,7 +78,7 @@ export const Voucher = () => {
   const handleSearch = async (e) => {
     try {
       let queryParams = `search=${e}&limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
-      const result = await GetAllVoucher(queryParams);
+      const result = await GetVoucherByQuery(queryParams);
       dispatch(initDataVoucher(result.data));
     } catch (error) {
       const result = HandleApiError(error);
@@ -82,57 +88,27 @@ export const Voucher = () => {
     }
   };
   const handleDeleteVoucher = async (voucher) => {
-    // Ngăn chặn nhấp chuột trong khi đang xử lý
-    dispatch(Loading(true))
     try {
       // Gọi API để xóa voucher
       const response = await DeleteVoucher(voucher.id);
       console.log(response); // Ghi nhật ký phản hồi từ API
+
       // Kiểm tra phản hồi từ API
       if (response && response.status === 200) {
         const { statusCode, status, message } = response.data;
-        
-          // Hiển thị thông báo thành công
-          toast.success(message         
-         );
-          // Cập nhật danh sách voucher trong Redux để loại bỏ voucher
-          dispatch(removeVoucher(voucher.id)); // Sử dụng action removeVoucher đã định nghĩa
-
-        } 
+        // Cập nhật danh sách voucher trong Redux để loại bỏ voucher
+        dispatch(removeVoucher(voucher.id)); // Sử dụng action removeVoucher đã định nghĩa
+        // Hiển thị thông báo thành công
+        toast.success(message);
       }
-     catch (error) {
+    } catch (error) {
       console.log("Lỗi khi gọi API:", error);
       const result = HandleApiError(error);
       result
         ? toast.error(result)
-        : toast.error("Có lỗi xảy ra, vui lòng thử lại");      
+        : toast.error("Có lỗi xảy ra, vui lòng thử lại");
     }
   };
-  // const handleRecoverVoucher = async (voucherId) => {
-  //   try {
-  //     // Gọi API để khôi phục voucher
-  //     const response = await RecoverVoucher(voucherId); // Bạn cần định nghĩa RecoverVoucher tương ứng
-  //     console.log(response);
-  //     if (response && response.data) {
-  //       const { statusCode, status, message } = response.data;
-
-  //       if (statusCode === 200) {
-  //         // Cập nhật danh sách voucher trong Redux để thêm lại voucher
-  //         dispatch(updateStatusVoucher({ id: voucherId, status: true })); // Nếu cần, bạn có thể cập nhật thêm thông tin
-  //         toast.success(message);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //     const result = HandleApiError(error);
-  //     result
-  //       ? toast.error(result)
-  //       : toast.error("Có lỗi xảy ra, vui lòng thử lại");
-  //   } finally {
-  //     isLoading(false);
-  //   }
-  // };
-
   // Callback function to update currentPage
   const handlePageChange = (newPage) => {
     setOptionLimit((prevData) => ({
@@ -156,6 +132,7 @@ export const Voucher = () => {
     setFilterOption(e);
     fetchVouchers(sortOption, e); // Pass both sort and filter options
   };
+
   const fetchVouchers = async (sortOption, filterOption) => {
     let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
     if (sortOption === "createdAt_ASC") {
@@ -165,21 +142,18 @@ export const Voucher = () => {
     }
     if (
       filterOption === "isActive_true" ||
-      filterOption === "filter_status_active"
+      filterOption === "filter_status_activate"
     ) {
       queryParams += `&isActive=true`;
     } else if (
       filterOption === "isActive_false" ||
-      filterOption === "filter_status_blocked"
+      filterOption === "filter_status_expire"
     ) {
       queryParams += `&isActive=false`;
-      // } else if (filterOption === "filter_role_admin") {
-      //   queryParams += `&role=ADMIN`;
-      // } else if (filterOption === "filter_role_user") {
-      //   queryParams += `&role=USER`;
+
     }
 
-    const result = await GetVoucherById(queryParams);
+    const result = await GetVoucherByQuery(queryParams);
     dispatch(initDataVoucher(result.data));
   };
   useEffect(() => {
@@ -187,10 +161,16 @@ export const Voucher = () => {
       try {
         // API call here
         let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
-        const response = await GetAllVoucher(queryParams);
-        if (response.status === 200 && response.data.data) {
+        const response = await GetVoucherByQuery(queryParams);
+        if (response && response.status === 200) {
+          const { statusCode, status, message } = response.data;
+          // Cập nhật danh sách voucher trong Redux để loại bỏ voucher
           dispatch(initDataVoucher(response.data));
+          // Hiển thị thông báo thành công
         }
+        // if (response.status === 200 && response.data.data) {
+        //   dispatch(initDataVoucher(response.data));
+        // }
       } catch (error) {
         const { message, status } = HandleApiError(error);
         if (status === "error") {
@@ -198,49 +178,11 @@ export const Voucher = () => {
         }
       }
     };
-
     dispatch(clearDataVoucher());
-
     setTimeout(() => {
       fetchData();
-    }, 800);
+    }, 500);
   }, [optionLimit.limit, optionLimit.currentPage]);
-
-
-  const handleUse = async (voucher) => {
-    try {
-      console.log("Using voucher ID:", voucher.id); // Kiểm tra ID voucher
-      if (!voucher.id) {
-        throw new Error("Voucher ID is undefined or invalid");
-      }
-
-      const response = await UseVoucher(voucher.id);
-      console.log("Response from UseVoucher:", response);
-
-      if (response && response.data) {
-        const { statusCode, status, message } = response.data;
-
-        if (statusCode === 200) {
-          // update data in redux
-          dispatch(
-            updateStatusVoucher({
-              id: voucher.id,
-              status: voucher.isActive,
-            })
-          );
-          toast.success(message);
-        }
-      } else {
-        toast.error("Voucher update failed with no response data.");
-      }
-    } catch (error) {
-      console.log("Error occurred while using voucher:", error);
-      const result = HandleApiError(error);
-      result
-        ? toast.error(result)
-        : toast.error("Có lỗi xảy ra, vui lòng thử lại");
-    }
-  };
 
   return (
     <>
@@ -263,7 +205,6 @@ export const Voucher = () => {
                 <div className="flex justify-start items-end">
                   <div className="relative w-72 ">
                     <svg
-
                       xmlns="http://www.w3.org/2000/svg"
                       className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
                       viewBox="0 0 20 20"
@@ -292,7 +233,6 @@ export const Voucher = () => {
                         })}
                     </select>
                   </div>
-
                   <div className=" ">
                     <form
                       onSubmit={(e) => e.preventDefault()}
@@ -371,6 +311,7 @@ export const Voucher = () => {
                             <th key={item} className="py-3 px-2">
                               {item}
                             </th>
+
                           );
                         })}
                     </tr>
@@ -378,23 +319,8 @@ export const Voucher = () => {
                   <tbody className="text-gray-600 divide-y">
                     {vouchersData?.map((item, idx) => (
                       <tr key={idx}>
-                        <td className="flex items-center gap-x-3 py-3 px-2 whitespace-nowrap">
-                          <img
-                            src={
-                              item.userInformation?.avatar
-                                ? item.userInformation?.avatar
-                                : "https://randomuser.me/api/portraits/men/86.jpg"
-                            }
-                            className="w-10 h-10 rounded-full"
-                          />
-                          <div>
-                            <span className="block text-gray-700 text-sm font-medium">
-                              {item.name}
-                            </span>
-                            {/* <span className="block text-gray-700 text-xs">
-                              {item.code}
-                            </span> */}
-                          </div>
+                        <td className="px-2 py-4 whitespace-nowrap">
+                          {item.name}
                         </td>
                         <td className="px-2 py-4 whitespace-nowrap">
                           {item.code}
@@ -408,8 +334,6 @@ export const Voucher = () => {
                         <td className="px-2 py-4 whitespace-nowrap">
                           {item.description}
                         </td>
-
-
                         <td className="px-2 py-4 whitespace-nowrap">
                           {new Date(item.startDate).toLocaleString()}
                         </td>
@@ -418,12 +342,12 @@ export const Voucher = () => {
                         </td>
                         <td className="px-2 py-4 whitespace-nowrap ">
                           <span
-                            className={`px-3 py-2 rounded-full font-semibold text-xs ${item.isActive
+                            className={`px-3 py-2 rounded-full font-semibold text-xs ${new Date(item.endDate) > new Date()
                               ? "text-green-600 bg-green-50"
                               : "text-red-600 bg-red-50"
                               }`}
                           >
-                            {item.isActive ? "activate" : "expire"}
+                            {new Date(item.endDate) > new Date() ? "activate" : "expire"}
                           </span>
                         </td>
                         <td className=" px-2 py-4 whitespace-nowrap ">
@@ -431,24 +355,11 @@ export const Voucher = () => {
                             <div>
                               <ModelEditVoucher data={item} />
                             </div>
-                            {/* <div
-                              onClick={() => handleRecover(item)}
-                              className="py-2  px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer"
-                            >
-                              {item.isActive ? "Khóa" : "Áp Dụng"}
-                            </div> */}
                             <div
-                              onClick={() => handleUse(item)}
-                              className="py-2 px-3 font-medium text-blue-600 hover:text-blue-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer"
-                            >
-                              Sử Dụng
-                            </div>
-                            <div
-
                               onClick={() => handleDeleteVoucher(item)}
                               className="py-2 px-3 font-medium text-blue-600 hover:text-blue-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer"
-                            >Xóa
-
+                            >
+                              Xóa
                             </div>
                           </div>
                         </td>
@@ -468,6 +379,7 @@ export const Voucher = () => {
               current={currentPage}
               totalPage={totalPage}
               limit={limit}
+
               onPageChange={handlePageChange}
               onLimitChange={handleLimitChange}
             />
@@ -491,5 +403,3 @@ export const Voucher = () => {
     </>
   );
 };
-
-

@@ -25,6 +25,7 @@ export const vouchersSlice = createSlice({
     },
 
     addVoucher: (state, action) => {
+      console.log(action.payload)
       state.data.push(action.payload);
       state.loading = false;
     },
@@ -52,22 +53,21 @@ export const vouchersSlice = createSlice({
         state.data[voucherIndex] = {
           ...state.data[voucherIndex], // Keep other account properties
           value: action.payload.value,
-          quantyti: action.payload.quantity,
-          role: action.payload.role,
+          quantity: action.payload.quantity,
 
 
         };
       }
     },
 
-    removeVoucher: (state, action) => {   
+    removeVoucher: (state, action) => {
       state.data = state.data.filter((item) => item.id !== action.payload);
       state.loading = false;
     },
-   
-    
+
+
     // Nếu cần, bạn có thể thêm các reducer khác
- 
+
 
     clearDataVoucher: (state, action) => {
       state.data = [];
@@ -79,7 +79,7 @@ export const vouchersSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
-    
+
   },
 });
 

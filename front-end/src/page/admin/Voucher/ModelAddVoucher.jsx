@@ -33,7 +33,7 @@ const ModelAddVoucher = () => {
             title: "name",
             typeInput: "text",
             placeholder: "Enter ",
-            fieldName: "code",
+            fieldName: "name",
         },
         {
             title: "code",
@@ -81,7 +81,7 @@ const ModelAddVoucher = () => {
     };
 
     const handleSubmit = async () => {
-        
+
         if (isProcessing) return;
         setIsProcessing(true);
 
@@ -91,33 +91,29 @@ const ModelAddVoucher = () => {
             const response = await CreateVoucher({
                 name: formData.name,
                 code: formData.code,
-                value: formData.value,
-                quantity: formData.quantity,
+                value: parseInt(formData.value),
+                quantity: parseInt(formData.quantity),
                 description: formData.description,
                 startDate: formData.startDate,
                 endDate: formData.endDate,
             });
-
-            if (response && response.data) {
+            console.log(response.status)
+            if (response && response.status === 201) {
                 const { statusCode, status, message, data } = response.data;
-                if (statusCode === 201 && status === "success") {
-                    dispatch(addVoucher(data));
-                    toast.success(message);
-                    setFormData({
-                        name: "",
-                        code: "",
-                        value: "",
-                        quantity: "",
-                        description: "",
-                        startDate: "",
-                        endDate: "",
-                    });
-                    setIsProcessing(false);
-                } else if (statusCode === 400 && status === "error") {
-                    toast.error(message);
-                } else {
-                    toast.error(message);
-                }
+                console.log(response.data);
+                dispatch(addVoucher(response.data));
+                toast.success("Tao thanh cong");
+                setFormData({
+                    name: "",
+                    code: "",
+                    value: "",
+                    quantity: "",
+                    description: "",
+                    startDate: "",
+                    endDate: "",
+                });
+                setIsProcessing(false);
+
             }
             setIsProcessing(false);
         } catch (err) {
@@ -194,7 +190,7 @@ const ModelAddVoucher = () => {
                                             <input
                                                 type={item.typeInput}
                                                 name={item.fieldName}
-                                                onChange={handleChange}
+                                                onChange={(e) => handleChange(e)}
                                                 placeholder={item.placeholder}
                                                 className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                                             />
