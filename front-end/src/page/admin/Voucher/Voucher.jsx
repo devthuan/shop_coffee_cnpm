@@ -89,21 +89,18 @@ export const Voucher = () => {
       const response = await DeleteVoucher(voucher.id);
       console.log(response); // Ghi nhật ký phản hồi từ API
       // Kiểm tra phản hồi từ API
-      if (response && response.data) {
+      if (response && response.status === 200) {
         const { statusCode, status, message } = response.data;
-        if (statusCode === 200 && status === "success") {
+        
           // Hiển thị thông báo thành công
           toast.success(message         
          );
           // Cập nhật danh sách voucher trong Redux để loại bỏ voucher
           dispatch(removeVoucher(voucher.id)); // Sử dụng action removeVoucher đã định nghĩa
 
-        } else {
-          // Nếu không thành công, hiển thị thông báo lỗi
-          toast.error(message || "Đã xảy ra lỗi không xác định");
-        }
+        } 
       }
-    } catch (error) {
+     catch (error) {
       console.log("Lỗi khi gọi API:", error);
       const result = HandleApiError(error);
       result
