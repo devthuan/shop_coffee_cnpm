@@ -9,38 +9,81 @@ import { GetAllProduct, DeleteProduct } from "~/services/ProductService";
 import { useDispatch, useSelector } from "react-redux";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { ToastContainer, toast } from "react-toastify";
-import { initDataProduct, deleteProduct } from "~/redux/features/Products/productsSlice";
+import {
+  initDataProduct,
+  deleteProduct,
+} from "~/redux/features/Products/productsSlice";
 // const cx = classNames.bind(styles);
 export const Product = () => {
-  const dispatch = useDispatch()
-  const products = useSelector(state => state.productss.data)
-  const total = useSelector(state => state.productss.total)
-  const totalPage = useSelector(state => state.productss.totalPage)
-  const currentPage = useSelector(state => state.productss.currentPage)
-  const limit = useSelector(state => state.productss.limit)
-  const isLoading = useSelector(state => state.productss.isLoading)
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.productss.data);
+  const total = useSelector((state) => state.productss.total);
+  const totalPage = useSelector((state) => state.productss.totalPage);
+  const currentPage = useSelector((state) => state.productss.currentPage);
+  const limit = useSelector((state) => state.productss.limit);
+  const isLoading = useSelector((state) => state.productss.isLoading);
   const [optionLimit, setOptionLimit] = useState({
     currentPage: 1,
-    limit: 10
-  })
+    limit: 10,
+  });
 
-  const [selectSearch, setSelectedSearch] = useState(0)
-  const [search, setSearch] = useState("")
-  // biến chứa danh sách nội dung của bảng
+  const [selectSearch, setSelectedSearch] = useState(0);
+  const [search, setSearch] = useState("");
+
+  const handlePaginate = (page) => {
+    setOptionLimit((prev) => ({
+      ...prev,
+      currentPage: page,
+    }));
+  };
+
+  const handleLimitProduct = (limit) => {
+    setOptionLimit((prev) => ({
+      limit: limit,
+      currentPage: 1,
+    }));
+  };
+
+  const handleDeleteProduct = async (id) => {
+    try {
+      const response = await DeleteProduct(id);
+      console.log(response);
+      if (response && response.status === 200) {
+        dispatch(deleteProduct(id));
+      }
+    } catch (error) {
+      const result = HandleApiError(error);
+      console.log(result);
+      if (result) {
+        toast.error(result.message);
+      } else {
+        toast.error("Có lỗi xảy ra, vui lòng thử lại");
+      }
+    }
+  };
+
+  const handleSearch = async () => {
+    let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&search=${search}`;
+    const response = await GetAllProduct(queryParams);
+    if (response && response.status === 200) {
+      dispatch(initDataProduct(response.data));
+    }
+  };
+  // Array chứa danh sách tiêu đề bảng
+  const tableTitles = ["Id", "Tên sản phẩm", "Loại sản phẩm", "Mô tả", "Ngày tạo", "Hành động"];
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
-        if(search)
-        {
-          queryParams += `&search=${search}`
+        if (search) {
+          queryParams += `&search=${search}`;
         }
-        const response = await GetAllProduct(queryParams)
+        const response = await GetAllProduct(queryParams);
         if (response && response.status === 200) {
-          dispatch(initDataProduct(response.data))
+          dispatch(initDataProduct(response.data));
         }
-      }
-      catch (error) {
+      } catch (error) {
         if (error.request) {
           dispatch(
             initDataProduct({ error: "Không có phản hồi từ server..." })
@@ -51,58 +94,15 @@ export const Product = () => {
           ? toast.error(result)
           : toast.error("Có lỗi xảy ra, vui lòng thử lại");
       }
-    }
-    fetchData()
-  }, [optionLimit.currentPage, optionLimit.limit])
-
-  const handlePaginate = (page) => {
-    setOptionLimit(prev => ({
-      ...prev,
-      currentPage: page
-    }))
-  }
-
-  const handleLimitProduct = (limit) => {
-    setOptionLimit(prev => ({
-      limit: limit,
-      currentPage: 1
-    }))
-  }
-
-  const handleDeleteProduct = async (id) => {
-    try {
-      const response = await DeleteProduct(id)
-      console.log(response)
-      if (response && response.status === 200) {
-        dispatch(deleteProduct(id))
-      }
-    }
-    catch (error) {
-      const result = HandleApiError(error);
-      console.log(result)
-      if (result) {
-        toast.error(result.message);
-      } else {
-        toast.error("Có lỗi xảy ra, vui lòng thử lại");
-      }
-    }
-  }
-
-  const handleSearch = async () => {
-    let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&search=${search}`
-    const response = await GetAllProduct(queryParams)
-    if (response && response.status === 200) {
-      dispatch(initDataProduct(response.data))
-    }
-  }
-  // Array chứa danh sách tiêu đề bảng
-  const tableTitles = ["Id", "Name", "Description", "Category", "Action"];
+    };
+    fetchData();
+  }, [optionLimit.currentPage, optionLimit.limit]);
 
   return (
     <div className="max-w-full mx-auto px-4 ">
       {/* box title */}
       <div className="w-full flex justify-center py-3">
-        <h3>Product</h3>
+        <h3 className="text-3xl my-4">Quản lý Sản phẩm</h3>
       </div>
 
       {/* box button  */}
@@ -122,7 +122,10 @@ export const Product = () => {
                 clipRule="evenodd"
               />
             </svg>
-            <select onChange={(e) => setSelectedSearch(e.target.value)} className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2">
+            <select
+              onChange={(e) => setSelectedSearch(e.target.value)}
+              className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
+            >
               <option value="0">Id</option>
               <option value="1">Name</option>
             </select>
@@ -148,7 +151,7 @@ export const Product = () => {
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    handleSearch(); 
+                    handleSearch();
                   }
                 }}
                 type="text"
@@ -184,33 +187,49 @@ export const Product = () => {
             </tr>
           </thead>
           <tbody className="text-gray-600 divide-y">
-            {products && products?.length > 0 && products?.map((product, idx) => (
-              <tr key={idx}>
-                <td className="pr-6 py-4 whitespace-nowrap">{product.id}</td>
-                <td className="pr-6 py-4 whitespace-nowrap flex items-center">
-                  {product.images.length > 0 && (
-                    <img width="40px" src={product.images[0].urlImage} alt="" />
-                  )}
-                  <span className="ml-3">{product.name}</span>
-                </td>
+            {products &&
+              products?.length > 0 &&
+              products?.map((product, idx) => (
+                <tr key={idx}>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {product.id.slice(0, 8)} ...
+                  </td>
+                  <td className="pr-6 py-4 whitespace-nowrap flex items-center">
+                    {product.images.length > 0 && (
+                      <img
+                        width="40px"
+                        src={product.images[0].urlImage}
+                        alt=""
+                      />
+                    )}
+                    <span className="ml-3">{product.name}</span>
+                  </td>
 
-                <td className="pr-6 py-4 whitespace-nowrap">{product.description}</td>
-                <td className="pr-6 py-4 whitespace-nowrap">{product.category.name}</td>
-                <td className="text-right px-6 whitespace-nowrap">
-                  <div className="max-w-5 flex justify-center items-center">
-                    <p className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
-                      <ModalEditProduct data={product} />
-                    </p>
-                    <p
-                      // để tham số rỗng ở đầu khi khi onlick vào mới chạy hàm handleDeletedProduct
-                      onClick={() => handleDeleteProduct(product.id)}
-                      className="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
-                      Delete
-                    </p>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {product.description}
+                  </td>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {product.category.name}
+                  </td>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {new Date(product.createdAt).toLocaleString()}
+                  </td>
+                  <td className="text-right px-6 whitespace-nowrap">
+                    <div className="max-w-5 flex justify-center items-center">
+                      <p className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
+                        <ModalEditProduct data={product} />
+                      </p>
+                      <p
+                        // để tham số rỗng ở đầu khi khi onlick vào mới chạy hàm handleDeletedProduct
+                        onClick={() => handleDeleteProduct(product.id)}
+                        className="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer"
+                      >
+                        Delete
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

@@ -29,6 +29,11 @@ export const suppliersSlice = createSlice({
       state.loading = false;
     },
 
+    initErrorSupplier(state, action) {
+      state.error = action.payload;
+      state.loading = false;
+    },
+
     removeSupplier: (state, action) => {
       state.data = state.data.filter((item) => item.id !== action.payload);
       state.loading = false;
@@ -49,6 +54,7 @@ export const suppliersSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const {
   initDataSupplier,
+  initErrorSupplier,
   addSupplier,
   removeSupplier,
   clearDataSupplier,

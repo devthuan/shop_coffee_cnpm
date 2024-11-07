@@ -110,11 +110,11 @@ export const ModalEditProduct = ({ data }) => {
   return (
     <Dialog.Root>
       {/* title button */}
-      <Dialog.Trigger>Edit</Dialog.Trigger>
+      <Dialog.Trigger>Chỉnh sửa</Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 w-full h-full bg-black opacity-40" />
         {/* chỉnh kính thước modal ở max-w-lg các option [max-w-xl,max-w-2xl, max-w-3xl... ] */}
-        <Dialog.Content className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-full max-w-lg mx-auto px-4">
+        <Dialog.Content className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-full max-w-6xl mx-auto px-4">
           <div className="bg-white rounded-md shadow-lg">
             <div className="flex items-center justify-between p-4 border-b">
               {/* title modal */}

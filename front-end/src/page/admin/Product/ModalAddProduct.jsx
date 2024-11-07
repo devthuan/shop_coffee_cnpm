@@ -11,8 +11,8 @@ import { addProduct } from "~/redux/features/Products/productsSlice";
 import { initDataCatagories } from "~/redux/features/Categories/categoriesSlice";
 
 export const ModalAddProduct = () => {
-  const dispatch = useDispatch()
-  const attributes = useSelector(state => state.attributes.data)
+  const dispatch = useDispatch();
+  const attributes = useSelector((state) => state.attributes.data);
   const [categories, setCategories] = useState([]);
   // const [attributes, setAttributes] = useState([]);
   const [productName, setProductName] = useState("");
@@ -25,20 +25,36 @@ export const ModalAddProduct = () => {
     const fetchData = async () => {
       const responseCategory = await GetAllCategory("limit=100");
       const responseAttribute = await GetAllAttribute("limit=100");
-      dispatch(initDataCatagories(responseCategory.data))
-      dispatch(initDataAttribute(responseAttribute.data))
+      dispatch(initDataCatagories(responseCategory.data));
+      dispatch(initDataAttribute(responseAttribute.data));
 
-      
       setCategories(responseCategory.data.data);
       // setAttributes(responseAttribute.data.data);
     };
 
-    console.log(categories.length)
-    if(!attributes || attributes.length === 0) {
+    console.log(categories.length);
+    if (!attributes || attributes.length === 0) {
       fetchData();
-
     }
   }, []);
+
+ const [selectedOptions, setSelectedOptions] = useState([]);
+
+ const options = [
+   { value: "option1", label: "Option 1" },
+   { value: "option2", label: "Option 2" },
+   { value: "option3", label: "Option 3" },
+   { value: "option4", label: "Option 4" },
+ ];
+
+ const handleCheckboxChange = (event) => {
+   const { value, checked } = event.target;
+   setSelectedOptions((prevSelected) =>
+     checked
+       ? [...prevSelected, value]
+       : prevSelected.filter((option) => option !== value)
+   );
+ };
 
   const handleImageChange = (e) => {
     setProductImages(e.target.files);
@@ -49,28 +65,26 @@ export const ModalAddProduct = () => {
     const productData = {
       name: productName,
       categoryId: selectedCategory,
-      attributes: selectedAttributes.map(attributeId => ({ attributeId })),
+      attributes: selectedAttributes.map((attributeId) => ({ attributeId })),
       description: productDescription,
       // files: productImages,
     };
     try {
-      const response = await AddProduct(productData)
-      console.log(response)
+      const response = await AddProduct(productData);
+      console.log(response);
       if (response && response.status === 201) {
-        dispatch(addProduct(response.data.data))
-        toast.success("Thêm sản phẩm thành công")
+        dispatch(addProduct(response.data.data));
+        toast.success("Thêm sản phẩm thành công");
       }
-    }
-    catch (error) {
+    } catch (error) {
       const result = HandleApiError(error);
-      console.log(result)
+      console.log(result);
       if (result) {
         toast.error(result.message);
       } else {
         toast.error("Có lỗi xảy ra, vui lòng thử lại");
       }
     }
-
   };
 
   return (
@@ -79,21 +93,21 @@ export const ModalAddProduct = () => {
         if (!isOpen) {
           setProductName("");
           setProductDescription("");
-          setSelectedCategory("")
-          setSelectedAttributes([])
+          setSelectedCategory("");
+          setSelectedAttributes([]);
         }
       }}
     >
       <Dialog.Trigger className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm">
-        Create Product
+        Tạo mới sản phẩm
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 w-full h-full bg-black opacity-40" />
-        <Dialog.Content className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-full max-w-lg mx-auto px-4">
+        <Dialog.Content className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-full max-w-6xl mx-auto px-4">
           <div className="bg-white rounded-md shadow-lg">
             <div className="flex items-center justify-between p-4 border-b">
               <Dialog.Title className="text-lg font-medium text-gray-800 ">
-                Create product
+                Tạo mới sản phẩm
               </Dialog.Title>
               <Dialog.Close className="p-2 text-gray-400 rounded-md hover:bg-gray-100">
                 <svg
@@ -112,8 +126,8 @@ export const ModalAddProduct = () => {
             </div>
 
             <Dialog.Description className="space-y-2 p-4 mt-3 text-[15.5px] leading-relaxed text-gray-500">
-              <form onSubmit={handleSubmit}>
-                <div className="mb-4 flex items-center">
+              <div className="grid grid-cols-2 gap-x-7">
+                <div className="mb-4 ">
                   <label className="block text-nowrap text-sm font-medium text-gray-700 pr-4">
                     Tên sản phẩm
                   </label>
@@ -126,20 +140,7 @@ export const ModalAddProduct = () => {
                   />
                 </div>
 
-                <div className="mb-4 flex items-center text-[16px]">
-                  <label className="block text-nowrap text-sm font-medium text-gray-700 pr-4">
-                    Ảnh sản phẩm
-                  </label>
-                  <input
-                    type="file"
-                    className="mt-1 block w-full border border-gray-300 rounded-md"
-                    required
-                    multiple
-                    onChange={handleImageChange}
-                  />
-                </div>
-
-                <div className="mb-4 flex items-center text-[16px]">
+                <div className="mb-4 ">
                   <label className="block w-[130px] text-wrap text-center text-sm font-medium text-gray-700 pr-4">
                     Thể loại sản phẩm
                   </label>
@@ -159,60 +160,51 @@ export const ModalAddProduct = () => {
                     ))}
                   </select>
                 </div>
+              </div>
 
-                <div className="mb-4 flex items-center text-[16px]">
-                  <label className="block w-[130px] text-wrap text-center text-sm font-medium text-gray-700 pr-4">
-                    Thuộc tính sản phẩm
-                  </label>
-                  <select
-                    multiple
-                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                    value={selectedAttributes}
-                    onChange={(e) =>
-                      setSelectedAttributes(
-                        Array.from(e.target.selectedOptions, (option) =>
-                          option.value
-                        )
-                      )
-                    }
-                  >
-                    {attributes.map((attribute) => (
-                      <option key={attribute.id} value={attribute.id}>
-                        {attribute.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              
 
-                <div className="mb-4 flex items-center">
-                  <label className="block text-sm text-nowrap pr-2 font-medium text-gray-700">
-                    Mô tả sản phẩm
-                  </label>
-                  <textarea
-                    className="mt-1 text-[17px] block w-full border border-gray-300 rounded-md p-2"
-                    required
-                    value={productDescription}
-                    onChange={(e) => setProductDescription(e.target.value)}
-                  ></textarea>
-                </div>
-                <div className="flex justify-end items-center gap-3 p-4 border-t">
+              <div className="mb-4 ">
+                <label className="block text-nowrap text-sm font-medium text-gray-700 pr-4">
+                  Ảnh sản phẩm
+                </label>
+                <input
+                  type="file"
+                  className="mt-1 block w-full border border-gray-300 rounded-md"
+                  required
+                  multiple
+                  onChange={handleImageChange}
+                />
+              </div>
+
+              <div className="mb-4 ">
+                <label className="block text-sm text-nowrap pr-2 font-medium text-gray-700">
+                  Mô tả sản phẩm
+                </label>
+                <textarea
+                  className="mt-1 text-[17px] block w-full border border-gray-300 rounded-md p-2"
+                  required
+                  value={productDescription}
+                  onChange={(e) => setProductDescription(e.target.value)}
+                ></textarea>
+              </div>
+              <div className="flex justify-end items-center gap-3 p-4 border-t">
+                <button
+                  type="submit"
+                  className="px-6 py-2 text-base text-white bg-indigo-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2"
+                >
+                  Accept
+                </button>
+                <Dialog.Close asChild>
                   <button
-                    type="submit"
-                    className="px-6 py-2 text-base text-white bg-indigo-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2"
+                    type="button"
+                    className="px-6 py-2 text-base text-gray-800 border rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2"
+                    aria-label="Close"
                   >
-                    Accept
+                    Cancel
                   </button>
-                  <Dialog.Close asChild>
-                    <button
-                      type="button"
-                      className="px-6 py-2 text-base text-gray-800 border rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2"
-                      aria-label="Close"
-                    >
-                      Cancel
-                    </button>
-                  </Dialog.Close>
-                </div>
-              </form>
+                </Dialog.Close>
+              </div>
               <ToastContainer
                 className="text-base"
                 fontSize="10px"
@@ -227,7 +219,6 @@ export const ModalAddProduct = () => {
                 pauseOnHover
                 theme="light"
               />
-
             </Dialog.Description>
           </div>
         </Dialog.Content>
