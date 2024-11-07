@@ -2,6 +2,14 @@ import productReducer from "~/redux/features/Product/PoductSlice"; // Đường 
 import { configureStore } from "@reduxjs/toolkit";
 import accountsReducer from "./features/Accounts/accountsSilce";
 import rolesReducer from "./features/Roles/rolesSilce";
+// import cartReducer from './features/cart/cartSlice'
+// import permissionsReducer from "./features/Permissions/permissionsSilce";
+// import inventoriesReducer from "./features/Inventories/inventoriesSilce";
+import productsReducer from "./features/Products/productsSlice"
+// import categoriesReducer from "./features/Categories/categoriesSlice"
+import attributesReducer from "./features/Attributes/attributesSlice"
+import discountsReducer from "./features/Discounts/discountsSlice"
+// import receiptsReducer from "./features/Receipts/receiptsSlice"
 
 
 
@@ -32,6 +40,11 @@ export const store = configureStore({
 
     permissions: permissionsReducer,
     inventories: inventoriesReducer,
+    productss : productsReducer,
+    // categories : categoriesReducer,
+    attributes : attributesReducer,
+    discounts : discountsReducer,
+    receipts : receiptsReducer,
     suppliers: suppliersReducer,
     receipts: receiptsReducer,
     auth: authReducer,

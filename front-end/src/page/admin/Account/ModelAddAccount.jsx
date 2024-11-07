@@ -69,7 +69,7 @@ const ModelAddAccount = () => {
         confirmPassword: formData.confirmPassword,
         role: formData.role,
       });
-
+      console.log(response)
       if (response && response.data) {
         const { statusCode, status, message, data } = response.data;
         if (statusCode === 201 && status === "success") {

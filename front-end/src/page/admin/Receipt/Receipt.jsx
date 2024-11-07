@@ -18,7 +18,12 @@ import {
 import { toast, ToastContainer } from "react-toastify";
 import Loading from "~/components/Loading/Loading";
 
-const cx = classNames.bind(styles);
+import { GetAllDiscount, DeleteDiscount } from "~/services/DiscountService";
+import { initDataDiscount, deleteDiscount } from "~/redux/features/Discounts/discountsSlice";
+
+import { GetAllReceipt } from "~/services/ReceiptService";
+// import { initDataReceipt } from "~/redux/features/Receipts/receiptsSlice";
+// const cx = classNames.bind(styles);
 export const Receipt = () => {
   const dispatch = useDispatch();
   const dataImportReceipts = useSelector((state) => state.receipts.data);
