@@ -31,6 +31,7 @@ import { SeederModule } from './seeder/seeder.module';
 import { PermissionsGuard } from './auth/permisson.guard';
 import { RoleModule } from './role/role.module';
 import { FunctionModule } from './function/function.module';
+import { StatisticalModule } from './statistical/statistical.module';
 
 
 @Module({
@@ -91,6 +92,7 @@ import { FunctionModule } from './function/function.module';
     SeederModule,
     RoleModule,
     FunctionModule,
+    StatisticalModule,
   ],
   controllers: [AppController],
   providers: [AppService, PermissionsGuard],

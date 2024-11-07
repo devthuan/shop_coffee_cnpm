@@ -34,7 +34,7 @@ export const Notification = () => {
     currentPage: 1,
     limit: 10,
   });
-  
+
   // Array chứa danh sách tiêu đề bảng
   const tableTitles = [
     "ID",
@@ -189,7 +189,6 @@ export const Notification = () => {
       }
     };
 
-    dispatch(clearDataNotification());
 
     setTimeout(() => {
       fetchData();
@@ -247,6 +246,7 @@ export const Notification = () => {
                       })}
                     </select>
                   </div>
+                  
                   {/* box input search */}
                   <div className="max-w-lg">
                     <div className="relative">

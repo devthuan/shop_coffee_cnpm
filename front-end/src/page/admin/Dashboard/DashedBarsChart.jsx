@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   LineChart,
@@ -13,59 +14,46 @@ import {
   Bar,
   Rectangle,
 } from "recharts";
+import {
+  initDataRevenue,
+  initError,
+} from "~/redux/features/Statistical/statisticalSlice";
+import { GetStatisticalRevenueAPI } from "~/services/StatisticalService";
+import { HandleApiError } from "~/Utils/HandleApiError";
 
 export const DashedBarsChart = () => {
-  const data = [
-    {
-      name: "Page A",
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      name: "Page B",
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
-    {
-      name: "Page C",
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      name: "Page D",
-      uv: 2780,
-      pv: 100000,
-      amt: 2000,
-    },
-    {
-      name: "Page E",
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      name: "Page F",
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      name: "Page G",
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-  ];
+  const dispatch = useDispatch();
+  const dataRevenue = useSelector((state) => state.statistical.dataRevenue);
+  
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let startDate = "2024-10-1";
+        let endDate = "2024-10-30";
+        const response = await GetStatisticalRevenueAPI(startDate, endDate);
+        if (response && response.status === 201) {
+          console.log(response);
+          dispatch(initDataRevenue({ data: response.data }));
+        }
+      } catch (error) {
+        const { message, status } = HandleApiError(error);
+        if (status === "error") {
+          dispatch(initError({ error: message }));
+        }
+      }
+    };
+    if (!dataRevenue || dataRevenue.length === 0) {
+      fetchData();
+    }
+  }, []);
 
   return (
     <ResponsiveContainer width="100%" height={400} margin="auto">
       <BarChart
         width={500}
         height={300}
-        data={data}
+        data={dataRevenue}
         margin={{
           top: 5,
           right: 30,
@@ -74,11 +62,11 @@ export const DashedBarsChart = () => {
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
+        <XAxis dataKey="date" />
         <YAxis />
         <Tooltip />
         <Bar
-          dataKey="uv"
+          dataKey="totalProfit"
           fill="#B3CDAD"
           activeBar={<Rectangle stroke="#22c55e" />}
         />

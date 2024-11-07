@@ -9,7 +9,7 @@ import {
   clearDataReceipt,
   initDataDetail,
   initDataReceipt,
-} from "~/redux/features/Receipts/ReceiptsSlice";
+} from "~/redux/features/Receipts/receiptsSlice";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import {
   GetAllReceiptAPI,
@@ -24,6 +24,9 @@ import { initDataDiscount, deleteDiscount } from "~/redux/features/Discounts/dis
 // import { GetAllReceipt } from "~/services/ReceiptService";
 // import { initDataReceipt } from "~/redux/features/Receipts/receiptsSlice";
 // const cx = classNames.bind(styles);
+// import { GetAllReceipt } from "~/services/ReceiptService";
+
+const cx = classNames.bind(styles);
 export const Receipt = () => {
   const dispatch = useDispatch();
   const dataImportReceipts = useSelector((state) => state.receipts.data);
@@ -148,7 +151,6 @@ export const Receipt = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      dispatch(clearDataReceipt());
       try {
         let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
         const response = await GetAllReceiptAPI(queryParams);
