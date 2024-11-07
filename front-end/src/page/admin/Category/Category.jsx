@@ -24,7 +24,7 @@ export const Category = () => {
   const totalPage = useSelector(state => state.catagories.totalPage)
   const currentPage = useSelector(state => state.catagories.currentPage)
   const limit = useSelector(state => state.catagories.limit)
-  const isLoading = useSelector(state => state.catagories.isLoading)
+  const isLoading = useSelector(state => state.catagories.loading)
   const [optionLimit, setOptionLimit] = useState({
     currentPage: 1,
     limit: 10

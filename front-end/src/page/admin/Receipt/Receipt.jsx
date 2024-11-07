@@ -21,7 +21,7 @@ import Loading from "~/components/Loading/Loading";
 import { GetAllDiscount, DeleteDiscount } from "~/services/DiscountService";
 import { initDataDiscount, deleteDiscount } from "~/redux/features/Discounts/discountsSlice";
 
-import { GetAllReceipt } from "~/services/ReceiptService";
+// import { GetAllReceipt } from "~/services/ReceiptService";
 // import { initDataReceipt } from "~/redux/features/Receipts/receiptsSlice";
 // const cx = classNames.bind(styles);
 export const Receipt = () => {

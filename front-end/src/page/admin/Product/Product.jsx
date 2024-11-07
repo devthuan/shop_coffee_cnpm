@@ -10,15 +10,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { ToastContainer, toast } from "react-toastify";
 import { initDataProduct, deleteProduct } from "~/redux/features/Products/productsSlice";
+import { ModalDetailProduct } from "./ModalDetailProduct";
 // const cx = classNames.bind(styles);
 export const Product = () => {
   const dispatch = useDispatch()
-  const products = useSelector(state => state.productss.data)
-  const total = useSelector(state => state.productss.total)
-  const totalPage = useSelector(state => state.productss.totalPage)
-  const currentPage = useSelector(state => state.productss.currentPage)
-  const limit = useSelector(state => state.productss.limit)
-  const isLoading = useSelector(state => state.productss.isLoading)
+  const products = useSelector(state => state.products.data)
+  const total = useSelector(state => state.products.total)
+  const totalPage = useSelector(state => state.products.totalPage)
+  const currentPage = useSelector(state => state.products.currentPage)
+  const limit = useSelector(state => state.products.limit)
+  const isLoading = useSelector(state => state.products.loading)
   const [optionLimit, setOptionLimit] = useState({
     currentPage: 1,
     limit: 10
@@ -31,11 +32,11 @@ export const Product = () => {
     const fetchData = async () => {
       try {
         let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
-        if(search)
-        {
+        if (search) {
           queryParams += `&search=${search}`
         }
         const response = await GetAllProduct(queryParams)
+        console.log(response)
         if (response && response.status === 200) {
           dispatch(initDataProduct(response.data))
         }
@@ -89,7 +90,9 @@ export const Product = () => {
   }
 
   const handleSearch = async () => {
-    let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&search=${search}`
+
+    
+    let queryParams = `limit=${optionLimit.limit}&page=1&search=${search}`
     const response = await GetAllProduct(queryParams)
     if (response && response.status === 200) {
       dispatch(initDataProduct(response.data))
@@ -148,7 +151,7 @@ export const Product = () => {
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    handleSearch(); 
+                    handleSearch();
                   }
                 }}
                 type="text"
@@ -188,9 +191,9 @@ export const Product = () => {
               <tr key={idx}>
                 <td className="pr-6 py-4 whitespace-nowrap">{product.id}</td>
                 <td className="pr-6 py-4 whitespace-nowrap flex items-center">
-                  {product.images.length > 0 && (
+                  {/* {product.images.length > 0 && (
                     <img width="40px" src={product.images[0].urlImage} alt="" />
-                  )}
+                  )} */}
                   <span className="ml-3">{product.name}</span>
                 </td>
 
@@ -198,6 +201,9 @@ export const Product = () => {
                 <td className="pr-6 py-4 whitespace-nowrap">{product.category.name}</td>
                 <td className="text-right px-6 whitespace-nowrap">
                   <div className="max-w-5 flex justify-center items-center">
+                    <p className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
+                      <ModalDetailProduct data={product} />
+                    </p>
                     <p className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
                       <ModalEditProduct data={product} />
                     </p>

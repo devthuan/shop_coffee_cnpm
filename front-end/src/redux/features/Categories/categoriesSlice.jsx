@@ -49,6 +49,18 @@
 
 // export const { initDataCategory, addCategory, updateCategory, deleteCategory } = categoriesSlice.actions
 // export default categoriesSlice.reducer
+
+
+
+
+
+
+
+
+
+
+
+
 import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
     total: 0,
@@ -93,7 +105,8 @@ export const catagoriesSlice = createSlice({
                 state.data[categoryIndex] = {
                     ...state.data[categoryIndex],
                     name: action.payload.name,
-                    description: action.payload.description
+                    description: action.payload.description,
+                    idCategory : action.payload.idCategory
                 }
             }
         },
@@ -109,7 +122,7 @@ export const catagoriesSlice = createSlice({
 });
 
 // Export các action
-export const { initDataCatagories, clearDataCatagories, addCategory, deleteCategory, updateCategory } = catagoriesSlice.actions;
+export const { initDataCatagories, clearDataCatagories, addCategory, updateCategory, deleteCategory } = catagoriesSlice.actions;
 
 export default catagoriesSlice.reducer;
 

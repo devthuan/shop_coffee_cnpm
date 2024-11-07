@@ -20,7 +20,7 @@ import permissionsReducer from "./features/Permissions/permissionsSilce";
 import inventoriesReducer from "./features/Inventories/inventoriesSilce";
 import suppliersReducer from "./features/Suppliers/suppliersSlice";
 import receiptsReducer from "./features/Receipts/ReceiptsSlice";
-import catagoriesReducer from "./features/Categories/categoriesSlice";
+import catagoriesReducer from "./features/Categories/categoriesSlice"
 import userInfoReducer from "./features/UserInfor/User_InforSlice";
 import cartReducer from "./features/cart/cartSlice";
 import authReducer from "./features/AuthSlice/authSlice"; // Đường dẫn tới authSlice
@@ -29,7 +29,8 @@ import notificationUserReducer from "./features/Notifications/NotificationsUserS
 
 export const store = configureStore({
   reducer: {
-    products: productReducer,
+    // products: productReducer,
+    products: productsReducer,
     bill: billReducer,
     catagories: catagoriesReducer,
     userInfo: userInfoReducer,
@@ -40,13 +41,12 @@ export const store = configureStore({
 
     permissions: permissionsReducer,
     inventories: inventoriesReducer,
-    productss : productsReducer,
     // categories : categoriesReducer,
     attributes : attributesReducer,
     discounts : discountsReducer,
     receipts : receiptsReducer,
     suppliers: suppliersReducer,
-    receipts: receiptsReducer,
+    // receipts: receiptsReducer,
     auth: authReducer,
     notifications: notificationReducer,
     notificationUser: notificationUserReducer,

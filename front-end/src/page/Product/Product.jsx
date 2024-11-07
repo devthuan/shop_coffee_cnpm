@@ -21,6 +21,7 @@ const cx = classNames.bind(styles);
 export const Product = () => {
   const navigate = useNavigate()
   const { id } = useParams(); 
+  console.log(id)
   const [product, setProduct] = useState({});
   const [statistical, setStatistical] = useState({})
   const [showDescription, setShowDescription] = useState(true);
@@ -28,7 +29,7 @@ export const Product = () => {
   const [textDescription, setTextDescription] = useState('gray')
   const [textFeedBack, setTextFeedBack] = useState('black')
   const [selectedAttribute, setSelectedAttribute] = useState(null);
-
+  console.log(product)
   const dispatch = useDispatch();
   const handleAddToCart = async (ProductAttributesId, quantity = 1) => {
     try {

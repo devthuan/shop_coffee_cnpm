@@ -1,9 +1,10 @@
+
 import api from "./api";
 
 // code demo
-export const getALLProducts = (query) => {
-  return api.get(`products?${query}`);
-};
+// export const getALLProducts = (query) => {
+//   return api.get(`products?${query}`);
+// };
 
 // code demo
 export const DetailProduct = async (id) => {
@@ -25,7 +26,9 @@ export const DetailProduct = async (id) => {
 
 
 
-
+export const getALLProducts = (query) => {
+  return api.get(`products?${query}`);
+};
 
 // code demo
 // export const DetailProduct = async () => {
@@ -72,12 +75,3 @@ export const UpdateProduct = async (id, data) => {
 export const DeleteProduct = async (id) => {
   return await api.delete(`products/${id}`)
 }
-
-
-
-
-
-
-
-
-
