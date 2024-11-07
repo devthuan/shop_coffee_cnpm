@@ -12,7 +12,7 @@ import {
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { CreateReceiptAPI } from "~/services/ReceiptServer";
 import { toast } from "react-toastify";
-import { addReceipt, initDataReceipt } from "~/redux/features/Receipts/ReceiptsSlice";
+import { addReceipt, initDataReceipt } from "~/redux/features/Receipts/receiptsSlice";
 
 export const ReceiptModalCreate = () => {
   const dispatch = useDispatch();

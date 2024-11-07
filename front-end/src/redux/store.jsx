@@ -19,7 +19,7 @@ import IdBillDetailReducer from '~/redux/features/IdBillDetail/IdBillDetailSlice
 import permissionsReducer from "./features/Permissions/permissionsSilce";
 import inventoriesReducer from "./features/Inventories/inventoriesSilce";
 import suppliersReducer from "./features/Suppliers/suppliersSlice";
-import receiptsReducer from "./features/Receipts/ReceiptsSlice";
+import receiptsReducer from "./features/Receipts/receiptsSlice";
 import catagoriesReducer from "./features/Categories/categoriesSlice"
 import userInfoReducer from "./features/UserInfor/User_InforSlice";
 import cartReducer from "./features/cart/cartSlice";

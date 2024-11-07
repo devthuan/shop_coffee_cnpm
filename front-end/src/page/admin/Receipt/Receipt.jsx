@@ -9,7 +9,7 @@ import {
   clearDataReceipt,
   initDataDetail,
   initDataReceipt,
-} from "~/redux/features/Receipts/ReceiptsSlice";
+} from "~/redux/features/Receipts/receiptsSlice";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import {
   GetAllReceiptAPI,
