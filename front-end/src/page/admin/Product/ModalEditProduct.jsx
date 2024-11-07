@@ -18,26 +18,24 @@ export const ModalEditProduct = ({ data }) => {
   const [formData, setFromData] = useState({
     id: "",
     name: "",
-    idCategory : "",
+    category : "",
     images: "",
     description: "",
-    productAttributes: ""
+    attributes: ""
   })
-
   useEffect(() => {
     if (data && data.productAttributes && data.productAttributes.length > 0) {
       setFromData({
         id: data.id,
         name: data.name,
-        idCategory : data.category.id,
+        category : data.category.id,
         images: data.images,
         description: data.description,
-        productAttributes: data.productAttributes
+        attributes: data.productAttributes
       });
       setSelectedAttributes(data.productAttributes.map(attr => attr.id)); // Lưu id các thuộc tính đã chọn
     }
   }, [data]);
-
 
    
   useEffect(() => {
@@ -78,19 +76,41 @@ export const ModalEditProduct = ({ data }) => {
 
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
-    const productData = {
-      // id : formData.id,
-      name: formData.name,
-      // categoryId: "2",
-      description: formData.description,
-      // attributes: selectedAttributes.map(attributeId => ({ attributeId })),
-      // files: productImages,
-    };
+    const attributesNew = attributes.filter(attribute =>
+      selectedAttributes.includes(attribute.id)
+    );
+    const categoryNew = categories.filter(category => category.id === formData.category)
+
+    // const productData = {
+    //   id : formData.id,
+    //   name: formData.name,
+    //   categoryId: formData.category,
+    //   description: formData.description,
+    //   attributes: selectedAttributes.map(attributeId => ({ attributeId })),
+    //   files: productImages,
+    // };
+    
     try {
-      const response = await UpdateProduct(data.id, productData)
-      console.log(response)
+      const response = await UpdateProduct(data.id, {
+        name : formData.name,
+        categoryId : formData.category,
+        description : formData.description,
+        attributes : selectedAttributes.map(attributeId => ({ attributeId }))
+      })
+
+
       if (response && response.status === 200) {
-        dispatch(updateProduct({id: data.id, ...productData}))
+        dispatch(updateProduct({
+          id : data.id,
+          name : formData.name,
+          category : categoryNew[0],
+          description : formData.description,
+          productAttributes : attributesNew.map((attribute) => {
+            return {
+              attributes : attribute
+            }
+          })
+        }))
         toast.success("Chỉnh sửa sản phẩm thành công")
       }
     }
@@ -189,7 +209,9 @@ export const ModalEditProduct = ({ data }) => {
                     <select
                       className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                       required
-                      value = {formData.idCategory}
+                      name = "category"
+                      value = {formData.category}
+                      onChange={handleChangeInput}
                     >
                       <option value="" disabled>
                         Chọn một thể loại
@@ -212,11 +234,11 @@ export const ModalEditProduct = ({ data }) => {
                       multiple
                       onChange={handleAttributeChange}
                     >
-                      {formData.productAttributes.length > 0 &&  attributes.map((attribute) => (
+                      {formData.attributes.length > 0 &&  attributes.map((attribute) => (
                         <option
                           key={attribute.id}
                           value={attribute.id}
-                          selected={formData?.productAttributes?.map(item => item.attributes.id).includes(attribute.id)}
+                          selected={formData?.attributes?.map(item => item.attributes.id).includes(attribute.id)}
 
                         >
                           {attribute.name}

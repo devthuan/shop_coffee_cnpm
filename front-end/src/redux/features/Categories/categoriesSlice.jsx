@@ -105,7 +105,8 @@ export const catagoriesSlice = createSlice({
                 state.data[categoryIndex] = {
                     ...state.data[categoryIndex],
                     name: action.payload.name,
-                    description: action.payload.description
+                    description: action.payload.description,
+                    idCategory : action.payload.idCategory
                 }
             }
         },

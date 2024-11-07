@@ -29,13 +29,9 @@ export const ModalAddProduct = () => {
       dispatch(initDataCatagories(responseCategory.data))
       dispatch(initDataAttribute(responseAttribute.data))
 
-      
-      // setCategories(responseCategory.data.data);
-      // setAttributes(responseAttribute.data.data);
     };
 
-    console.log(categories.length)
-    if(!attributes || attributes.length === 0) {
+    if (!attributes || attributes.length === 0) {
       fetchData();
 
     }
@@ -47,17 +43,40 @@ export const ModalAddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const productData = {
-      name: productName,
-      categoryId: selectedCategory,
-      attributes: selectedAttributes.map(attributeId => ({ attributeId })),
-      description: productDescription,
-      // files: productImages,
-    };
+    // const productData = {
+    //   name: productName,
+    //   categoryId: selectedCategory,
+    //   attributes: selectedAttributes.map(attributeId => ({ attributeId })),
+    //   description: productDescription,
+    //   images: productImages,
+    // };
+    // console.log(productData)
+    // console.log(productData.name)  
+
+    const formData = new FormData()
+    formData.append('name', productName)
+    formData.append('categoryId', selectedCategory)
+
+    selectedAttributes.forEach((attributeId, index) => {
+      formData.append(`attributes[${index}][attributeId]`, attributeId);
+    });
+    
+    
+    
+    formData.append('description', productDescription)
+  
+    // console.log(productImages)
+    
+    // Array.from(productImages).forEach((image, index) => {
+    //   formData.append(`images[${index}]`, image.name);
+    // });
+
+
     try {
-      const response = await AddProduct(productData)
-      console.log(response)
+      const response = await AddProduct(formData)
+      console.log(response.data.data)
       if (response && response.status === 201) {
+        console.log(response.data.data)
         dispatch(addProduct(response.data.data))
         toast.success("Thêm sản phẩm thành công")
       }

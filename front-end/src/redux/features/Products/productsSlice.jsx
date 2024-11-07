@@ -58,8 +58,8 @@ export const productsSlice = createSlice({
                     ...state.data[productIndex],
                     name: action.payload.name,
                     description: action.payload.description,
-                    // productAttributes: [...existingProduct.productAttributes]
-
+                    category : action.payload.category,
+                    productAttributes: action.payload.productAttributes
                 };
             }
         },
