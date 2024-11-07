@@ -12,14 +12,17 @@ import {
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { CreateReceiptAPI } from "~/services/ReceiptServer";
 import { toast } from "react-toastify";
-import { addReceipt, initDataReceipt } from "~/redux/features/Receipts/ReceiptsSlice";
+import {
+  addReceipt,
+  initDataReceipt,
+} from "~/redux/features/Receipts/ReceiptsSlice";
 
 export const ReceiptModalCreate = () => {
   const dispatch = useDispatch();
   const dataSupplier = useSelector((item) => item.suppliers.data).filter(
     (item) => item.detailSupplier.length > 0
   );
-  const [supplier, setSupplier] = useState();
+  const [supplier, setSupplier] = useState(dataSupplier[0]?.id || "");
   const [detailSupplier, setDetailSupplier] = useState();
 
   const [dataForm, setDataForm] = useState([
@@ -111,10 +114,10 @@ export const ReceiptModalCreate = () => {
         toast.success("Tạo phiếu nhập thành công.");
       }
     } catch (error) {
-       const { message, status } = HandleApiError(error);
-       if (status === "error") {
-         dispatch(initDataReceipt({ error: message }));
-       }
+      const { message, status } = HandleApiError(error);
+      if (status === "error") {
+        dispatch(initDataReceipt({ error: message }));
+      }
     }
   };
 
@@ -261,10 +264,10 @@ export const ReceiptModalCreate = () => {
                             <td className="">
                               <div className="flex justify-start ">
                                 <input
+                                  readOnly="true"
                                   type="text"
                                   value={item.price || ""}
-                                  readOnly
-                                  className="w-42 pl-12 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                                  className="cursor-default w-42 pl-12 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                                 />
                               </div>
                             </td>

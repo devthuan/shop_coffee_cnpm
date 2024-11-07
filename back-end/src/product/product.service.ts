@@ -126,7 +126,7 @@ export class ProductService extends BaseService<Products> {
       }
 
       // Add attributes and images to the newProduct object
-        newProduct['attributes'] = productAttributes;
+        newProduct['productAttributes'] = productAttributes;
         newProduct['productImages'] = productImages;
 
       // commit transaction

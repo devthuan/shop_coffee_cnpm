@@ -248,66 +248,53 @@ export class BillService extends BaseService<Bills> {
       }
   }
 
-  async updateStatus(billId: string, status: string): Promise<{message: string}>{
-    const queryRunner = this.dataSource.createQueryRunner()
-    try {
-      await queryRunner.connect()
-      await queryRunner.startTransaction()
-      const bill = await this.billsRepository.createQueryBuilder('bills')
-        .leftJoinAndSelect('bills.billDetails', 'billDetails')
-        .leftJoinAndSelect('billDetails.productAttributes', 'productAttributes')
-        .where('bills.id = :id', { id: billId })
-        .andWhere('bills.deletedAt IS NULL')
-        .getOne();
+  async updateStatus(billId: string, status: string): Promise<{ message: string }> {
+  const queryRunner = this.dataSource.createQueryRunner();
+  try {
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-        if(!bill){
-          throw new BadRequestException('Bill not found')
-        }
+    const bill = await this.billsRepository.createQueryBuilder('bills')
+      .leftJoinAndSelect('bills.billDetails', 'billDetails')
+      .leftJoinAndSelect('billDetails.productAttributes', 'productAttributes')
+      .where('bills.id = :id', { id: billId })
+      .andWhere('bills.deletedAt IS NULL')
+      .getOne();
 
-        // ['pending', 'delivery', 'success', 'failed', 'cancelled']
-        if (bill.status === 'success') {
-            throw new BadRequestException('Bill has been paid');
-        }
-        if (bill.status === 'cancelled') {
-            throw new BadRequestException('Bill has been cancelled');
-        } 
-        if (bill.status === 'failed') {
-          throw new BadRequestException('Bill has been failed');
-        } 
-
-        switch (bill.status) {
-          case 'pending':
-            if (status === 'delivery') {
-              bill.status = status;
-            } else if (status === 'cancelled') {
-              bill.status = status;
-              await this.restoreStock(bill, queryRunner); // Khôi phục số lượng hàng tồn
-            } 
-          break;
-
-          case 'delivery':
-            if (status === 'success') {
-              bill.status = status;
-            } else if (status === 'failed') {
-              bill.status = status;
-              await this.restoreStock(bill, queryRunner); // Khôi phục số lượng hàng tồn
-            } 
-          break;
-
-          default:
-            throw new BadRequestException('Invalid status for this bill');
-        }
-        
-        bill.updatedAt = new Date();
-        await queryRunner.manager.save(bill);
-        await queryRunner.commitTransaction()
-
-        return { message: 'Bill status updated successfully' }
-        
-    } catch (error) {
-      CommonException.handle(error)
+    if (!bill) {
+      throw new BadRequestException('Bill not found');
     }
+
+    // Không cho phép cập nhật nếu đã thanh toán, hủy hoặc thất bại
+    if (['success', 'cancelled', 'failed'].includes(bill.status)) {
+      throw new BadRequestException(`Hoá đơn đã được ${bill.status}`);
+    }
+
+    // Kiểm tra trạng thái hợp lệ
+    if (bill.status === 'pending' && status === 'delivery') {
+      bill.status = status;
+    } else if (bill.status === 'delivery' && status === 'success') {
+      bill.status = status;
+    } else if ((bill.status === 'pending' || bill.status === 'delivery') && status === 'cancelled') {
+      bill.status = status;
+      await this.restoreStock(bill, queryRunner); // Khôi phục số lượng hàng tồn nếu hủy
+    } else {
+      throw new BadRequestException('Chuyển đổi trạng thái không hợp lệ');
+    }
+
+    bill.updatedAt = new Date();
+    await queryRunner.manager.save(bill);
+    await queryRunner.commitTransaction();
+
+    return { message: 'Cập nhật trạng thái đơn hàng thành công.' };
+  } catch (error) {
+    await queryRunner.rollbackTransaction();
+    CommonException.handle(error);
+  } finally {
+    await queryRunner.release();
   }
+}
+
 
   async checkBillPendingByProduct(productAttributeId: string): Promise<boolean> {
     try {

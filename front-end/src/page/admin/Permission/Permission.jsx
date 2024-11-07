@@ -32,7 +32,6 @@ export const Permission = () => {
   const filterItems = [
     { value: "createdAt_ASC", label: "sắp xếp theo ngày tạo tăng dần" },
     { value: "createdAt_DESC", label: "sắp xếp theo ngày tạo giảm dần" },
-    
   ];
 
   const titleColumn = [
@@ -59,7 +58,7 @@ export const Permission = () => {
     }
   };
 
-  const handleSorts = async(e) => {
+  const handleSorts = async (e) => {
     let queryParams = "";
     if (e === "createdAt_ASC") {
       queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&sortBy=createdAt&sortOrder=ASC`;
@@ -72,9 +71,7 @@ export const Permission = () => {
     }
     const result = await GetAllRole(queryParams);
     dispatch(initDataRole(result.data));
-  }
-
-
+  };
 
   // Callback function to update currentPage
   const handlePageChange = (newPage) => {
@@ -93,9 +90,6 @@ export const Permission = () => {
     }));
   };
 
-  
- 
-
   useEffect(() => {
     const fetchAPI = async () => {
       try {
@@ -106,20 +100,19 @@ export const Permission = () => {
         }
       } catch (error) {
         console.log(error);
-         const { message, status } = HandleApiError(error);
-         if (status === "error") {
-           dispatch(initDataRole({ error: message }));
-         }
+        const { message, status } = HandleApiError(error);
+        if (status === "error") {
+          dispatch(initDataRole({ error: message }));
+        }
       }
     };
 
     dispatch(clearDataRole());
 
-
     // if (dataRole.length === 0) {
-      setTimeout(() => {
-        fetchAPI();
-      }, 700);
+    setTimeout(() => {
+      fetchAPI();
+    }, 700);
     // }
   }, [optionLimit.limit, optionLimit.currentPage]);
 
@@ -130,9 +123,9 @@ export const Permission = () => {
           {isError}
         </div>
       ) : (
-        <div className="mx-auto  md:pr-5">
-          <div className="flex justify-center mt-4">
-            <h3>Quản lý quyền</h3>
+        <div className="max-w-full mx-auto px-4">
+          <div className="w-full flex justify-center py-3">
+            <h3 className="text-3xl my-4">Quản lý quyền</h3>
           </div>
 
           {isLoading ? (
@@ -141,9 +134,9 @@ export const Permission = () => {
             </div>
           ) : (
             <>
-              <div className="flex justify-between mt-7">
-                <div className="flex ">
-                  <div className="relative w-auto min-w-fit px-5  ">
+              <div className="flex items-start justify-between ">
+                <div className="flex gap-x-3 ">
+                  <div className="relative w-60">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
@@ -173,7 +166,8 @@ export const Permission = () => {
                         })}
                     </select>
                   </div>
-                  <div className="max-w-xl w-full px-4 mx-auto ">
+
+                  <div className="max-w-lg ">
                     <div className="relative">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

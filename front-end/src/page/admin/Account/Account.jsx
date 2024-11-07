@@ -198,8 +198,10 @@ export const Account = () => {
           {isError}
         </div>
       ) : (
-        <div className="mx-auto  md:pr-5">
-          <h3 className="w-full text-center mt-3">Quản lý tài khoản </h3>
+        <div className="max-w-full mx-auto px-4 ">
+          <div className="w-full flex justify-center py-3">
+            <h3 className="text-3xl my-4">Quản lý tài khoản</h3>
+          </div>
 
           {isLoading ? (
             // absolute inset-0 flex justify-center items-center
@@ -208,7 +210,7 @@ export const Account = () => {
             </div>
           ) : (
             <>
-              <div className="flex justify-between items-end mt-7">
+              <div className="flex justify-between items-end ">
                 <div className="flex justify-start items-end">
                   <div className="relative w-72 ">
                     <svg
