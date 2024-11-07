@@ -1,13 +1,51 @@
 import classNames from "classnames/bind";
 import styles from "./Dashboard.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBox, faCartShopping, faMoneyBill, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBox,
+  faCartShopping,
+  faMoneyBill,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { DashedBarsChart } from "./DashedBarsChart";
 import { DashedLinesChartOrder } from "./DashedLinesChartOrder";
 import CountUp from "~/components/CountUp/CountUp";
 import { DashboardPieChart, DashedPieChart } from "./DashedPieChart";
+import { useEffect } from "react";
+import { GetStatisticalAPI } from "~/services/StatisticalService";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  initDataStatistical,
+  initError,
+} from "~/redux/features/Statistical/statisticalSlice";
+import { HandleApiError } from "~/Utils/HandleApiError";
 const cx = classNames.bind(styles);
 export const Dashboard = () => {
+  const dispatch = useDispatch();
+  const totalRevenue = useSelector((state) => state.statistical.totalRevenue);
+  const totalBills = useSelector((state) => state.statistical.totalBills);
+  const totalProduct = useSelector((state) => state.statistical.totalProduct);
+  const totalAccount = useSelector((state) => state.statistical.totalAccount);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await GetStatisticalAPI();
+        if (response && response.status === 200) {
+          dispatch(initDataStatistical(response.data));
+        }
+      } catch (error) {
+        const { message, status } = HandleApiError(error);
+        if (status === "error") {
+          dispatch(initError({ error: message }));
+        }
+      }
+    };
+    if (!totalRevenue || !totalBills || !totalProduct || !totalAccount) {
+      fetchData();
+    }
+  }, []);
+
   return (
     <div className={cx("w-full mx-auto")}>
       {/* box 3 item */}
@@ -19,7 +57,7 @@ export const Dashboard = () => {
               Doanh thu
             </h3>
             <p>
-              <CountUp end={123123} duration={3000} />
+              <CountUp end={totalRevenue ? totalRevenue : 0} duration={2000} />
             </p>
           </div>
         </div>
@@ -31,7 +69,7 @@ export const Dashboard = () => {
               Tổng số đơn hàng
             </h3>
             <p>
-              <CountUp end={123123} duration={2000} />
+              <CountUp end={totalBills ? totalBills : 0} duration={2000} />
             </p>
           </div>
         </div>
@@ -43,7 +81,7 @@ export const Dashboard = () => {
               Tổng số sản phẩm
             </h3>
             <p>
-              <CountUp end={123123} duration={2000} />
+              <CountUp end={totalProduct ? totalProduct : 0} duration={2000} />
             </p>
           </div>
         </div>
@@ -54,7 +92,7 @@ export const Dashboard = () => {
               Tổng số người dùng
             </h3>
             <p>
-              <CountUp end={123123} duration={2000} />
+              <CountUp end={totalAccount ? totalAccount : 0} duration={2000} />
             </p>
           </div>
         </div>

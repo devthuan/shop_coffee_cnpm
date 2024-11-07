@@ -14,15 +14,15 @@ import BillDetails from "~/page/admin/Bill/BillDetails";
 const cx = classNames.bind(styles);
 export const Bill = () => {
   const dispatch = useDispatch();
-  const BillsData = useSelector((state) => state.bill.data)
-  const total = useSelector((state) => state.bill.total)
-  const currentPage = useSelector((state) => state.bill.currentPage)
-  const totalPage = useSelector((state) => state.bill.totalPage)
-  const limit = useSelector((state) => state.bill.limit)
+  const BillsData = useSelector((state) => state.bill.data);
+  const total = useSelector((state) => state.bill.total);
+  const currentPage = useSelector((state) => state.bill.currentPage);
+  const totalPage = useSelector((state) => state.bill.totalPage);
+  const limit = useSelector((state) => state.bill.limit);
 
   const isError = useSelector((state) => state.bill.error);
   const isLoading = false;
-  const [showBillDetails, setShowBillDetails ] = useState(null)
+  const [showBillDetails, setShowBillDetails] = useState(null);
   const [optionLimit, setOptionLimit] = useState({
     currentPage: 1,
     limit: 10,
@@ -32,8 +32,6 @@ export const Bill = () => {
     { value: "createdAt_ASC", label: "sắp xếp theo ngày tạo tăng dần" },
     { value: "createdAt_DESC", label: "sắp xếp theo ngày tạo giảm dần" },
   ];
-
-
 
   const titleColumn = [
     "id",
@@ -75,22 +73,22 @@ export const Bill = () => {
   //   }
   // };
 
-
   useEffect(() => {
     const fetchDataBill = async () => {
       try {
         let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
-        const response = await GetAllBillAPI(queryParams)
-        dispatch(initDataBill(response.data))
+        const response = await GetAllBillAPI(queryParams);
+        dispatch(initDataBill(response.data));
       } catch (error) {
         if (error.request) {
           dispatch(initDataBill({ error: "không có phản hồi từ server..." }));
         }
         const result = HandleApiError(error);
-        result ? toast.error(result) : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+        result
+          ? toast.error(result)
+          : toast.error("Có lỗi xảy ra, vui lòng thử lại");
       }
-    }
-    dispatch(clearDataBill());
+    };
 
     const timeoutId = setTimeout(() => {
       fetchDataBill();
@@ -118,16 +116,20 @@ export const Bill = () => {
 
   // show bill details
   const handleClickIDBill = (id) => {
-    setShowBillDetails(id)
-  }
+    setShowBillDetails(id);
+  };
   const handleToggleBill = (e) => {
-    setShowBillDetails(null)
-    
-  }
+    setShowBillDetails(null);
+  };
 
   return (
     <>
-     {showBillDetails && <BillDetails billsID={showBillDetails} handleClickToggle={handleToggleBill}/>}
+      {showBillDetails && (
+        <BillDetails
+          billsID={showBillDetails}
+          handleClickToggle={handleToggleBill}
+        />
+      )}
       {isError ? (
         <div className="w-full h-full flex justify-center items-center">
           {isError}
@@ -195,9 +197,7 @@ export const Bill = () => {
                     })}
                 </select>
               </div>
-              <div className="">
-                {/* <ModelAddAccount /> */}
-              </div>
+              <div className="">{/* <ModelAddAccount /> */}</div>
             </div>
           </div>
           {isLoading ? (
@@ -224,7 +224,10 @@ export const Bill = () => {
                 <tbody className="text-gray-600 divide-y">
                   {BillsData?.map((item, idx) => (
                     <tr key={idx}>
-                      <td className="px-2 py-4 whitespace-nowrap w-[20px]  hover:text-blue-500 hover:underline cursor-pointer" onClick={() => handleClickIDBill(item.id)}>
+                      <td
+                        className="px-2 py-4 whitespace-nowrap w-[20px]  hover:text-blue-500 hover:underline cursor-pointer"
+                        onClick={() => handleClickIDBill(item.id)}
+                      >
                         {item.id}
                       </td>
                       <td className="px-2 py-4 whitespace-nowrap">
@@ -275,7 +278,6 @@ export const Bill = () => {
             </div>
           )}
 
-         
           <Pagination
             totalItems={total}
             current={currentPage}

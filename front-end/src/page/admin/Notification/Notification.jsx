@@ -189,7 +189,6 @@ export const Notification = () => {
       }
     };
 
-    dispatch(clearDataNotification());
 
     setTimeout(() => {
       fetchData();

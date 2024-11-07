@@ -1,5 +1,12 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { PieChart, Pie, Sector, ResponsiveContainer } from "recharts";
+import {
+  initDataProducts,
+  initError,
+} from "~/redux/features/Statistical/statisticalSlice";
+import { GetStatisticalProductsAPI } from "~/services/StatisticalService";
+import { HandleApiError } from "~/Utils/HandleApiError";
 
 const data = [
   { name: "Group A", value: 400 },
@@ -22,6 +29,7 @@ const renderActiveShape = (props) => {
     payload,
     percent,
     value,
+    totalQuantity,
   } = props;
   const sin = Math.sin(-RADIAN * midAngle);
   const cos = Math.cos(-RADIAN * midAngle);
@@ -67,7 +75,7 @@ const renderActiveShape = (props) => {
         y={ey}
         textAnchor={textAnchor}
         fill="#333"
-      >{`PV ${value}`}</text>
+      >{`${totalQuantity} Lượt bán`}</text>
       <text
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}
@@ -82,6 +90,8 @@ const renderActiveShape = (props) => {
 };
 
 export const DashedPieChart = () => {
+  const dispatch = useDispatch();
+  const dataProducts = useSelector((state) => state.statistical.dataProducts);
   const [activeIndex, setActiveIndex] = useState(0);
   const onPieEnter = useCallback(
     (_, index) => {
@@ -89,20 +99,43 @@ export const DashedPieChart = () => {
     },
     [setActiveIndex]
   );
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let startDate = "2024-10-1";
+        let endDate = "2024-10-30";
+        const response = await GetStatisticalProductsAPI(startDate, endDate);
+        if (response && response.status === 201) {
+          console.log(response);
+          dispatch(initDataProducts({ data: response.data }));
+        }
+      } catch (error) {
+        const { message, status } = HandleApiError(error);
+        if (status === "error") {
+          dispatch(initError({ error: message }));
+        }
+      }
+    };
+    if (!dataProducts || dataProducts.length === 0) {
+      fetchData();
+    }
+  }, []);
+
   return (
     <div className="flex items-center justify-center ">
       <ResponsiveContainer width="100%" height={500}>
-        <PieChart >
+        <PieChart>
           <Pie
             activeIndex={activeIndex}
             activeShape={renderActiveShape}
-            data={data}
+            data={dataProducts}
             cx="50%" // Đặt cx là 50% của chiều rộng của ResponsiveContainer
             cy="50%" // Đặt cy là 50% của chiều cao của ResponsiveContainer
             innerRadius={110}
             outerRadius={200}
             fill="#8884d8"
-            dataKey="value"
+            dataKey="totalQuantity"
             onMouseEnter={onPieEnter}
           />
         </PieChart>

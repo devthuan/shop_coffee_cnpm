@@ -1,4 +1,4 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { StatisticalService } from './statistical.service';
 import { StatisticalDto } from './statistical.dto';
 
@@ -13,15 +13,15 @@ export class StatisticalController {
     return await this.statisticalService.statistical();
   }
 
-  @Get('revenue-by-date')
+  @Post('revenue-by-date')
   async getRevenueByDate(@Body() statisticalDto: StatisticalDto): Promise<any> {
     return await this.statisticalService.statisticalByDate(statisticalDto);
   }
-  @Get('billings')
+  @Post('billings')
   async statisticalByStatusAndDate(@Body() statisticalDto: StatisticalDto): Promise<any> {
     return await this.statisticalService.statisticalByStatusAndDate(statisticalDto);
   }
-  @Get('product')
+  @Post('product')
   async statisticalByProduct(@Body() statisticalDto: StatisticalDto): Promise<any> {
     return await this.statisticalService.statisticalByProduct(statisticalDto);
   }

@@ -43,22 +43,6 @@ export class StatisticalService {
         }
     }
 
-    // statistical calculation revenue for each date range
-    // async statisticalByDate(statisticalDto: StatisticalDto): Promise<any> {
-    //     try {
-    //         const totalRevenue = await this.billsRepository.createQueryBuilder('bills')
-    //             .select('DATE(CONVERT_TZ(bills.createdAt, "+00:00", "+07:00"))', 'date') // Adjust timezone as needed
-    //             .addSelect('SUM(bills.totalPayment)', 'totalProfit')
-    //             .where('bills.status = :status', { status: 'success' })
-    //             .andWhere('bills.createdAt >= :startDate', { startDate: statisticalDto.startDate })
-    //             .andWhere('bills.createdAt <= :endDate', { endDate: statisticalDto.endDate })
-    //             .groupBy('DATE(CONVERT_TZ(bills.createdAt, "+00:00", "+07:00"))') // Use same timezone conversion in GROUP BY
-    //             .getRawMany();
-    //         return totalRevenue;
-    //     } catch (error) {
-    //         CommonException.handle(error);
-    //     }
-    // }
 
    async statisticalByDate(statisticalDto: StatisticalDto): Promise<any> {
         try {
@@ -72,7 +56,7 @@ export class StatisticalService {
                     FROM date_range
                     WHERE DATE_ADD(date, INTERVAL 1 DAY) <= ?
                 )
-                SELECT date_range.date AS date, 
+                SELECT  DATE_FORMAT(date_range.date, '%Y-%m-%d') AS date, 
                     IFNULL(SUM(bills.totalPayment), 0) AS totalProfit
                 FROM date_range
                 LEFT JOIN bills ON DATE(CONVERT_TZ(bills.createdAt, "+00:00", "+07:00")) = date_range.date
@@ -134,69 +118,60 @@ export class StatisticalService {
 
 
     getSalesStatistics(totalQuantityByProduct) {
-        const salesCount: { [key: string]: { name: string, totalQuantity: number } } = {};
+    const salesCount: { name: string, totalQuantity: number }[] = [];
 
-        // Loop through all orders and calculate the total quantity for each product
-        totalQuantityByProduct.forEach((order) => {
-            // Loop through each bill detail in the order
-            order.billDetails.forEach((billDetail) => {
-                const product = billDetail.productAttributes.products; // Get the product details
-                const productId = product.id; // Get the product ID
-                const productName = product.name; // Get the product name
-                const quantity = billDetail.quantity; // Get the quantity of that product in this bill detail
+    // Loop through all orders and calculate the total quantity for each product
+    totalQuantityByProduct.forEach((order) => {
+        order.billDetails.forEach((billDetail) => {
+            const product = billDetail.productAttributes.products;
+            const productName = product.name;
+            const quantity = billDetail.quantity;
 
-                // If the product already exists in the salesCount object, update its total quantity
-                if (salesCount[productId]) {
-                    salesCount[productId].totalQuantity += quantity;
-                } else {
-                    // If the product is encountered for the first time, initialize its entry
-                    salesCount[productId] = {
-                        name: productName,
-                        totalQuantity: quantity,
-                    };
-                }
-            });
+            // Find if the product already exists in salesCount array
+            const existingProduct = salesCount.find(item => item.name === productName);
+
+            if (existingProduct) {
+                // If found, update the total quantity
+                existingProduct.totalQuantity += quantity;
+            } else {
+                // If not found, add a new entry
+                salesCount.push({
+                    name: productName,
+                    totalQuantity: quantity,
+                });
+            }
         });
+    });
 
-        // Return the aggregated sales data for each product, including the product name
-        return salesCount;
-    }
+    return salesCount;
+}
+
 
 
 
     groupByDateAndStatus(data: any[]): any[] {
-        // Step 1: Grouping the data by date and status
-        const grouped = data.reduce((acc, { date, status, totalBills }) => {
-            // Convert date to a consistent YYYY-MM-DD format (ignoring time)
-            const dateKey = new Date(date).toISOString().split('T')[0];
+    // Step 1: Grouping the data by date and status
+    const grouped = data.reduce((acc, { date, status, totalBills }) => {
+        // Convert date to a consistent YYYY-MM-DD format (ignoring time)
+        const dateKey = new Date(date).toISOString().split('T')[0];
 
-            // If the date is not already in the accumulator, add it
-            if (!acc[dateKey]) {
-                acc[dateKey] = [];
-            }
+        // Initialize the date entry in the accumulator if it doesn't exist
+        if (!acc[dateKey]) {
+            acc[dateKey] = { date: dateKey };
+        }
 
-            // Find if this status already exists for this date
-            const statusEntry = acc[dateKey].find(item => item.status === status);
+        // Aggregate the total bills for each status under the respective status key
+        acc[dateKey][status] = (acc[dateKey][status] || 0) + parseInt(totalBills, 10);
 
-            if (statusEntry) {
-                // If status exists, aggregate the total
-                statusEntry.total += parseInt(totalBills, 10);
-            } else {
-                // If status doesn't exist, create a new entry
-                acc[dateKey].push({ status, total: parseInt(totalBills, 10) });
-            }
+        return acc;
+    }, {});
 
-            return acc;
-        }, {});
+    // Step 2: Convert the accumulator into an array format
+    const result = Object.values(grouped);
 
-        // Step 2: Convert the accumulator into an array
-        const result = Object.entries(grouped).map(([date, statuses]) => ({
-            date,
-            status: statuses,
-        }));
+    return result;
+}
 
-        return result;
-    }
 
 
 

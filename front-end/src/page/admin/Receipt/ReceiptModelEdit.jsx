@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   changeStatusReceipt,
   initDataDetail,
-} from "~/redux/features/Receipts/ReceiptsSlice";
+} from "~/redux/features/Receipts/receiptsSlice";
 import { toast } from "react-toastify";
 
 export const ReceiptModelEdit = ({ data }) => {

@@ -184,8 +184,6 @@ export const Account = () => {
       }
     };
 
-    dispatch(clearDataAccount());
-
     setTimeout(() => {
       fetchData();
     }, 800);

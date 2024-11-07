@@ -107,7 +107,6 @@ export const Permission = () => {
       }
     };
 
-    dispatch(clearDataRole());
 
     // if (dataRole.length === 0) {
     setTimeout(() => {

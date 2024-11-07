@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 import {
   addReceipt,
   initDataReceipt,
-} from "~/redux/features/Receipts/ReceiptsSlice";
+} from "~/redux/features/Receipts/receiptsSlice";
 
 export const ReceiptModalCreate = () => {
   const dispatch = useDispatch();
