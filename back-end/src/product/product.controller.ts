@@ -51,8 +51,8 @@ export class ProductController {
   @UseGuards(AuthGuardCustom)
   @Permissions("UPDATE_PRODUCT")
   @Patch(':id')
-  updateProduct(@UploadedFiles() files: Array<Express.Multer.File>, @Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productService.updateProduct(id,files, updateProductDto);
+  updateProduct( @Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+    return this.productService.updateProduct(id, updateProductDto);
   }
 
   @UseGuards(PermissionsGuard)

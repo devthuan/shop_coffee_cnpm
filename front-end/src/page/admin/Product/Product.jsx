@@ -30,16 +30,17 @@ export const Product = () => {
   const [selectSearch, setSelectedSearch] = useState(0);
   const [search, setSearch] = useState("");
 
-  const handlePaginate = (page) => {
-    setOptionLimit((prev) => ({
-      ...prev,
-      currentPage: page,
+  const handlePageChange = (newPage) => {
+    setOptionLimit((prevData) => ({
+      ...prevData,
+      currentPage: newPage,
     }));
   };
 
-  const handleLimitProduct = (limit) => {
-    setOptionLimit((prev) => ({
-      limit: limit,
+  const handleLimitChange = (newLimit) => {
+    setOptionLimit((prevData) => ({
+      ...prevData,
+      limit: newLimit,
       currentPage: 1,
     }));
   };
@@ -49,7 +50,8 @@ export const Product = () => {
       const response = await DeleteProduct(id);
       console.log(response);
       if (response && response.status === 200) {
-        dispatch(deleteProduct(id));
+        dispatch(deleteProduct({ id }));
+        toast.success("Xoá sản phẩm thành công.");
       }
     } catch (error) {
       const result = HandleApiError(error);
@@ -74,6 +76,7 @@ export const Product = () => {
     "Id",
     "Tên sản phẩm",
     "Loại sản phẩm",
+    "Số thuộc tính",
     "Mô tả",
     "Ngày tạo",
     "Hành động",
@@ -102,9 +105,8 @@ export const Product = () => {
           : toast.error("Có lỗi xảy ra, vui lòng thử lại");
       }
     };
-    if (!products || products.length === 0) {
-      fetchData();
-    }
+
+    fetchData();
   }, [optionLimit.currentPage, optionLimit.limit]);
 
   return (
@@ -211,14 +213,19 @@ export const Product = () => {
                         alt=""
                       />
                     )}
-                    <span className="ml-3">{product.name}</span>
+                    <span className="ml-3">
+                      {product.name.slice(0, 25)} ...
+                    </span>
                   </td>
 
                   <td className="pr-6 py-4 whitespace-nowrap">
                     {product.category.name}
                   </td>
                   <td className="pr-6 py-4 whitespace-nowrap">
-                    {product.description}
+                    {product.productAttributes.length}
+                  </td>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {product.description.slice(0, 20)} ...
                   </td>
                   <td className="pr-6 py-4 whitespace-nowrap">
                     {new Date(product.createdAt).toLocaleString()}
@@ -233,7 +240,7 @@ export const Product = () => {
                         onClick={() => handleDeleteProduct(product.id)}
                         className="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer"
                       >
-                        Delete
+                        Xoá
                       </p>
                     </div>
                   </td>
@@ -247,8 +254,8 @@ export const Product = () => {
         current={currentPage} // truyền các trị tương ứng với biến
         totalPage={totalPage} // truyền các trị tương ứng với biến
         limit={limit} // truyền các trị tương ứng với biến
-        onPageChange={handlePaginate} // truyền các trị tương ứng với biến
-        onLimitChange={handleLimitProduct} // truyền các trị tương ứng với biến
+        onPageChange={handlePageChange} // truyền các trị tương ứng với biến
+        onLimitChange={handleLimitChange} // truyền các trị tương ứng với biến
       />
       <ToastContainer
         className="text-base"

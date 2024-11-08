@@ -168,7 +168,7 @@ export class ProductService extends BaseService<Products> {
     }
   }
 
-  async updateProduct(productId: string, files : Array<Express.Multer.File> , updateProductDto: UpdateProductDto): Promise<{message : string}> {
+  async updateProduct(productId: string,  updateProductDto: UpdateProductDto): Promise<{message : string}> {
     const queryRunner = this.dataSource.createQueryRunner()
     try {
       // initial transaction
@@ -204,66 +204,90 @@ export class ProductService extends BaseService<Products> {
 
 
       // update product attributes
-      if(updateProductDto.attributes && updateProductDto.attributes.length > 0) {
+      if (updateProductDto.attributes && updateProductDto.attributes.length > 0) {
+        // Bước 1: Lấy tất cả các thuộc tính của sản phẩm từ cơ sở dữ liệu
+        const existingProductAttributes = await this.productAttributesRepository.createQueryBuilder('productAttributes')
+          .leftJoinAndSelect('productAttributes.products', 'products')
+          .leftJoinAndSelect('productAttributes.attributes', 'attributes')
+          .where('productAttributes.productsId = :productsId', { productsId: productId })
+          .andWhere('productAttributes.deletedAt IS NULL')
+          .getMany();
 
-        for(const attribute of updateProductDto.attributes) {
+        // Bước 2: Tạo một mảng ID của các thuộc tính gửi lên
+        const updatedAttributeIds = updateProductDto.attributes.map(attribute => attribute.attributeId);
+
+        // Bước 3: Xóa các thuộc tính không có trong `updateProductDto.attributes`
+        const attributesToDelete = existingProductAttributes.filter(existingAttribute => 
+          !updatedAttributeIds.includes(existingAttribute.attributes.id)
+        );
+
+        for (const attributeToDelete of attributesToDelete) {
+          attributeToDelete.deletedAt = new Date();
+          await queryRunner.manager.save(attributeToDelete);
+        }
+
+        // Bước 4: Thêm mới hoặc cập nhật các thuộc tính trong `updateProductDto.attributes`
+        for (const attribute of updateProductDto.attributes) {
           const existingAttribute = await this.attributeService.findOne(attribute.attributeId);
           if (!existingAttribute) {
-            throw new NotFoundException('Attribute not found');
+            throw new NotFoundException(`Attribute with ID ${attribute.attributeId} not found`);
           }
 
           let existingProductAttribute = await this.productAttributesRepository.createQueryBuilder('productAttributes')
-            .where('productAttributes.attributesId = :attributesId', {attributesId: attribute.attributeId})
-            .andWhere('productAttributes.productsId = :productsId',{productsId : productId})
+            .where('productAttributes.attributesId = :attributesId', { attributesId: attribute.attributeId })
+            .andWhere('productAttributes.productsId = :productsId', { productsId: productId })
             .andWhere('productAttributes.deletedAt IS NULL')
             .getOne();
-          
-          if(!existingProductAttribute) {
+
+          if (!existingProductAttribute) {
             const newProductAttribute = this.productAttributesRepository.create({
               sellPrice: 0,
               buyPrice: 0,
               quantity: 0,
               attributes: existingAttribute,
-              products: existingProduct
+              products: existingProduct,
             });
             await queryRunner.manager.save(newProductAttribute);
-          }else {
-            existingProductAttribute.attributes = existingAttribute; 
+          } else {
+            existingProductAttribute.attributes = existingAttribute;
             await queryRunner.manager.save(existingProductAttribute);
           }
-            
         }
       }
 
-      // update images
-      if(updateProductDto.images && updateProductDto.images.length > 0){
-        
-        // delete images
-        const existingImages = await this.imagesRepository.createQueryBuilder('images')
-          .where('images.productsId = :productsId',{productsId : productId})
-          .andWhere('images.deletedAt IS NULL')
-          .getMany();
-        
-        const imagesDeleting = existingImages.filter(image => !updateProductDto.images.includes(image.urlImage))
 
-        for(const image of imagesDeleting){
-          image.deletedAt = new Date();
-          await queryRunner.manager.save(image);
-        }
-        
-        // add new images
-        if(files && files.length > 0){
-          for(const file of files){
-            const uploadedFile = await this.uploadFileCloudinary(file);
-            const newImages =  this.imagesRepository.create({
-              urlImage: uploadedFile,
-              products: existingProduct
-            })
-            await queryRunner.manager.save(newImages);
-          }
-        }
-       
+     // Cập nhật hình ảnh
+    if (updateProductDto.images && updateProductDto.images.length > 0) {
+      // Lấy danh sách hình ảnh hiện tại của sản phẩm từ cơ sở dữ liệu
+      const existingImages = await this.imagesRepository.createQueryBuilder('images')
+        .where('images.productsId = :productsId', { productsId: productId })
+        .andWhere('images.deletedAt IS NULL')  // Lọc ra những hình ảnh chưa bị xóa
+        .getMany();
+
+      // Lọc ra những hình ảnh đã bị xóa khỏi danh sách mới
+      const imagesDeleting = existingImages.filter(image => !updateProductDto.images.includes(image.urlImage));
+
+      // Cập nhật trạng thái xóa cho những hình ảnh không còn trong danh sách mới
+      for (const image of imagesDeleting) {
+        image.deletedAt = new Date();  // Đánh dấu hình ảnh là bị xóa
+        await queryRunner.manager.save(image);  // Lưu vào cơ sở dữ liệu
       }
+
+      // Thêm những hình ảnh mới chưa có trong cơ sở dữ liệu
+      const newImages = updateProductDto.images.filter(urlImage => 
+        !existingImages.some(image => image.urlImage === urlImage)  // Kiểm tra hình ảnh mới chưa có
+      );
+
+      // Thêm những hình ảnh mới vào cơ sở dữ liệu
+      for (const urlImage of newImages) {
+        const newImage = this.imagesRepository.create({
+          urlImage: urlImage,
+          products: existingProduct,
+        });
+        await queryRunner.manager.save(newImage);  // Lưu hình ảnh mới vào cơ sở dữ liệu
+      }
+    }
+
 
       // commit transaction
       await queryRunner.commitTransaction();
@@ -384,55 +408,74 @@ export class ProductService extends BaseService<Products> {
     }
   }
 
-  async deleteSoft(id: string): Promise<{message: string}> {
-    const queryRunner =  this.dataSource.createQueryRunner()
-      try {
-        await queryRunner.connect()
-        await queryRunner.startTransaction();
+  async deleteSoft(id: string): Promise<{ message: string }> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
 
-        // check product attributes
-        const product = await this.productRepository.createQueryBuilder('products')
+      // Kiểm tra sản phẩm
+      const product = await this.productRepository.createQueryBuilder('products')
         .leftJoinAndSelect('products.productAttributes', 'productAttributes')
-         .where('products.id = :id', { id })
-         .andWhere('products.deletedAt IS NULL')
-         .getOne();
+        .where('products.id = :id', { id })
+        .andWhere('products.deletedAt IS NULL')
+        .getOne();
 
-        for(let productAttribute of product.productAttributes) {
-           // check quantity
-          if(productAttribute.quantity > 0) {
-            throw new BadRequestException('Cannot deleting product but product attribute is in stock');
-          }
-          let productAttributeId = productAttribute.id
-
-          // check status bill
-          let checkStatusBill = await this.billService.checkBillPendingByProduct(productAttributeId)
-          if(checkStatusBill) {
-            throw new BadRequestException('Cannot delete product but product attribute is in bill pending or delivery status');
-          }
-
-          // check status import receipt
-          let checkStatusImport = await this.importReceiptService.statusIsPendingImportReceipt(productAttributeId)
-          if(checkStatusImport) {
-            throw new BadRequestException('Cannot delete product but product attribute is in import receipt pending status');
-          }
-
-          // delete product attribute
-          productAttribute.deletedAt = new Date()
-          productAttribute.updatedAt = new Date()
-          await queryRunner.manager.save(productAttribute)
-        }
-
-        product.deletedAt = new Date()
-        product.updatedAt = new Date()
-        await queryRunner.manager.save(product)
-
-        return {
-          message: 'Product deleted successfully'
-        }
-      } catch (error) {
-        CommonException.handle(error);
+      // Kiểm tra nếu không tìm thấy sản phẩm
+      if (!product) {
+        throw new NotFoundException('Product not found');
       }
+
+      // Duyệt qua các thuộc tính của sản phẩm để xử lý
+      for (let productAttribute of product.productAttributes) {
+        // Kiểm tra số lượng
+        if (productAttribute.quantity > 0) {
+          throw new BadRequestException('Cannot delete product because product attribute is in stock');
+        }
+
+        let productAttributeId = productAttribute.id;
+
+        // Kiểm tra trạng thái hóa đơn
+        let checkStatusBill = await this.billService.checkBillPendingByProduct(productAttributeId);
+        if (checkStatusBill) {
+          throw new BadRequestException('Cannot delete product because product attribute is in bill pending or delivery status');
+        }
+
+        // Kiểm tra trạng thái phiếu nhập kho
+        let checkStatusImport = await this.importReceiptService.statusIsPendingImportReceipt(productAttributeId);
+        if (checkStatusImport) {
+          throw new BadRequestException('Cannot delete product because product attribute is in import receipt pending status');
+        }
+
+        // Xóa thuộc tính sản phẩm
+        productAttribute.deletedAt = new Date();
+        productAttribute.updatedAt = new Date();
+        await queryRunner.manager.save(productAttribute);
+      }
+
+      // Xóa sản phẩm
+      product.deletedAt = new Date();
+      product.updatedAt = new Date();
+      await queryRunner.manager.save(product);
+
+      // Commit transaction sau khi tất cả các thao tác đã thành công
+      await queryRunner.commitTransaction();
+
+      return {
+        message: 'Product deleted successfully',
+      };
+    } catch (error) {
+      // Rollback nếu có lỗi xảy ra
+      await queryRunner.rollbackTransaction();
+      // Xử lý lỗi chung
+      CommonException.handle(error);
+      throw error; // Ném lại lỗi sau khi xử lý
+    } finally {
+      // Đảm bảo kết thúc transaction
+      await queryRunner.release();
+    }
   }
+
 
   async findAll(
     search: string,
@@ -449,7 +492,10 @@ export class ProductService extends BaseService<Products> {
           .leftJoinAndSelect('products.category', 'category')
           .leftJoinAndSelect('products.productAttributes', 'productAttributes')
           .leftJoinAndSelect('productAttributes.attributes', 'attributes')
-          .where('products.deletedAt IS NULL');
+          .where('products.deletedAt IS NULL')
+          .andWhere('images.deletedAt IS NULL')
+          .andWhere('productAttributes.deletedAt IS NULL');
+
 
           if (search) {
             queryBuilder.andWhere('products.name LIKE :search', { search: `%${search}%` });

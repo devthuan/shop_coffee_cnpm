@@ -6,13 +6,13 @@ import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { UpdateAttribute } from "~/services/AttributeService";
 import { updateAttribute } from "~/redux/features/Attributes/attributesSlice";
-export const ModalEditAttribute= ({ data }) => {
+export const ModalEditAttribute = ({ data }) => {
   const dispatch = useDispatch();
   const [formData, setFromData] = useState({
     // id: "",
     name: "",
     description: "",
-  })
+  });
 
   useEffect(() => {
     if (data) {
@@ -24,15 +24,14 @@ export const ModalEditAttribute= ({ data }) => {
     }
   }, [data]);
 
-
   const handleChangeInput = (event) => {
-    const { name, value } = event.target
+    const { name, value } = event.target;
     setFromData({
       ...formData,
-      [name]: value
-    })
-  }
- 
+      [name]: value,
+    });
+  };
+
   const handleUpdateAttribute = async (e) => {
     e.preventDefault();
     const attributeData = {
@@ -41,29 +40,27 @@ export const ModalEditAttribute= ({ data }) => {
       description: formData.description,
     };
     try {
-      const response = await UpdateAttribute(data.id, attributeData)
-      console.log(response)
+      const response = await UpdateAttribute(data.id, attributeData);
+      console.log(response);
       if (response && response.status === 200) {
-        dispatch(updateAttribute({id : data.id, ...attributeData}))
-        toast.success("Chỉnh sửa thể loại thành công")
+        dispatch(updateAttribute({ id: data.id, ...attributeData }));
+        toast.success("Chỉnh sửa thể loại thành công");
       }
-    }
-    catch (error) {
+    } catch (error) {
       const result = HandleApiError(error);
-      console.log(result)
+      console.log(result);
       if (result) {
         toast.error(result.message);
       } else {
         toast.error("Có lỗi xảy ra, vui lòng thử lại");
       }
     }
-
   };
 
   return (
     <Dialog.Root>
       {/* title button */}
-      <Dialog.Trigger>Edit</Dialog.Trigger>
+      <Dialog.Trigger>Sửa</Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 w-full h-full bg-black opacity-40" />
         {/* chỉnh kính thước modal ở max-w-lg các option [max-w-xl,max-w-2xl, max-w-3xl... ] */}
@@ -72,7 +69,7 @@ export const ModalEditAttribute= ({ data }) => {
             <div className="flex items-center justify-between p-4 border-b">
               {/* title modal */}
               <Dialog.Title className="text-lg font-medium text-gray-800 ">
-                Update Attribute
+                Chỉnh sửa thuộc tính
               </Dialog.Title>
 
               <Dialog.Close className="p-2 text-gray-400 rounded-md hover:bg-gray-100">
@@ -95,7 +92,6 @@ export const ModalEditAttribute= ({ data }) => {
             <Dialog.Description className="space-y-2 p-4 mt-3 text-[15.5px] leading-relaxed text-gray-500">
               <form>
                 <div>
-
                   {/* <div className="mb-4 flex items-center">
                     <label className="block text-nowrap text-sm font-medium text-gray-700 pr-6">
                       Id sản phẩm
@@ -155,7 +151,6 @@ export const ModalEditAttribute= ({ data }) => {
                   </div>
                 </div>
               </form>
-
             </Dialog.Description>
             <ToastContainer
               className="text-base"

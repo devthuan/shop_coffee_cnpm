@@ -13,12 +13,18 @@ import { initDataCatagories } from "~/redux/features/Categories/categoriesSlice"
 
 export const ModalAddProduct = () => {
   const dispatch = useDispatch();
-  const attributes = useSelector((state) =>
-    state.attributes.data.map((attributes) => ({
-      value: attributes.id,
-      label: attributes.name,
-    }))
-  );
+  // const attributes = useSelector((state) =>
+  //   state.attributes.data.map((attributes) => ({
+  //     value: attributes.id,
+  //     label: attributes.name,
+  //   }))
+  // );
+
+  const attributesOriginal = useSelector((state) => state.attributes.data);
+  const attributes = attributesOriginal.map((attributes) => ({
+    value: attributes.id,
+    label: attributes.name,
+  }));
 
   const categories = useSelector((state) => state.catagories.data);
 
