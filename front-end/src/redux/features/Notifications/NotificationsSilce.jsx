@@ -25,7 +25,7 @@ export const NotificationsSilce = createSlice({
     },
 
     addNotification: (state, action) => {
-      state.data.push(action.payload);
+      state.data.unshift(action.payload);
       state.loading = false;
     },
 

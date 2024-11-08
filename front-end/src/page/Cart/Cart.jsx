@@ -115,16 +115,19 @@ export const Cart = () => {
   const checkVoucher = async () => {
     try {
       const response = await GetAllVoucher();
+      console.log(response.data.data)
       const isVoucher = response.data.data.find(
         (voucher) => voucher.code === codeVoucher
       );
+      console.log("isVoucher", isVoucher)
+      console.log("codevoucher", codeVoucher)
       if (addVoucher) {
         if (isVoucher) {
-          toast.success("Voucher hợp lệ");
           setIsValidVoucher(true);
           setVoucher(isVoucher);
+          // toast.success("Voucher hợp lệ");
         } else {
-          toast.error("Mã voucher không hợp lệ!");
+          // toast.error("Mã voucher không hợp lệ!");
         }
       }
     } catch (error) {

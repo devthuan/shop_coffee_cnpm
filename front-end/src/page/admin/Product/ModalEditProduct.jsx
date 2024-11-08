@@ -6,106 +6,131 @@ import { GetAllAttribute } from "~/services/AttributeService";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { initDataCatagories } from "~/redux/features/Categories/categoriesSlice";
+import {
+  initD,
+  initDataCatagories,
+} from "~/redux/features/Categories/categoriesSlice";
 import { initDataAttribute } from "~/redux/features/Attributes/attributesSlice";
 import { UpdateProduct } from "~/services/ProductService";
 import { updateProduct } from "~/redux/features/Products/productsSlice";
 export const ModalEditProduct = ({ data }) => {
   const dispatch = useDispatch();
-  const categories = useSelector(state => state.catagories.data)
-  const attributes = useSelector(state => state.attributes.data)
+  const categories = useSelector((state) => state.catagories.data);
+  const attributes = useSelector((state) => state.attributes.data);
   const [selectedAttributes, setSelectedAttributes] = useState([]);
   const [formData, setFromData] = useState({
     id: "",
     name: "",
-    idCategory : "",
+    category: "",
     images: "",
     description: "",
-    productAttributes: ""
-  })
-
+    attributes: "",
+  });
   useEffect(() => {
     if (data && data.productAttributes && data.productAttributes.length > 0) {
       setFromData({
         id: data.id,
         name: data.name,
-        idCategory : data.category.id,
+        category: data.category.id,
         images: data.images,
         description: data.description,
-        productAttributes: data.productAttributes
+        attributes: data.productAttributes,
       });
-      setSelectedAttributes(data.productAttributes.map(attr => attr.id)); // Lưu id các thuộc tính đã chọn
+      setSelectedAttributes(data.productAttributes.map((attr) => attr.id)); // Lưu id các thuộc tính đã chọn
     }
   }, [data]);
 
-
-   
   useEffect(() => {
     const fetchData = async () => {
       try {
         const responseCategory = await GetAllCategory("limit=100");
         if (responseCategory && responseCategory.status === 200) {
-          dispatch(initDataCatagories(responseCategory.data))
+          dispatch(initDataCatagories(responseCategory.data));
         }
-        
+
         const responseAttribute = await GetAllAttribute("limit=100");
-        if(responseAttribute && responseAttribute.status === 200)
-        {
-          dispatch(initDataAttribute(responseAttribute.data))
+        if (responseAttribute && responseAttribute.status === 200) {
+          dispatch(initDataAttribute(responseAttribute.data));
         }
-      }
-      catch (error) {
+      } catch (error) {
         const result = HandleApiError(error);
         result
           ? toast.error(result)
           : toast.error("Có lỗi xảy ra, vui lòng thử lại");
       }
     };
-    fetchData();
+    if (!categories || !attributes) {
+      fetchData();
+    }
   }, []);
 
   const handleChangeInput = (event) => {
-    const { name, value } = event.target
+    const { name, value } = event.target;
     setFromData({
       ...formData,
-      [name]: value
-    })
-  }
+      [name]: value,
+    });
+  };
   const handleAttributeChange = (e) => {
-    const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+    const selectedOptions = Array.from(
+      e.target.selectedOptions,
+      (option) => option.value
+    );
     setSelectedAttributes(selectedOptions);
   };
 
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
-    const productData = {
-      // id : formData.id,
-      name: formData.name,
-      // categoryId: "2",
-      description: formData.description,
-      // attributes: selectedAttributes.map(attributeId => ({ attributeId })),
-      // files: productImages,
-    };
+    const attributesNew = attributes.filter((attribute) =>
+      selectedAttributes.includes(attribute.id)
+    );
+    const categoryNew = categories.filter(
+      (category) => category.id === formData.category
+    );
+
+    // const productData = {
+    //   id : formData.id,
+    //   name: formData.name,
+    //   categoryId: formData.category,
+    //   description: formData.description,
+    //   attributes: selectedAttributes.map(attributeId => ({ attributeId })),
+    //   files: productImages,
+    // };
+
     try {
-      const response = await UpdateProduct(data.id, productData)
-      console.log(response)
+      const response = await UpdateProduct(data.id, {
+        name: formData.name,
+        categoryId: formData.category,
+        description: formData.description,
+        attributes: selectedAttributes.map((attributeId) => ({ attributeId })),
+      });
+
       if (response && response.status === 200) {
-        dispatch(updateProduct({id: data.id, ...productData}))
-        toast.success("Chỉnh sửa sản phẩm thành công")
+        dispatch(
+          updateProduct({
+            id: data.id,
+            name: formData.name,
+            category: categoryNew[0],
+            description: formData.description,
+            productAttributes: attributesNew.map((attribute) => {
+              return {
+                attributes: attribute,
+              };
+            }),
+          })
+        );
+        toast.success("Chỉnh sửa sản phẩm thành công");
       }
-    }
-    catch (error) {
+    } catch (error) {
       const result = HandleApiError(error);
-      console.log(result)
+      console.log(result);
       if (result) {
         toast.error(result.message);
       } else {
         toast.error("Có lỗi xảy ra, vui lòng thử lại");
       }
     }
-
   };
-
 
   return (
     <Dialog.Root>
@@ -142,7 +167,6 @@ export const ModalEditProduct = ({ data }) => {
             <Dialog.Description className="space-y-2 p-4 mt-3 text-[15.5px] leading-relaxed text-gray-500">
               <form>
                 <div>
-
                   <div className="mb-4 flex items-center">
                     <label className="block text-nowrap text-sm font-medium text-gray-700 pr-6">
                       Id sản phẩm
@@ -189,7 +213,9 @@ export const ModalEditProduct = ({ data }) => {
                     <select
                       className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                       required
-                      value = {formData.idCategory}
+                      name="category"
+                      value={formData.category}
+                      onChange={handleChangeInput}
                     >
                       <option value="" disabled>
                         Chọn một thể loại
@@ -199,7 +225,6 @@ export const ModalEditProduct = ({ data }) => {
                           {category.name}
                         </option>
                       ))}
-
                     </select>
                   </div>
 
@@ -212,17 +237,18 @@ export const ModalEditProduct = ({ data }) => {
                       multiple
                       onChange={handleAttributeChange}
                     >
-                      {formData.productAttributes.length > 0 &&  attributes.map((attribute) => (
-                        <option
-                          key={attribute.id}
-                          value={attribute.id}
-                          selected={formData?.productAttributes?.map(item => item.attributes.id).includes(attribute.id)}
-
-                        >
-                          {attribute.name}
-
-                        </option>
-                      ))}
+                      {formData.attributes.length > 0 &&
+                        attributes.map((attribute) => (
+                          <option
+                            key={attribute.id}
+                            value={attribute.id}
+                            selected={formData?.attributes
+                              ?.map((item) => item.attributes.id)
+                              .includes(attribute.id)}
+                          >
+                            {attribute.name}
+                          </option>
+                        ))}
                     </select>
                   </div>
 
@@ -258,7 +284,6 @@ export const ModalEditProduct = ({ data }) => {
                   </div>
                 </div>
               </form>
-
             </Dialog.Description>
             <ToastContainer
               className="text-base"

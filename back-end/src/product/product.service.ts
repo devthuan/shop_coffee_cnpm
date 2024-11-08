@@ -59,7 +59,7 @@ export class ProductService extends BaseService<Products> {
     super(productRepository)
   }
   
-  async createProduct(files : Array<Express.Multer.File>, createProductDto: CreateProductDto): Promise<any> {
+  async createProduct(createProductDto: CreateProductDto): Promise<any> {
     const queryRunner = this.dataSource.createQueryRunner();
     try {
       // initial transaction
@@ -112,26 +112,53 @@ export class ProductService extends BaseService<Products> {
       
       // init images product
       const productImages = [];
-      if(files && files.length > 0){
-        for(const file of files){
-          const uploadedFile = await this.uploadFileCloudinary(file);
+      if(createProductDto.images && createProductDto.images.length > 0){
+        for(const file of createProductDto.images){
           const newImages =  this.imagesRepository.create({
-            urlImage: uploadedFile,
+            urlImage: file,
             products: newProduct
           })
-          queryRunner.manager.save(newImages);
+          await queryRunner.manager.save(newImages);
           productImages.push(newImages);
 
         }
       }
 
       // Add attributes and images to the newProduct object
-        newProduct['productAttributes'] = productAttributes;
-        newProduct['productImages'] = productImages;
+        newProduct['id'] = newProduct.id;
+
+        newProduct['productAttributes'] = productAttributes.map(item => ({
+            id: item.id,
+            createdAt: item.createdAt,
+            updatedAt: item.updatedAt,
+            sellPrice: item.sellPrice,
+            buyPrice: item.buyPrice,
+            quantity: item.quantity,
+            attributes: item.attributes,
+        })) as any;
+
+    
+        newProduct['images'] = productImages.map(item => ({
+            id : item.id,
+            createdAt : item.createdAt,
+            updatedAt : item.updatedAt,
+            urlImage : item.urlImage
+        })) as any;
+
+        const responseDataFormat = {
+            id: newProduct.id,
+            createdAt: newProduct.createdAt,
+            updatedAt: newProduct.updatedAt,
+            name: newProduct.name,
+            description: newProduct.description,
+            images: newProduct.images,
+            category: newProduct.category,
+            productAttributes: newProduct.productAttributes,
+        }
 
       // commit transaction
       await queryRunner.commitTransaction();
-      return { message: 'Product created successfully', data: newProduct };
+      return { message: 'Product created successfully', data: responseDataFormat };
 
     } catch (error) {
       await queryRunner.rollbackTransaction();

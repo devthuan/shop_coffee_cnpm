@@ -70,7 +70,14 @@ export const Product = () => {
     }
   };
   // Array chứa danh sách tiêu đề bảng
-  const tableTitles = ["Id", "Tên sản phẩm", "Loại sản phẩm", "Mô tả", "Ngày tạo", "Hành động"];
+  const tableTitles = [
+    "Id",
+    "Tên sản phẩm",
+    "Loại sản phẩm",
+    "Mô tả",
+    "Ngày tạo",
+    "Hành động",
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -95,7 +102,9 @@ export const Product = () => {
           : toast.error("Có lỗi xảy ra, vui lòng thử lại");
       }
     };
-    fetchData();
+    if (!products || products.length === 0) {
+      fetchData();
+    }
   }, [optionLimit.currentPage, optionLimit.limit]);
 
   return (
@@ -188,8 +197,8 @@ export const Product = () => {
           </thead>
           <tbody className="text-gray-600 divide-y">
             {products &&
-              products?.length > 0 &&
-              products?.map((product, idx) => (
+              products.length > 0 &&
+              products.map((product, idx) => (
                 <tr key={idx}>
                   <td className="pr-6 py-4 whitespace-nowrap">
                     {product.id.slice(0, 8)} ...
@@ -206,10 +215,10 @@ export const Product = () => {
                   </td>
 
                   <td className="pr-6 py-4 whitespace-nowrap">
-                    {product.description}
+                    {product.category.name}
                   </td>
                   <td className="pr-6 py-4 whitespace-nowrap">
-                    {product.category.name}
+                    {product.description}
                   </td>
                   <td className="pr-6 py-4 whitespace-nowrap">
                     {new Date(product.createdAt).toLocaleString()}
@@ -240,6 +249,20 @@ export const Product = () => {
         limit={limit} // truyền các trị tương ứng với biến
         onPageChange={handlePaginate} // truyền các trị tương ứng với biến
         onLimitChange={handleLimitProduct} // truyền các trị tương ứng với biến
+      />
+      <ToastContainer
+        className="text-base"
+        fontSize="10px"
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
       />
     </div>
   );

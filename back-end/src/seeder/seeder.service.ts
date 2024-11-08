@@ -1,8 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AuthService } from 'src/auth/auth.service';
 import { Accounts } from 'src/auth/entities/accounts.entity';
+import { BillService } from 'src/bill/bill.service';
+import { CreateBillDto } from 'src/bill/dto/create-bill.dto';
 import { CommonException } from 'src/common/exception';
 import { Functions } from 'src/function/entities/functions.entity';
+import { Products } from 'src/product/entities/products.entity';
 import { RoleHasFunctions } from 'src/role-permission/entities/roles_has_functions.entity';
 import { Roles } from 'src/role/entities/roles.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -19,6 +23,7 @@ export class SeederService {
         @InjectRepository(RoleHasFunctions)
         private roleHasFunctionsRepository: Repository<RoleHasFunctions>,  
 
+  
         private readonly dataSource: DataSource
     ){}
 
@@ -681,5 +686,7 @@ export class SeederService {
             await queryRunner.release();
         }
     }
+
+  
 
 }

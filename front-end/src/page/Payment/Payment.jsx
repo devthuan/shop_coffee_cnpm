@@ -41,6 +41,7 @@ const Paynment = () => {
       if (response && response.status === 201) {
         toast.success("Thanh toán thành công")
       }
+      console.log("123")
     }
     catch (error) {
       const result = HandleApiError(error);

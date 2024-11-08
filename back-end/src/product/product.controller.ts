@@ -17,9 +17,8 @@ export class ProductController {
   @UseGuards(AuthGuardCustom)
   @Permissions("CREATE_PRODUCT")
   @Post()
-  @UseInterceptors(FilesInterceptor('files'))
-  createProduct(@UploadedFiles() files: Array<Express.Multer.File>, @Body() createProductDto: CreateProductDto) {
-    return this.productService.createProduct(files, createProductDto);
+  createProduct( @Body() createProductDto: CreateProductDto) {
+    return this.productService.createProduct(createProductDto);
   }
 
   @Get()

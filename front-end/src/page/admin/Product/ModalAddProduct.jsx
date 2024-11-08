@@ -2,24 +2,32 @@ import React, { useEffect, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { GetAllCategory } from "~/services/CategoryService";
 import { GetAllAttribute } from "~/services/AttributeService";
-import { AddProduct } from "~/services/ProductService";
+import { AddProduct, UploadFileAPI } from "~/services/ProductService";
 import { toast, ToastContainer } from "react-toastify";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { useDispatch, useSelector } from "react-redux";
 import { initDataAttribute } from "~/redux/features/Attributes/attributesSlice";
 import { addProduct } from "~/redux/features/Products/productsSlice";
+import Select from "react-select";
 import { initDataCatagories } from "~/redux/features/Categories/categoriesSlice";
 
 export const ModalAddProduct = () => {
   const dispatch = useDispatch();
-  const attributes = useSelector((state) => state.attributes.data);
-  const [categories, setCategories] = useState([]);
-  // const [attributes, setAttributes] = useState([]);
-  const [productName, setProductName] = useState("");
+  const attributes = useSelector((state) =>
+    state.attributes.data.map((attributes) => ({
+      value: attributes.id,
+      label: attributes.name,
+    }))
+  );
+
+  const categories = useSelector((state) => state.catagories.data);
+
+  const [productName, setProductName] = useState();
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedAttributes, setSelectedAttributes] = useState([]);
   const [productDescription, setProductDescription] = useState("");
   const [productImages, setProductImages] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,54 +35,66 @@ export const ModalAddProduct = () => {
       const responseAttribute = await GetAllAttribute("limit=100");
       dispatch(initDataCatagories(responseCategory.data));
       dispatch(initDataAttribute(responseAttribute.data));
-
-      setCategories(responseCategory.data.data);
-      // setAttributes(responseAttribute.data.data);
     };
 
-    console.log(categories.length);
-    if (!attributes || attributes.length === 0) {
+    if (
+      !categories ||
+      categories.length === 0 ||
+      !attributes ||
+      attributes.length === 0
+    ) {
       fetchData();
     }
   }, []);
 
- const [selectedOptions, setSelectedOptions] = useState([]);
+  const handleChange = (selected) => {
+    setSelectedOptions(selected);
+  };
+  const handleImageChange = async (e) => {
+    if (!e.target.files[0]) {
+      return;
+    }
 
- const options = [
-   { value: "option1", label: "Option 1" },
-   { value: "option2", label: "Option 2" },
-   { value: "option3", label: "Option 3" },
-   { value: "option4", label: "Option 4" },
- ];
+    let formImage = new FormData();
+    formImage.append("files", e.target.files[0]);
 
- const handleCheckboxChange = (event) => {
-   const { value, checked } = event.target;
-   setSelectedOptions((prevSelected) =>
-     checked
-       ? [...prevSelected, value]
-       : prevSelected.filter((option) => option !== value)
-   );
- };
-
-  const handleImageChange = (e) => {
-    setProductImages(e.target.files);
+    try {
+      const response = await UploadFileAPI(formImage);
+      if (response && response.status === 201) {
+        toast.success("Tải ảnh thành công");
+        setProductImages([...productImages, response.data.url]);
+      }
+    } catch (error) {
+      const { message, status } = HandleApiError(error);
+      if (status === "error") {
+        //  dispatch(initDataNotification({ error: message }));
+      }
+    }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     const productData = {
       name: productName,
       categoryId: selectedCategory,
-      attributes: selectedAttributes.map((attributeId) => ({ attributeId })),
       description: productDescription,
-      // files: productImages,
+      attributes: selectedOptions?.map((attributeId) => ({
+        attributeId: attributeId.value,
+      })),
+      images: productImages,
     };
+
     try {
       const response = await AddProduct(productData);
-      console.log(response);
       if (response && response.status === 201) {
         dispatch(addProduct(response.data.data));
         toast.success("Thêm sản phẩm thành công");
+
+        setProductName("");
+        setSelectedCategory("");
+        setSelectedAttributes([]);
+        setProductDescription("");
+        setProductImages([]);
+        setSelectedOptions([]);
       }
     } catch (error) {
       const result = HandleApiError(error);
@@ -88,16 +108,7 @@ export const ModalAddProduct = () => {
   };
 
   return (
-    <Dialog.Root
-      onOpenChange={(isOpen) => {
-        if (!isOpen) {
-          setProductName("");
-          setProductDescription("");
-          setSelectedCategory("");
-          setSelectedAttributes([]);
-        }
-      }}
-    >
+    <Dialog.Root>
       <Dialog.Trigger className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm">
         Tạo mới sản phẩm
       </Dialog.Trigger>
@@ -161,8 +172,19 @@ export const ModalAddProduct = () => {
                   </select>
                 </div>
               </div>
-
-              
+              <div className="mb-4 ">
+                <label className="block text-nowrap text-sm font-medium text-gray-700 pr-4">
+                  Thuộc tính sản phẩm
+                </label>
+                <Select
+                  isMulti
+                  value={selectedOptions}
+                  onChange={handleChange}
+                  options={attributes}
+                  className="react-select-container"
+                  classNamePrefix="react-select"
+                />
+              </div>
 
               <div className="mb-4 ">
                 <label className="block text-nowrap text-sm font-medium text-gray-700 pr-4">
@@ -173,7 +195,7 @@ export const ModalAddProduct = () => {
                   className="mt-1 block w-full border border-gray-300 rounded-md"
                   required
                   multiple
-                  onChange={handleImageChange}
+                  onChange={(e) => handleImageChange(e)}
                 />
               </div>
 
@@ -190,10 +212,10 @@ export const ModalAddProduct = () => {
               </div>
               <div className="flex justify-end items-center gap-3 p-4 border-t">
                 <button
-                  type="submit"
+                  onClick={handleSubmit}
                   className="px-6 py-2 text-base text-white bg-indigo-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2"
                 >
-                  Accept
+                  Tạo
                 </button>
                 <Dialog.Close asChild>
                   <button
@@ -205,20 +227,6 @@ export const ModalAddProduct = () => {
                   </button>
                 </Dialog.Close>
               </div>
-              <ToastContainer
-                className="text-base"
-                fontSize="10px"
-                position="top-right"
-                autoClose={2000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-              />
             </Dialog.Description>
           </div>
         </Dialog.Content>

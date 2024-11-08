@@ -14,6 +14,8 @@ import IdBillDetailReducer from '~/redux/features/IdBillDetail/IdBillDetailSlice
 import permissionsReducer from "./features/Permissions/permissionsSilce";
 import inventoriesReducer from "./features/Inventories/inventoriesSilce";
 import suppliersReducer from "./features/Suppliers/suppliersSlice";
+// import receiptsReducer from "./features/Receipts/ReceiptsSlice";
+// import catagoriesReducer from "./features/Categories/categoriesSlice"
 import receiptsReducer from "./features/Receipts/receiptsSlice";
 import catagoriesReducer from "./features/Categories/categoriesSlice";
 import userInfoReducer from "./features/UserInfor/User_InforSlice";
@@ -26,7 +28,8 @@ import notificationUserReducer from "./features/Notifications/NotificationsUserS
 
 export const store = configureStore({
   reducer: {
-    products: productReducer,
+    // products: productReducer,
+    products: productsReducer,
     bill: billReducer,
     catagories: catagoriesReducer,
     userInfo: userInfoReducer,
@@ -36,12 +39,18 @@ export const store = configureStore({
     idBillDetails: IdBillDetailReducer,
     permissions: permissionsReducer,
     inventories: inventoriesReducer,
+    // categories : categoriesReducer,
+    attributes : attributesReducer,
+    discounts : discountsReducer,
+    receipts : receiptsReducer,
+    suppliers: suppliersReducer,
+    // receipts: receiptsReducer,
     productss: productsReducer,
     // categories : categoriesReducer,
-    attributes: attributesReducer,
-    discounts: discountsReducer,
-    receipts: receiptsReducer,
-    suppliers: suppliersReducer,
+    // attributes: attributesReducer,
+    // discounts: discountsReducer,
+    // receipts: receiptsReducer,
+    // suppliers: suppliersReducer,
     auth: authReducer,
     notifications: notificationReducer,
     notificationUser: notificationUserReducer,
