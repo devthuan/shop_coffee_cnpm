@@ -8,7 +8,6 @@ import { clearDataBill, initDataBill } from "~/redux/features/Bill/billSilice";
 import { useDispatch } from "react-redux";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { toast, ToastContainer } from "react-toastify";
-import ModelEditBill from "~/page/admin/Bill/ModelEditBills";
 import { Pagination } from "~/components/Pagination/Pagination";
 import BillDetails from "~/page/admin/Bill/BillDetails";
 const cx = classNames.bind(styles);
@@ -137,35 +136,7 @@ export const Bill = () => {
       ) : (
         <div className="mx-auto  md:pr-5">
           <div className=" ">
-            {/* <div className="flex justify-center ">
-              <form
-                onSubmit={(e) => e.preventDefault()}
-                className="max-w-xl w-full px-4 mx-auto mt-5"
-              >
-                <div className="relative">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 left-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                  <input
-                    onChange={(e) => handleSearch(e.target.value)}
-                    type="text"
-                    placeholder="Search"
-                    className="w-full py-1 pl-12 pr-4 text-[18px] text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
-                  />
-                </div>
-              </form>
-            </div> */}
+
             <div className="flex justify-between mt-7">
               <div className="relative w-72 ">
                 <svg
@@ -197,7 +168,8 @@ export const Bill = () => {
                     })}
                 </select>
               </div>
-              <div className="">{/* <ModelAddAccount /> */}</div>
+
+
             </div>
           </div>
           {isLoading ? (
@@ -224,11 +196,10 @@ export const Bill = () => {
                 <tbody className="text-gray-600 divide-y">
                   {BillsData?.map((item, idx) => (
                     <tr key={idx}>
-                      <td
-                        className="px-2 py-4 whitespace-nowrap w-[20px]  hover:text-blue-500 hover:underline cursor-pointer"
-                        onClick={() => handleClickIDBill(item.id)}
-                      >
-                        {item.id}
+
+                      <td className="px-2 py-4 whitespace-nowrap w-[20px]  hover:text-blue-500 hover:underline cursor-pointer" onClick={() => handleClickIDBill(item.id)}>
+                        {item.id.slice(0, 8)} ...
+
                       </td>
                       <td className="px-2 py-4 whitespace-nowrap">
                         {item.fullName}
@@ -266,18 +237,13 @@ export const Bill = () => {
                         {item.note}
                       </td>
 
-                      <td className="px-2 py-4 whitespace-nowrap">
-                        <div>
-                          <ModelEditBill data={item} />
-                        </div>
-                      </td>
+
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           )}
-
           <Pagination
             totalItems={total}
             current={currentPage}
@@ -300,7 +266,7 @@ export const Bill = () => {
             pauseOnHover
             theme="light"
           />
-        </div>
+        </div >
       )}
     </>
   );

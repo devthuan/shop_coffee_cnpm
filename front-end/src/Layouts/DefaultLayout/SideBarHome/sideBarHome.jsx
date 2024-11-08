@@ -10,7 +10,6 @@ import { getAllCategories } from "~/services/Categories";
 import { clearDataCatagories, initDataCatagories } from "~/redux/features/Categories/categoriesSlice";
 import Loading from "~/components/Loading/Loading";
 const cx = classNames.bind(style);
-
 function SidebarHome() {
     const dispatch = useDispatch();
     const catagoriesData = useSelector((state) => state.catagories.data);
@@ -48,19 +47,16 @@ function SidebarHome() {
     return (
         <div className={cx("wrapper")}>
             <div className={cx("title")}>Categories</div>
-            {isLoading ? (<div className="h-full w-full flex justify-center items-center">
-              <Loading />
-            </div>): (<ul className = { cx("list_product") }>
+            <ul className = { cx("list_product") }>
                 {catagoriesData && catagoriesData.length > 0 && catagoriesData.map((item, i) => {
                     return (<li key={i} className={cx("item")}>
                 <p className={cx("item_name")}>{item.name}</p>
                 {/* <img src={item.images[0]?.urlImage} className={cx("item_img")} alt={item.name} /> */}
             </li>)
                 }
-
                 )}
-        </ul>)
-}
+        </ul>
+
         </div >
     );
 }

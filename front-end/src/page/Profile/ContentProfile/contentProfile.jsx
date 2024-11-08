@@ -10,7 +10,13 @@ import {
 import item_cf from "src/assets/images/item_cf.png";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getAllInfoUser } from "~/services/UserCurrentService";
+import { useDispatch, useSelector } from "react-redux";
+import { clearDataUserInfo, initDataUserInfo } from "~/redux/features/UserInfor/User_InforSlice";
+import { HandleApiError } from "~/Utils/HandleApiError";
+import { toast } from "react-toastify";
+import Loading from "~/components/Loading/Loading";
 
 const cx = classNames.bind(styles);
 
@@ -31,59 +37,85 @@ function ContentProfile() {
   );
   const isError = useSelector((state) => state.userInfo.error);
   const isloading = useSelector((state) => state.userInfo.loading);
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    const fetchDataUser = async () => {
+      try {
+        const reponse = await getAllInfoUser();
+        dispatch(initDataUserInfo(reponse.data))
+      } catch (error) {
+        if (error.request) {
+          dispatch(initDataUserInfo({ error: "không có phản hồi từ server..." }));
+        }
+        const result = HandleApiError(error);
+        result ? toast.error(result) : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+      }
+    }
+    dispatch(clearDataUserInfo());
+
+    const timeoutId = setTimeout(() => {
+      fetchDataUser();
+    }, 800);
+    return () => clearTimeout(timeoutId);
+  }, [])
+
 
   return (
     <div className={cx("wrapper")}>
-      <div className={cx("content")}>
-        <div className={cx("container")}>
-          <div className={cx("header")}>
-            <div className={cx("header_title")}>
-              <div className={cx("header_name")}>Account info</div>
-              <div className={cx("header_disc")}>
-                Addresses, contact information and password
-              </div>
-            </div>
-            <Link to="/profile/editProfile">
-              <FontAwesomeIcon icon={faGear} className={cx("btn_gear")} />
-            </Link>
-          </div>
-          <ul className={cx("list_profile")}>
-            <li className={cx("item_profile")}>
-              <div className={cx("item_profile_icon")}>
-                {" "}
-                <FontAwesomeIcon icon={faEnvelope} />{" "}
-              </div>
-              <div className={cx("item_profile_info")}>
-                <div className={cx("info_name")}>Email Address</div>
-                <div className={cx("info_disc")}>{email}</div>
-              </div>
-            </li>
-            <li className={cx("item_profile")}>
-              <div className={cx("item_profile_icon")}>
-                {" "}
-                <FontAwesomeIcon icon={faPhoneVolume} />{" "}
-              </div>
-              <div className={cx("item_profile_info")}>
-                <div className={cx("info_name")}>Phone number</div>
-                <div className={cx("info_disc")}>+000 11122 2345 657</div>
-              </div>
-            </li>
-            <li className={cx("item_profile")}>
-              <div className={cx("item_profile_icon")}>
-                {" "}
-                <FontAwesomeIcon icon={faLocationDot} />{" "}
-              </div>
-              <div className={cx("item_profile_info")}>
-                <div className={cx("info_name")}>Add an address</div>
-                <div className={cx("info_disc")}>
-                  Bangladesh Embassy, Washington, DC 20008
+      {isloading ? (<div className="h-full w-full flex justify-center items-center">
+        <Loading />
+      </div>) : (
+        <div className={cx("content")}>
+          <div className={cx("container")}>
+            <div className={cx("header")}>
+              <div className={cx("header_title")}>
+                <div className={cx("header_name")}>Account info</div>
+                <div className={cx("header_disc")}>
+                  Addresses, contact information and password
                 </div>
               </div>
-            </li>
-          </ul>
-        </div>
+              {/* <Link to="/profile/editProfile">
+              <FontAwesomeIcon icon={faGear} className={cx("btn_gear")} />
+            </Link> */}
+            </div>
+            <ul className={cx("list_profile")}>
+              <li className={cx("item_profile")}>
+                <div className={cx("item_profile_icon")}>
+                  {" "}
+                  <FontAwesomeIcon icon={faEnvelope} />{" "}
+                </div>
+                <div className={cx("item_profile_info")}>
+                  <div className={cx("info_name")}>Email</div>
+                  <div className={cx("info_disc")}>{userInformation?.email}</div>
+                </div>
+              </li>
+              <li className={cx("item_profile")}>
+                <div className={cx("item_profile_icon")}>
+                  {" "}
+                  <FontAwesomeIcon icon={faPhoneVolume} />{" "}
+                </div>
+                <div className={cx("item_profile_info")}>
+                  <div className={cx("info_name")}>Số điện thoại</div>
+                  <div className={cx("info_disc")}>{userInformation?.phoneNumber}</div>
+                </div>
+              </li>
+              <li className={cx("item_profile")}>
+                <div className={cx("item_profile_icon")}>
+                  {" "}
+                  <FontAwesomeIcon icon={faLocationDot} />{" "}
+                </div>
+                <div className={cx("item_profile_info")}>
+                  <div className={cx("info_name")}>Địa chỉ</div>
+                  <div className={cx("info_disc")}>
+                    {userInformation?.address1 || userInformation?.address2 || "chưa cập nhật"}
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
 
-        <div className={cx("container")}>
+          {/* <div className={cx("container")}>
           <div className={cx("header_title")}>
             <div className={cx("header_name")}>Lists</div>
             <div className={cx("header_disc")}>2 items - Primary</div>
@@ -114,8 +146,9 @@ function ContentProfile() {
               </div>
             </li>
           </ul>
+        </div> */}
         </div>
-      </div>
+      )}
     </div>
   );
 }
