@@ -67,9 +67,9 @@ export const ModalAddProduct = () => {
   
     // console.log(productImages)
     
-    // Array.from(productImages).forEach((image, index) => {
-    //   formData.append(`images[${index}]`, image.name);
-    // });
+    Array.from(productImages).forEach((image, index) => {
+      formData.append(`images[${index}]`, image.name);
+    });
 
 
     try {
