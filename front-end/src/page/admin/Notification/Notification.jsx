@@ -158,7 +158,6 @@ export const Notification = () => {
       const response = await DeleteNotificationAPI(id);
       if (response && response.status === 200) {
         dispatch(removeNotification({ id }));
-        handleDeleteItem(id);
       } else {
         const { message, status } = HandleApiError(response);
         if (status === "error") {
@@ -379,6 +378,7 @@ export const Notification = () => {
                 onPageChange={handlePageChange}
                 onLimitChange={handleLimitChange}
               />
+
             </>
           )}
           <ToastContainer

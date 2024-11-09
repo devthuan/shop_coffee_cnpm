@@ -136,7 +136,6 @@ export const Bill = () => {
       ) : (
         <div className="mx-auto  md:pr-5">
           <div className=" ">
-
             <div className="flex justify-between mt-7">
               <div className="relative w-72 ">
                 <svg
@@ -168,8 +167,6 @@ export const Bill = () => {
                     })}
                 </select>
               </div>
-
-
             </div>
           </div>
           {isLoading ? (
@@ -196,10 +193,11 @@ export const Bill = () => {
                 <tbody className="text-gray-600 divide-y">
                   {BillsData?.map((item, idx) => (
                     <tr key={idx}>
-
-                      <td className="px-2 py-4 whitespace-nowrap w-[20px]  hover:text-blue-500 hover:underline cursor-pointer" onClick={() => handleClickIDBill(item.id)}>
+                      <td
+                        className="px-2 py-4 whitespace-nowrap w-[20px]  hover:text-blue-500 hover:underline cursor-pointer"
+                        onClick={() => handleClickIDBill(item.id)}
+                      >
                         {item.id.slice(0, 8)} ...
-
                       </td>
                       <td className="px-2 py-4 whitespace-nowrap">
                         {item.fullName}
@@ -220,8 +218,19 @@ export const Bill = () => {
                       {/* <td className="px-2 py-4 whitespace-nowrap">
                         {item.totalPayment}
                       </td> */}
-                      <td className="px-2 py-4 whitespace-nowrap">
-                        {item.status}
+
+                      <td className="pr-6 py-4 whitespace-nowrap">
+                        <span
+                          className={`px-3 py-2 rounded-full font-semibold text-xs ${
+                            item.status === "success"
+                              ? "text-green-600 bg-green-50"
+                              : item.status === "pending"
+                              ? "text-yellow-600 bg-yellow-50"
+                              : "text-red-600 bg-red-50"
+                          }`}
+                        >
+                          {item.status}
+                        </span>
                       </td>
                       {/* <td className="px-2 py-4 whitespace-nowrap">
                         {item.shippingMethod}
@@ -236,8 +245,6 @@ export const Bill = () => {
                       <td className="px-2 py-4 whitespace-nowrap">
                         {item.note}
                       </td>
-
-
                     </tr>
                   ))}
                 </tbody>
@@ -266,7 +273,7 @@ export const Bill = () => {
             pauseOnHover
             theme="light"
           />
-        </div >
+        </div>
       )}
     </>
   );

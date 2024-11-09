@@ -6,6 +6,7 @@ import { CommonException } from 'src/common/exception';
 import { Products } from 'src/product/entities/products.entity';
 import { Repository } from 'typeorm';
 import { StatisticalDto } from './statistical.dto';
+import { ImportReceipts } from 'src/import_receipt/entities/import_receipt.entity';
 
 @Injectable()
 export class StatisticalService {
@@ -14,6 +15,8 @@ export class StatisticalService {
         private readonly accountsRepository: Repository<Accounts>,
         @InjectRepository(Bills)
         private readonly billsRepository: Repository<Bills>,
+        @InjectRepository(ImportReceipts)
+        private readonly importReceiptsRepository: Repository<ImportReceipts>,
         @InjectRepository(Products)
         private readonly productsRepository: Repository<Products>,
     ){}
@@ -25,13 +28,17 @@ export class StatisticalService {
                 .select('SUM(bills.totalPayment) as totalProfit')
                 .where('bills.status = :status', {status: 'success'})
                 .getRawOne();
+            const totalExpense = await this.importReceiptsRepository.createQueryBuilder('importReceipts')
+                .select('SUM(importReceipts.totalAmount) as totalExpense')
+                .where('importReceipts.status = :status', {status: 'approved'})
+                .getRawOne();
                 
             const totalProducts = await this.productsRepository.count();
             const totalUsers = await this.accountsRepository.count();
             // total bill
             const totalBills = await this.billsRepository.count();
             return {
-                totalRevenue: parseInt(totalRevenue.totalProfit),
+                totalRevenue: parseInt(totalRevenue.totalProfit) - parseInt(totalExpense.totalExpense),
                 totalProducts,
                 totalUsers,
                 totalBills
@@ -44,11 +51,46 @@ export class StatisticalService {
     }
 
 
-   async statisticalByDate(statisticalDto: StatisticalDto): Promise<any> {
+
+async statisticalByDate(statisticalDto: StatisticalDto): Promise<any> {
+    try {
+        const { startDate, endDate } = statisticalDto;
+
+        const statistics = await this.billsRepository.query(`
+            WITH RECURSIVE date_range AS (
+                SELECT ? AS date
+                UNION ALL
+                SELECT DATE_ADD(date, INTERVAL 1 DAY)
+                FROM date_range
+                WHERE DATE_ADD(date, INTERVAL 1 DAY) <= ?
+            )
+            SELECT  
+                DATE_FORMAT(date_range.date, '%Y-%m-%d') AS date, 
+                IFNULL(SUM(bills.totalPayment), 0) AS totalRevenue,
+                IFNULL(SUM(importReceipts.totalAmount), 0) AS totalExpense,
+                IFNULL(SUM(bills.totalPayment), 0) - IFNULL(SUM(importReceipts.totalAmount), 0) AS totalProfit
+            FROM date_range
+            LEFT JOIN bills 
+                ON DATE(CONVERT_TZ(bills.createdAt, "+00:00", "+07:00")) = date_range.date
+                AND bills.status = 'success'
+            LEFT JOIN importReceipts 
+                ON DATE(CONVERT_TZ(importReceipts.createdAt, "+00:00", "+07:00")) = date_range.date
+                AND importReceipts.status = 'approved'
+            GROUP BY date_range.date
+            ORDER BY date_range.date ASC;
+        `, [startDate, endDate]);
+
+        return statistics;
+    } catch (error) {
+        CommonException.handle(error);
+    }
+}
+
+   async statisticalExpenseByDate(statisticalDto: StatisticalDto): Promise<any> {
         try {
             const { startDate, endDate } = statisticalDto;
 
-            const totalRevenue = await this.billsRepository.query(`
+            const totalRevenue = await this.importReceiptsRepository.query(`
                 WITH RECURSIVE date_range AS (
                     SELECT ? AS date
                     UNION ALL
@@ -57,10 +99,10 @@ export class StatisticalService {
                     WHERE DATE_ADD(date, INTERVAL 1 DAY) <= ?
                 )
                 SELECT  DATE_FORMAT(date_range.date, '%Y-%m-%d') AS date, 
-                    IFNULL(SUM(bills.totalPayment), 0) AS totalProfit
+                    IFNULL(SUM(importReceipts.totalAmount), 0) AS totalProfit
                 FROM date_range
-                LEFT JOIN bills ON DATE(CONVERT_TZ(bills.createdAt, "+00:00", "+07:00")) = date_range.date
-                            AND bills.status = 'success'
+                LEFT JOIN importReceipts ON DATE(CONVERT_TZ(importReceipts.createdAt, "+00:00", "+07:00")) = date_range.date
+                            AND importReceipts.status = 'approved'
                 GROUP BY date_range.date
                 ORDER BY date_range.date ASC;
             `, [startDate, endDate]);
