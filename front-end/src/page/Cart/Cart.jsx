@@ -171,11 +171,13 @@ export const Cart = () => {
                 checked={cartsCheck.some((item) => item.id === cart.id)}
                 onChange={() => handleChangeCheckInput(cart)}
               />
-              <img
-                className="w-[15%] h-[120px]"
-                // src={cart.productAttributes.products.images[0].urlImage}
-                alt=""
-              />
+              {cart?.productAttributes?.products?.images?.length > 0 && (
+                <img
+                  className="w-[15%] h-[120px]"
+                  src={cart.productAttributes.products.images[0].urlImage}
+                  alt=""
+                />
+              )}
               <div className={cx("justify-start py-3 px-2 w-[80%] ")}>
                 <div className={cx("flex justify-between")}>
                   <p class="text-left text-[#1A162E] text-[20px] font-tahoma font-medium break-words">

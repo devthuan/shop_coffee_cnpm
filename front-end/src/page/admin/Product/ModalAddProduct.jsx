@@ -66,6 +66,7 @@ export const ModalAddProduct = () => {
 
     try {
       const response = await UploadFileAPI(formImage);
+      console.log(response)
       if (response && response.status === 201) {
         toast.success("Tải ảnh thành công");
         setProductImages([...productImages, response.data.url]);
