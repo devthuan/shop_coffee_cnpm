@@ -77,7 +77,6 @@ export const ModalAddProduct = () => {
       }
     }
   };
-
   const handleSubmit = async () => {
     const productData = {
       name: productName,

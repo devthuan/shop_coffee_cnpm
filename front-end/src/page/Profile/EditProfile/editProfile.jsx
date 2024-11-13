@@ -29,7 +29,7 @@ function EditProfile() {
         const dataToUpdate = {
             fullName: name ? String(name) : undefined,
             phoneNumber: phone ? String(phone) : undefined,
-            avatar: avatar ? String(avatar) :"/",
+            avatar: avatar ? String(avatar) : "http://www.w3.org/2000/svg" ,
             address1: address ? String(address) : undefined
         };
     
@@ -55,6 +55,7 @@ function EditProfile() {
                 toast.error("Tài khoản không tồn tại. Vui lòng kiểm tra lại thông tin.");
             } else {
                 toast.error("Có lỗi xảy ra, vui lòng thử lại sau.");
+                console.log(message)
             }
         }
         console.log("Data to update:", dataToUpdate); 
@@ -75,10 +76,6 @@ function EditProfile() {
                     <li className={cx("item")}>
                         <div className={cx("item_name")}>Họ tên</div>
                         <input type="text" className={cx("item_input")} value={name} onChange={(e) => setName(e.target.value)} />
-                    </li>
-                    <li className={cx("item")}>
-                        <div className={cx("item_name")}>avatar</div>
-                        <input type="test('should first', () => { second })" className={cx("item_input")} value={avatar} onChange={(e) => setAvatar(e.target.value)} />
                     </li>
                     <li className={cx("item")}>
                         <div className={cx("item_name")}>Địa chỉ</div>

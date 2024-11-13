@@ -21,7 +21,6 @@ function DefaultLayout({children}) {
         <div className="grid grid-cols-1">
           <Header />
         </div>
-      
         <div className={cx("lg:w-11/12 grid grid-cols-12 gap-x-7 mx-auto sm:mt-[30px]")}>
           <div className={cx("lg:col-span-3 max-sm:col-span-12")}>
             <SidebarHome />

@@ -23,13 +23,14 @@ import cartReducer from "./features/cart/cartSlice";
 import authReducer from "./features/AuthSlice/authSlice"; // Đường dẫn tới authSlice
 import notificationReducer from "./features/Notifications/NotificationsSilce";
 import notificationUserReducer from "./features/Notifications/NotificationsUserSlice"; //
-
+import favoriteUserReducer from "~/redux/features/FavoriteUser/favoriteUserSlice";
+import billAccountReducer from "~/redux/features/BillAccount/billAccountSlice";
 
 
 export const store = configureStore({
   reducer: {
-    // products: productReducer,
-    products: productsReducer,
+    products: productReducer,
+    // products: productsReducer,
     bill: billReducer,
     catagories: catagoriesReducer,
     userInfo: userInfoReducer,
@@ -55,6 +56,8 @@ export const store = configureStore({
     notifications: notificationReducer,
     notificationUser: notificationUserReducer,
     statistical: statisticalReducer,
+    favoriteUser : favoriteUserReducer,
+    billAccount : billAccountReducer
   },
 
   // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),

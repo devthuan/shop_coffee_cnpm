@@ -154,7 +154,6 @@ const Paynment = () => {
             <option value="1">Bank Transfer</option>
           </select>
         </div>
-
         {/* Submit Button */}
         <div>
           <button

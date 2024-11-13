@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import Loading from '~/components/Loading/Loading';
 import { clearDataIdBillDetail, initDataIdBillDetail } from '~/redux/features/IdBillDetail/IdBillDetailSlice';
-import { GetBill_IDAPI } from '~/services/BillService';
+import { ChangeStatus, GetBill_IDAPI } from '~/services/BillService';
 import { HandleApiError } from '~/Utils/HandleApiError';
 
 function BillDetails({ billsID, handleClickToggle }) {
@@ -28,7 +28,7 @@ function BillDetails({ billsID, handleClickToggle }) {
     const loading = useSelector((state) => state.idBillDetails.loading)
 
     const error = useSelector((state) => state.idBillDetails.error)
-
+    const [currentStatus, setCurrentStatus] = useState()
     useEffect(() => {
         const fetchDataProduct = async () => {
             try {
@@ -62,17 +62,35 @@ function BillDetails({ billsID, handleClickToggle }) {
         "Giá giảm",
         "Tổng tiền"
     ]
+
+    
+    const handleChangeStatus = async (item) => {
+        console.log(id, item);   
+        const fetchChangeStatus = async () => {
+            try {
+                const response = await ChangeStatus(id, { status: item });
+                setCurrentStatus(item)
+                console.log(response.data);
+            } catch (error) {
+                const result = HandleApiError(error);
+                result ? toast.error(result) : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+            }
+        };
+        await fetchChangeStatus();
+    };
+
+    
     return (
         <div
             className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 p-5 z-10"
             onClick={handleClickToggle}
         >
-             {loading ? (
-            // absolute inset-0 flex justify-center items-center
-            <div className="flex justify-center items-center h-64">
-              <Loading />
-            </div>
-          ) :(<div
+            {loading ? (
+                // absolute inset-0 flex justify-center items-center
+                <div className="flex justify-center items-center h-64">
+                    <Loading />
+                </div>
+            ) : (<div
                 className="w-full max-w-6xl max-h-screen overflow-y-auto p-6 bg-white rounded-lg shadow-lg h-[90vh]"
                 onClick={handleChildClick}
             >
@@ -97,7 +115,7 @@ function BillDetails({ billsID, handleClickToggle }) {
                                     <p className="text-gray-600">ngày cập nhật: {account.updatedAt || "chưa cập nhật"} </p>
                                 </div>
                                 <div className="text-right mb-4">
-                                    <span className="px-3 py-1 text-white bg-green-500 rounded-full text-xl">{status}</span>
+                                    <span className="px-3 py-1 text-white bg-green-500 rounded-full text-xl">{currentStatus || status}</span>
                                 </div>
                             </div>
                         </div>
@@ -154,10 +172,23 @@ function BillDetails({ billsID, handleClickToggle }) {
                                 </div>
                             </div>
                         </div>
+
+                        <div className="grid grid-cols-1 gap-4 mb-4">
+                            <div className="p-4 bg-gray-100 rounded-lg text-xl space-y-2">
+                                <div className="flex justify-center items-center gap-2">
+                               
+                                    <button className="p-2 text-base text-white bg-red-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2">
+                                        huỷ hoá đơn
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+
                     </div>
                 </div>
             </div>)
-}
+            }
         </div>
     );
 }
