@@ -6,12 +6,13 @@ import { useEffect, useState } from "react";
 import Tippy from '@tippyjs/react/headless';
 import item_cf from "src/assets/images/item_cf.png";
 import { getALLProducts } from "~/services/ProductService";
+import { Navigate, useNavigate } from "react-router-dom";
 const cx = classNames.bind(styles);
 
 function InputSearch({ handleCLickSearch }) {
     const [valueSearch, setValueSearch] = useState(""); 
     const [resultSearch, setResultSearch] = useState([]);
-
+    const navigate = useNavigate()
     useEffect(() => {
         if (!valueSearch) {
             setResultSearch([]); 
@@ -38,7 +39,10 @@ function InputSearch({ handleCLickSearch }) {
     const handleChangInput = (e) => {
         setValueSearch(e.target.value.trim()); 
     };
-
+    const handleCLickProduct = (id) => {
+        navigate(`/product/${id}`)
+    } 
+    
     return (
         <div>
             <div className={cx("wrapper")} onClick={handleCLickSearch} />
@@ -61,7 +65,7 @@ function InputSearch({ handleCLickSearch }) {
                         <div className={cx("resultSearch")} tabIndex="-1" {...attrs}>
                             <ul className={cx("container")}>
                                 {resultSearch.map((item, index) => (
-                                    <li className={cx("item")} key={index}>
+                                    <li className={cx("item")} key={index} onClick={()=>handleCLickProduct(item.id)}>
                                         <img src={item.images[0]?.urlImage} className={cx("img_item")} alt="Item" />
                                         <div className={cx("name_item")}>{item.name}</div>
                                         <div className={cx("name_item")}>{item.productAttributes[0]?.sellPrice}</div>
