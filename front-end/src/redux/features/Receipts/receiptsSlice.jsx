@@ -34,7 +34,7 @@ export const ReceiptsSlice = createSlice({
     },
 
     addReceipt: (state, action) => {
-      state.data.push(action.payload);
+      state.data.unshift(action.payload);
       state.loading = false;
     },
 

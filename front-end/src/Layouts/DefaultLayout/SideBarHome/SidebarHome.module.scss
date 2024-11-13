@@ -1,12 +1,12 @@
-@keyframes changeColor {
-  0% {
-      background-color: var(--primary-color-background-1)
-  }
+// @keyframes changeColor {
+//   0% {
+//       background-color: var(--primary-color-background-1)
+//   }
 
-  100% {
-      background-color: #77DAE6;
-  }
-}
+//   100% {
+//       background-color: #77DAE6;
+//   }
+// }
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -28,10 +28,10 @@
   color: var(--primary-color-text);
 }
 
-.item:hover {
-  animation: changeColor 2s forwards;
-  cursor: pointer;
-}
+// .item:hover {
+//   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+//   cursor: pointer;
+// }
 
 @media (min-width: 640px) {
   .wrapper {

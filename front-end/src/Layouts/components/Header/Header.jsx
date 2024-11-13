@@ -8,16 +8,26 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faCartShopping, faUser, faBars } from "@fortawesome/free-solid-svg-icons";
 import SideBarHeader from "~/Layouts/components/Header/SideBarHeader/SideBarHeader";
 import InputSearch from "~/Layouts/components/Header/InputSearch/inputSearch";
+import { useDispatch, useSelector } from "react-redux";
+import { getItemWithExpiration } from "~/services/localStorage";
+import { setToken } from "~/redux/features/AuthSlice/authSlice";
 
 
 const cx = classNames.bind(styles);
 function Header() {
-  const [Login, setLogin] = useState(true)
+  
+  const isLogin = getItemWithExpiration("token") || null;
+
+
+
+  
+
   const [imgUser, setImgUser] = useState()
   const [sideBarHeader, setSideBarHeader] = useState(false)
   const [toggleSearch, setToggleSearch] = useState(false)
 
 
+ 
   const handleCLickSearch = () =>{
     setToggleSearch(!toggleSearch)
   }
@@ -37,7 +47,7 @@ function Header() {
           <div className={cx("title")}>grocerymart</div>
         </Link>
         <div className={cx("element_right")}>
-          {Login ? <div className={cx("header_btn")}>
+          {!isLogin ? <div className={cx("header_btn")}>
             <Link to="/login" className={cx("btn_login_text")}>log in</Link>
             <ThemeToggle />
           </div> : <div className={cx("content")} >

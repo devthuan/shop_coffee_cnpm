@@ -10,28 +10,31 @@ import { useDispatch, useSelector } from "react-redux";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { ToastContainer, toast } from "react-toastify";
 
-import { initDataProduct, deleteProduct } from "~/redux/features/Products/productsSlice";
+import {
+  initDataProduct,
+  deleteProduct,
+} from "~/redux/features/Products/productsSlice";
 import { deleteCart } from "~/redux/features/cart/cartSlice";
 import { initDataCatagories } from "~/redux/features/Categories/categoriesSlice";
 import { DeleteCategory, GetAllCategory } from "~/services/CategoryService";
 import { deleteCategory } from "~/redux/features/Categories/categoriesSlice";
 // const cx = classNames.bind(styles);
 export const Category = () => {
-  const dispatch = useDispatch()
-  const categories = useSelector(state => state.catagories.data)
+  const dispatch = useDispatch();
+  const categories = useSelector((state) => state.catagories.data);
 
-  const total = useSelector(state => state.catagories.total)
-  const totalPage = useSelector(state => state.catagories.totalPage)
-  const currentPage = useSelector(state => state.catagories.currentPage)
-  const limit = useSelector(state => state.catagories.limit)
-  const isLoading = useSelector(state => state.catagories.loading)
+  const total = useSelector((state) => state.catagories.total);
+  const totalPage = useSelector((state) => state.catagories.totalPage);
+  const currentPage = useSelector((state) => state.catagories.currentPage);
+  const limit = useSelector((state) => state.catagories.limit);
+  const isLoading = useSelector((state) => state.catagories.loading);
   const [optionLimit, setOptionLimit] = useState({
     currentPage: 1,
-    limit: 10
-  })
+    limit: 10,
+  });
 
-  const [selectSearch, setSelectedSearch] = useState(0)
-  const [search, setSearch] = useState("")
+  const [selectSearch, setSelectedSearch] = useState(0);
+  const [search, setSearch] = useState("");
   // biến chứa danh sách nội dung của bảng
 
   const fetchData = async () => {
@@ -39,7 +42,7 @@ export const Category = () => {
     // if (search) {
     //   queryParams += `&search=${search}`;
     // }
-    
+
     const response = await GetAllCategory(queryParams);
     if (response && response.status === 200) {
       dispatch(initDataCatagories(response.data));
@@ -50,57 +53,55 @@ export const Category = () => {
     fetchData();
   }, [optionLimit.currentPage, optionLimit.limit]);
 
-  
   const handlePaginate = (page) => {
-    setOptionLimit(prev => ({
+    setOptionLimit((prev) => ({
       ...prev,
-      currentPage: page
-    }))
-  }
+      currentPage: page,
+    }));
+  };
 
   const handleLimitProduct = (limit) => {
-    setOptionLimit(prev => ({
+    setOptionLimit((prev) => ({
       limit: limit,
-      currentPage: 1
-    }))
-  }
+      currentPage: 1,
+    }));
+  };
 
   const handleDeleteCategory = async (id) => {
     try {
-      const response = await DeleteCategory(id)
+      const response = await DeleteCategory(id);
       if (response && response.status === 200) {
         // dispatch(deleteCategory({id}))
         if (categories.length - 1 < optionLimit.limit) {
           fetchData();
         }
       }
-    }
-    catch (error) {
+    } catch (error) {
       const result = HandleApiError(error);
-      console.log(result)
+      console.log(result);
       if (result) {
         toast.error(result.message);
       } else {
         toast.error("Có lỗi xảy ra, vui lòng thử lại");
       }
     }
-  }
+  };
 
   const handleSearch = async () => {
-    let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`
-    const response = await GetAllProduct(queryParams)
+    let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
+    const response = await GetAllProduct(queryParams);
     if (response && response.status === 200) {
-      dispatch(initDataProduct(response.data))
+      dispatch(initDataProduct(response.data));
     }
-  }
+  };
   // Array chứa danh sách tiêu đề bảng
   const tableTitles = [
-    // "Id",
-    "Name",
-    "Description",
-    // "Created At",
-    // "Updated At",
-    "Action"
+    "ID",
+    "Tên loại",
+    "Mô tả",
+    "Ngày tạo",
+    "Cập nhật cuối",
+    "Hành động",
   ];
 
   return (
@@ -127,7 +128,10 @@ export const Category = () => {
                 clipRule="evenodd"
               />
             </svg>
-            <select onChange={(e) => setSelectedSearch(e.target.value)} className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2">
+            <select
+              onChange={(e) => setSelectedSearch(e.target.value)}
+              className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
+            >
               <option value="0">Id</option>
               <option value="1">Name</option>
             </select>
@@ -189,28 +193,41 @@ export const Category = () => {
             </tr>
           </thead>
           <tbody className="text-gray-600 divide-y">
-            {categories && categories?.length > 0 && categories?.map((category, idx) => (
-              <tr key={idx}>
-                {/* <td className="pr-6 py-4 whitespace-nowrap">{category.id}</td> */}
-                <td className="pr-6 py-4 whitespace-nowrap">{category.name}</td>
-                <td className="pr-6 py-4 whitespace-nowrap">{category.description}</td>
-                {/* <td className="pr-6 py-4 whitespace-nowrap">{category.createdAt}</td> */}
-                {/* <td className="pr-6 py-4 whitespace-nowrap">{category.updatedAt}</td> */}
-                <td className="text-right px-6 whitespace-nowrap">
-                  <div className="max-w-5 flex justify-center items-center">
-                    <p className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
-                      <ModalEditCategory data={category} />
-                    </p>
-                    <p
-                      // để tham số rỗng ở đầu khi khi onlick vào mới chạy hàm handleDeletedProduct
-                      onClick={() => handleDeleteCategory(category.id)}
-                      className="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
-                      Delete
-                    </p>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {categories &&
+              categories?.length > 0 &&
+              categories?.map((category, idx) => (
+                <tr key={idx}>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {category.id.slice(0, 12)} ...
+                  </td>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {category.name}
+                  </td>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {category.description}
+                  </td>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {new Date(category.createdAt).toLocaleString()}
+                  </td>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {new Date(category.createdAt).toLocaleString()}
+                  </td>
+                  <td className="text-right px-6 whitespace-nowrap">
+                    <div className="max-w-5 flex justify-center items-center">
+                      <p className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
+                        <ModalEditCategory data={category} />
+                      </p>
+                      <p
+                        // để tham số rỗng ở đầu khi khi onlick vào mới chạy hàm handleDeletedProduct
+                        onClick={() => handleDeleteCategory(category.id)}
+                        className="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer"
+                      >
+                        Delete
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

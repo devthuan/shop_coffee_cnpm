@@ -26,4 +26,7 @@ export class CreateProductDto {
     @Type(() => AttributeDto)
     attributes: AttributeDto[];
 
+    @IsArray()
+    images: string[];
+
 }

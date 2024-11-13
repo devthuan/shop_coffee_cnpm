@@ -263,7 +263,7 @@ export class ImportReceiptService extends BaseService<ImportReceipts> {
        .getMany();
        
       
-      if(!importReceipt){
+      if(!importReceipt || importReceipt.length === 0){
         return false;
       }
       return true;

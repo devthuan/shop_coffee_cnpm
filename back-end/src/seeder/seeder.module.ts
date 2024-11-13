@@ -6,10 +6,15 @@ import { Accounts } from 'src/auth/entities/accounts.entity';
 import { RoleHasFunctions } from 'src/role-permission/entities/roles_has_functions.entity';
 import { Roles } from 'src/role/entities/roles.entity';
 import { Functions } from 'src/function/entities/functions.entity';
+import { AuthModule } from 'src/auth/auth.module';
+import { BillModule } from 'src/bill/bill.module';
+import { Products } from 'src/product/entities/products.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Accounts, Roles, Functions, RoleHasFunctions])
+    TypeOrmModule.forFeature([Accounts, Roles, Functions, RoleHasFunctions]),
+ 
+    
   ],
   controllers: [SeederController],
   providers: [SeederService],

@@ -20,10 +20,9 @@ import Loading from "~/components/Loading/Loading";
 import { useNavigate } from "react-router-dom";
 const cx = classNames.bind(styles);
 function ContentHome() {
-
-
     const dispatch = useDispatch();
     const ProductsData = useSelector((state) => state.products.data) || []
+    console.log(ProductsData)
     const total = useSelector((state) => state.products.total)
     const currentPage = useSelector((state) => state.products.currentPage)
     const totalPage = useSelector((state) => state.products.totalPage)
@@ -35,12 +34,14 @@ function ContentHome() {
     currentPage: 1,
     limit: 10,
   });
+  
 
   useEffect(() => {
     const fetchDataProduct = async () => {
       try {
         let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
         const response = await getALLProducts(queryParams);
+        console.log(response.data)
         dispatch(initDataProduct(response.data));
       } catch (error) {
         if (error.request) {
@@ -106,12 +107,6 @@ function ContentHome() {
                 <FontAwesomeIcon icon={faFilter} className={cx('filter')} />
             </div> */}
       </div>
-
-      {isloading ? (
-        <div className="h-full w-full flex justify-center items-center">
-          <Loading />
-        </div>
-      ) : (
         <ul className={cx("list_product")}>
           {ProductsData &&
             ProductsData.map((item, i) => {
@@ -122,7 +117,7 @@ function ContentHome() {
                   key={i}
                 >
                   <div className={cx("img_product")}>
-                    <img src={item.images[0]?.urlImage || img_product} />
+                    <img src={item.images[0]?.urlImage || img_product} className={cx("img")}/>
                   </div>
                   <div className={cx("name_product")}>{item.name}</div>
                   <div className={cx("lazada")}>{item.description}</div>
@@ -133,18 +128,7 @@ function ContentHome() {
               );
             })}
         </ul>
-      )}
-
       <div className={cx("footer")}>
-        {/* <ul className={cx('list_pages')}>
-                <li className={cx('number_page')}>
-                    <button className={cx('btn_pages')}>1</button>
-                </li>
-                <li className={cx('number_page')}>
-                    <button className={cx('btn_pages')}>2</button>
-                </li>
-            </ul>
-             */}
         <Pagination
           totalItems={total}
           current={currentPage}

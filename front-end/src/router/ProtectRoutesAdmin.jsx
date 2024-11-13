@@ -29,7 +29,6 @@ export const ProtectRoutesByRole = ({ children, requiredPermission }) => {
   const permissions = getItemWithExpiration("permissions")?.map(
     (item) => item.functions.codeName
   );
-  console.log(permissions);
   const isLogin = getItemWithExpiration("token");
 
   useEffect(() => {

@@ -10,24 +10,27 @@ import { HandleApiError } from "~/Utils/HandleApiError";
 import { ToastContainer, toast } from "react-toastify";
 
 import { GetAllDiscount, DeleteDiscount } from "~/services/DiscountService";
-import { initDataDiscount, deleteDiscount } from "~/redux/features/Discounts/discountsSlice";
+import {
+  initDataDiscount,
+  deleteDiscount,
+} from "~/redux/features/Discounts/discountsSlice";
 // const cx = classNames.bind(styles);
 export const Discount = () => {
-  const dispatch = useDispatch()
-  const discounts = useSelector(state => state.discounts.data)
+  const dispatch = useDispatch();
+  const discounts = useSelector((state) => state.discounts.data);
 
-  const total = useSelector(state => state.discounts.total)
-  const totalPage = useSelector(state => state.discounts.totalPage)
-  const currentPage = useSelector(state => state.discounts.currentPage)
-  const limit = useSelector(state => state.discounts.limit)
-  const isLoading = useSelector(state => state.discounts.isLoading)
+  const total = useSelector((state) => state.discounts.total);
+  const totalPage = useSelector((state) => state.discounts.totalPage);
+  const currentPage = useSelector((state) => state.discounts.currentPage);
+  const limit = useSelector((state) => state.discounts.limit);
+  const isLoading = useSelector((state) => state.discounts.isLoading);
   const [optionLimit, setOptionLimit] = useState({
     currentPage: 1,
-    limit: 10
-  })
+    limit: 10,
+  });
 
-  const [selectSearch, setSelectedSearch] = useState(0)
-  const [search, setSearch] = useState("")
+  const [selectSearch, setSelectedSearch] = useState(0);
+  const [search, setSearch] = useState("");
   // biến chứa danh sách nội dung của bảng
 
   const fetchData = async () => {
@@ -36,7 +39,7 @@ export const Discount = () => {
       queryParams += `&search=${search}`;
     }
     const response = await GetAllDiscount(queryParams);
-    console.log(response)
+    console.log(response);
     if (response && response.status === 200) {
       dispatch(initDataDiscount(response.data));
     }
@@ -46,58 +49,56 @@ export const Discount = () => {
     fetchData();
   }, [optionLimit.currentPage, optionLimit.limit]);
 
-  
   const handlePaginate = (page) => {
-    setOptionLimit(prev => ({
+    setOptionLimit((prev) => ({
       ...prev,
-      currentPage: page
-    }))
-  }
+      currentPage: page,
+    }));
+  };
 
   const handleLimitAttribute = (limit) => {
-    setOptionLimit(prev => ({
+    setOptionLimit((prev) => ({
       limit: limit,
-      currentPage: 1
-    }))
-  }
+      currentPage: 1,
+    }));
+  };
 
   const handleDeleteDiscount = async (id) => {
     try {
-      const response = await DeleteDiscount(id)
+      const response = await DeleteDiscount(id);
       if (response && response.status === 200) {
         if (discounts.length - 1 < optionLimit.limit) {
           fetchData();
         }
       }
-    }
-    catch (error) {
+    } catch (error) {
       const result = HandleApiError(error);
-      console.log(result)
+      console.log(result);
       if (result) {
         toast.error(result.message);
       } else {
         toast.error("Có lỗi xảy ra, vui lòng thử lại");
       }
     }
-  }
+  };
 
   const handleSearch = async () => {
-    let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&search=${search}`
-    const response = await GetAllDiscount(queryParams)
+    let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&search=${search}`;
+    const response = await GetAllDiscount(queryParams);
     if (response && response.status === 200) {
-      dispatch(initDataDiscount(response.data))
+      dispatch(initDataDiscount(response.data));
     }
-  }
+  };
   // Array chứa danh sách tiêu đề bảng
   const tableTitles = [
-    "Id",
-    "Name",
+    "ID",
+    "Tên",
     "Code",
-    "Quantity",
-    "Value",
-    "Created At",
-    "Updated At",
-    "Action"
+    "Số lượng",
+    "Giá trị",
+    "Ngày tạo",
+    "Cập nhật cuối",
+    "Hành động",
   ];
 
   return (
@@ -124,7 +125,10 @@ export const Discount = () => {
                 clipRule="evenodd"
               />
             </svg>
-            <select onChange={(e) => setSelectedSearch(e.target.value)} className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2">
+            <select
+              onChange={(e) => setSelectedSearch(e.target.value)}
+              className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
+            >
               <option value="0">Id</option>
               <option value="1">Name</option>
             </select>
@@ -186,32 +190,46 @@ export const Discount = () => {
             </tr>
           </thead>
           <tbody className="text-gray-600 divide-y">
-            {discounts && discounts?.length > 0 && discounts?.map((discount, idx) => (
-              <tr key={idx}>
-                <td className="pr-6 py-4 whitespace-nowrap">{discount.id}</td>
-                <td className="pr-6 py-4 whitespace-nowrap">{discount.name}</td>
-                <td className="pr-6 py-4 whitespace-nowrap">{discount.code}</td>
-                <td className="pr-6 py-4 whitespace-nowrap">{discount.quantity}</td>
-                <td className="pr-6 py-4 whitespace-nowrap">{discount.value}</td>
-                <td className="pr-6 py-4 whitespace-nowrap">{discount.createdAt}</td>
-                <td className="pr-6 py-4 whitespace-nowrap">{discount.updatedAt}</td>
+            {discounts &&
+              discounts?.length > 0 &&
+              discounts?.map((discount, idx) => (
+                <tr key={idx}>
+                  <td className="pr-6 py-4 whitespace-nowrap">{discount.id}</td>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {discount.name}
+                  </td>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {discount.code}
+                  </td>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {discount.quantity}
+                  </td>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {discount.value}
+                  </td>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {new Date(discount.createdAt).toLocaleString()}
+                  </td>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {new Date(discount.updatedAt).toLocaleString()}
+                  </td>
 
-               
-                <td className="text-right px-6 whitespace-nowrap">
-                  <div className="max-w-5 flex justify-center items-center">
-                    <p className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
-                      <ModalEditDiscount data={discount} />
-                    </p>
-                    <p
-                      // để tham số rỗng ở đầu khi khi onlick vào mới chạy hàm handleDeletedProduct
-                      onClick={() => handleDeleteDiscount(discount.id)}
-                      className="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
-                      Delete
-                    </p>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  <td className="text-right px-6 whitespace-nowrap">
+                    <div className="max-w-5 flex justify-center items-center">
+                      <p className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
+                        <ModalEditDiscount data={discount} />
+                      </p>
+                      <p
+                        // để tham số rỗng ở đầu khi khi onlick vào mới chạy hàm handleDeletedProduct
+                        onClick={() => handleDeleteDiscount(discount.id)}
+                        className="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer"
+                      >
+                        Xoá
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

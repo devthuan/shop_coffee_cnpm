@@ -84,7 +84,7 @@ export const ModalEditDiscount = ({ data }) => {
     return (
         <Dialog.Root>
             <Dialog.Trigger>
-                Edit
+                Sửa
             </Dialog.Trigger>
             <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 w-full h-full bg-black opacity-40" />

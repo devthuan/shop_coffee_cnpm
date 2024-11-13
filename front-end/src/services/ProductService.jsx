@@ -1,4 +1,3 @@
-
 import api from "./api";
 
 // code demo
@@ -22,10 +21,6 @@ export const DetailProduct = async (id) => {
 //   return await api.get(`discount`);
 // };
 
-
-
-
-
 export const getALLProducts = (query) => {
   return api.get(`products?${query}`);
 };
@@ -37,14 +32,15 @@ export const getALLProducts = (query) => {
 
 // };
 
-
 export const EvaluateProduct = async () => {
-  return await api.get(`reviews/by-product/7edd9611-5cd5-4d82-9500-0be792247019`)
-}
+  return await api.get(
+    `reviews/by-product/7edd9611-5cd5-4d82-9500-0be792247019`
+  );
+};
 
 export const DiscountProduct = async () => {
-  return await api.get(`discount`)
-}
+  return await api.get(`discount`);
+};
 
 export const GetAllProduct = async (query) => {
   // const params = new URLSearchParams();
@@ -57,21 +53,25 @@ export const GetAllProduct = async (query) => {
   // if (search != null) {
   //   params.append('search', search)
   // }
-  return await api.get(`products?${query}`)
-}
+  return await api.get(`products?${query}`);
+};
 
 export const AddProduct = async (data) => {
-  return await api.post(`products`, data)
-}
+  return await api.post(`products`, data);
+};
 
 export const DetailProduct123 = async (id) => {
-  return await api.get(`products/detail/${id}`)
-}
+  return await api.get(`products/detail/${id}`);
+};
 
 export const UpdateProduct = async (id, data) => {
-  return await api.patch(`products/${id}`, data)
-}
+  return await api.patch(`products/${id}`, data);
+};
 
 export const DeleteProduct = async (id) => {
-  return await api.delete(`products/${id}`)
-}
+  return await api.delete(`products/${id}`);
+};
+
+export const UploadFileAPI = async (files) => {
+  return await api.post(`products/upload`, files);
+};

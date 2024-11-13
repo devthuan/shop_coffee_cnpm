@@ -17,9 +17,8 @@ export class ProductController {
   @UseGuards(AuthGuardCustom)
   @Permissions("CREATE_PRODUCT")
   @Post()
-  @UseInterceptors(FilesInterceptor('files'))
-  createProduct(@UploadedFiles() files: Array<Express.Multer.File>, @Body() createProductDto: CreateProductDto) {
-    return this.productService.createProduct(files, createProductDto);
+  createProduct( @Body() createProductDto: CreateProductDto) {
+    return this.productService.createProduct(createProductDto);
   }
 
   @Get()
@@ -52,8 +51,8 @@ export class ProductController {
   @UseGuards(AuthGuardCustom)
   @Permissions("UPDATE_PRODUCT")
   @Patch(':id')
-  updateProduct(@UploadedFiles() files: Array<Express.Multer.File>, @Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productService.updateProduct(id,files, updateProductDto);
+  updateProduct( @Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+    return this.productService.updateProduct(id, updateProductDto);
   }
 
   @UseGuards(PermissionsGuard)

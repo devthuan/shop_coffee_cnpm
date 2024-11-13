@@ -25,7 +25,7 @@ export const accountsSlice = createSlice({
     },
 
     addAccount: (state, action) => {
-      state.data.push(action.payload);
+      state.data.unshift(action.payload);
       state.loading = false;
     },
 

@@ -16,6 +16,7 @@ import {
 } from "~/redux/features/Notifications/NotificationsSilce";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import Loading from "~/components/Loading/Loading";
+import { ToastContainer } from "react-toastify";
 
 const cx = classNames.bind(styles);
 export const Notification = () => {
@@ -34,7 +35,7 @@ export const Notification = () => {
     currentPage: 1,
     limit: 10,
   });
-  
+
   // Array chứa danh sách tiêu đề bảng
   const tableTitles = [
     "ID",
@@ -189,7 +190,6 @@ export const Notification = () => {
       }
     };
 
-    dispatch(clearDataNotification());
 
     setTimeout(() => {
       fetchData();
@@ -247,6 +247,7 @@ export const Notification = () => {
                       })}
                     </select>
                   </div>
+
                   {/* box input search */}
                   <div className="max-w-lg">
                     <div className="relative">
@@ -380,6 +381,20 @@ export const Notification = () => {
               />
             </>
           )}
+          <ToastContainer
+            className="text-base"
+            fontSize="10px"
+            position="top-right"
+            autoClose={2000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
         </div>
       )}
     </>

@@ -19,11 +19,17 @@ import { toast, ToastContainer } from "react-toastify";
 import Loading from "~/components/Loading/Loading";
 
 import { GetAllDiscount, DeleteDiscount } from "~/services/DiscountService";
-import { initDataDiscount, deleteDiscount } from "~/redux/features/Discounts/discountsSlice";
+import {
+  initDataDiscount,
+  deleteDiscount,
+} from "~/redux/features/Discounts/discountsSlice";
 
 // import { GetAllReceipt } from "~/services/ReceiptService";
 // import { initDataReceipt } from "~/redux/features/Receipts/receiptsSlice";
 // const cx = classNames.bind(styles);
+// import { GetAllReceipt } from "~/services/ReceiptService";
+
+const cx = classNames.bind(styles);
 export const Receipt = () => {
   const dispatch = useDispatch();
   const dataImportReceipts = useSelector((state) => state.receipts.data);
@@ -67,37 +73,36 @@ export const Receipt = () => {
 
   const fetchReceipt = async () => {
     try {
-        let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
+      let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
 
-        if (sortOption === "createdAt_ASC") {
-          queryParams += `&sortBy=createdAt&sortOrder=ASC`;
-        } else if (sortOption === "createdAt_DESC") {
-          queryParams += `&sortBy=createdAt&sortOrder=DESC`;
-        } else if (sortOption === "total_ASC") {
-          queryParams += `&sortBy=totalAmount&sortOrder=ASC`;
-        } else if (sortOption === "total_DESC") {
-          queryParams += `&sortBy=totalAmount&sortOrder=DESC`;
-        }
+      if (sortOption === "createdAt_ASC") {
+        queryParams += `&sortBy=createdAt&sortOrder=ASC`;
+      } else if (sortOption === "createdAt_DESC") {
+        queryParams += `&sortBy=createdAt&sortOrder=DESC`;
+      } else if (sortOption === "total_ASC") {
+        queryParams += `&sortBy=totalAmount&sortOrder=ASC`;
+      } else if (sortOption === "total_DESC") {
+        queryParams += `&sortBy=totalAmount&sortOrder=DESC`;
+      }
 
-        if (filterOption === "filter_pending") {
-          queryParams += `&status=pending`;
-        } else if (filterOption === "filter_approved") {
-          queryParams += `&status=approved`;
-        } else if (filterOption === "filter_rejected") {
-          queryParams += `&status=rejected`;
-        } else if (filterOption === "all") {
-          queryParams += ``;
-        }
+      if (filterOption === "filter_pending") {
+        queryParams += `&status=pending`;
+      } else if (filterOption === "filter_approved") {
+        queryParams += `&status=approved`;
+      } else if (filterOption === "filter_rejected") {
+        queryParams += `&status=rejected`;
+      } else if (filterOption === "all") {
+        queryParams += ``;
+      }
 
-        const result = await GetAllReceiptAPI(queryParams);
-        dispatch(initDataReceipt(result.data));
+      const result = await GetAllReceiptAPI(queryParams);
+      dispatch(initDataReceipt(result.data));
     } catch (error) {
-       const result = HandleApiError(error);
-       result
-         ? toast.error(result)
-         : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+      const result = HandleApiError(error);
+      result
+        ? toast.error(result)
+        : toast.error("Có lỗi xảy ra, vui lòng thử lại");
     }
-  
   };
 
   const handleFilter = (e) => {
@@ -139,16 +144,13 @@ export const Receipt = () => {
   };
 
   useEffect(() => {
-    dispatch(clearDataReceipt());
     setTimeout(() => {
       fetchReceipt();
     }, 800);
- 
   }, [sortOption, filterOption, optionLimit]);
 
   useEffect(() => {
     const fetchData = async () => {
-      dispatch(clearDataReceipt());
       try {
         let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
         const response = await GetAllReceiptAPI(queryParams);

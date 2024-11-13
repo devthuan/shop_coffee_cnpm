@@ -115,8 +115,6 @@ export const Warehouse = () => {
       }
     };
 
-    dispatch(clearDataInventory());
-
     setTimeout(() => {
       fetchData();
     }, 800);

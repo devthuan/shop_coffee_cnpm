@@ -12,7 +12,7 @@ const initialState = {
     typeLogin: "",
     isActive: "",
     lastLogin: "",
-    userInformation: null,
+    userInformation: {},
     loading: true,
     error: null,
 };
@@ -53,10 +53,21 @@ export const userInfoSlice = createSlice({
             state.loading =true;
             state.error =null;
         },
+        updateUserInfo: (state, action) => {
+            const { fullName, phoneNumber, address1, avatar } = action.payload;
+            state.userInformation = {
+                ...state.userInformation, // Giữ lại các thuộc tính không thay đổi
+                fullName: fullName ?? state.userInformation.fullName,
+                phoneNumber: phoneNumber ?? state.userInformation.phoneNumber,
+                address1: address1 ?? state.userInformation.address1,
+                avatar: avatar ?? state.userInformation.avatar
+            };
+        }
+        
     },
 });
 
 // Export các action
-export const { initDataUserInfo, clearDataUserInfo } = userInfoSlice.actions;
+export const { initDataUserInfo, clearDataUserInfo, updateUserInfo } = userInfoSlice.actions;
 
 export default userInfoSlice.reducer;

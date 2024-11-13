@@ -10,25 +10,28 @@ import { ToastContainer, toast } from "react-toastify";
 
 import { ModalAddAttribute } from "./ModalAddAttribute";
 import { DeleteAttribute, GetAllAttribute } from "~/services/AttributeService";
-import { deleteAttribute, initDataAttribute } from "~/redux/features/Attributes/attributesSlice";
+import {
+  deleteAttribute,
+  initDataAttribute,
+} from "~/redux/features/Attributes/attributesSlice";
 
 // const cx = classNames.bind(styles);
 export const Attribute = () => {
-  const dispatch = useDispatch()
-  const attributes = useSelector(state => state.attributes.data)
+  const dispatch = useDispatch();
+  const attributes = useSelector((state) => state.attributes.data);
 
-  const total = useSelector(state => state.attributes.total)
-  const totalPage = useSelector(state => state.attributes.totalPage)
-  const currentPage = useSelector(state => state.attributes.currentPage)
-  const limit = useSelector(state => state.attributes.limit)
-  const isLoading = useSelector(state => state.attributes.isLoading)
+  const total = useSelector((state) => state.attributes.total);
+  const totalPage = useSelector((state) => state.attributes.totalPage);
+  const currentPage = useSelector((state) => state.attributes.currentPage);
+  const limit = useSelector((state) => state.attributes.limit);
+  const isLoading = useSelector((state) => state.attributes.isLoading);
   const [optionLimit, setOptionLimit] = useState({
     currentPage: 1,
-    limit: 10
-  })
+    limit: 10,
+  });
 
-  const [selectSearch, setSelectedSearch] = useState(0)
-  const [search, setSearch] = useState("")
+  const [selectSearch, setSelectedSearch] = useState(0);
+  const [search, setSearch] = useState("");
 
   // biến chứa danh sách nội dung của bảng
   const fetchData = async () => {
@@ -46,57 +49,55 @@ export const Attribute = () => {
     fetchData();
   }, [optionLimit.currentPage, optionLimit.limit]);
 
-
   const handlePaginate = (page) => {
-    setOptionLimit(prev => ({
+    setOptionLimit((prev) => ({
       ...prev,
-      currentPage: page
-    }))
-  }
+      currentPage: page,
+    }));
+  };
 
   const handleLimitAttribute = (limit) => {
-    setOptionLimit(prev => ({
+    setOptionLimit((prev) => ({
       limit: limit,
-      currentPage: 1
-    }))
-  }
+      currentPage: 1,
+    }));
+  };
 
   const handleDeleteAttribute = async (id) => {
     try {
-      const response = await DeleteAttribute(id)
+      const response = await DeleteAttribute(id);
       if (response && response.status === 200) {
         // dispatch(deleteAttribute({id}))
         if (attributes.length - 1 < optionLimit.limit) {
           fetchData();
         }
       }
-    }
-    catch (error) {
+    } catch (error) {
       const result = HandleApiError(error);
-      console.log(result)
+      console.log(result);
       if (result) {
         toast.error(result.message);
       } else {
         toast.error("Có lỗi xảy ra, vui lòng thử lại");
       }
     }
-  }
+  };
 
   const handleSearch = async () => {
-    let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&search=${search}`
-    const response = await GetAllAttribute(queryParams)
+    let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&search=${search}`;
+    const response = await GetAllAttribute(queryParams);
     if (response && response.status === 200) {
-      dispatch(initDataAttribute(response.data))
+      dispatch(initDataAttribute(response.data));
     }
-  }
+  };
   // Array chứa danh sách tiêu đề bảng
   const tableTitles = [
-    // "Id",
-    "Name",
-    "Description",
-    // "Created At",
-    // "Updated At",
-    "Action"
+    "ID",
+    "Tên thuộc tính",
+    "Mô tả",
+    "Ngày tạo",
+    "Cập nhật cuối",
+    "Hành động",
   ];
 
   return (
@@ -123,7 +124,10 @@ export const Attribute = () => {
                 clipRule="evenodd"
               />
             </svg>
-            <select onChange={(e) => setSelectedSearch(e.target.value)} className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2">
+            <select
+              onChange={(e) => setSelectedSearch(e.target.value)}
+              className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
+            >
               <option value="0">Id</option>
               <option value="1">Name</option>
             </select>
@@ -185,28 +189,41 @@ export const Attribute = () => {
             </tr>
           </thead>
           <tbody className="text-gray-600 divide-y">
-            {attributes && attributes?.length > 0 && attributes?.map((attribute, idx) => (
-              <tr key={idx}>
-                {/* <td className="pr-6 py-4 whitespace-nowrap">{category.id}</td> */}
-                <td className="pr-6 py-4 whitespace-nowrap">{attribute.name}</td>
-                <td className="pr-6 py-4 whitespace-nowrap">{attribute.description}</td>
-                {/* <td className="pr-6 py-4 whitespace-nowrap">{attribute.createdAt}</td> */}
-                {/* <td className="pr-6 py-4 whitespace-nowrap">{attribute.updatedAt}</td> */}
-                <td className="text-right px-6 whitespace-nowrap">
-                  <div className="max-w-5 flex justify-center items-center">
-                    <p className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
-                      <ModalEditAttribute data={attribute} />
-                    </p>
-                    <p
-                      // để tham số rỗng ở đầu khi khi onlick vào mới chạy hàm handleDeletedProduct
-                      onClick={() => handleDeleteAttribute(attribute.id)}
-                      className="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
-                      Delete
-                    </p>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {attributes &&
+              attributes?.length > 0 &&
+              attributes?.map((attribute, idx) => (
+                <tr key={idx}>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {attribute.id.slice(0, 12)} ...
+                  </td>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {attribute.name}
+                  </td>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {attribute.description}
+                  </td>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {new Date(attribute.createdAt).toLocaleString()}
+                  </td>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {new Date(attribute.updatedAt).toLocaleString()}
+                  </td>
+                  <td className="text-right px-6 whitespace-nowrap">
+                    <div className="max-w-5 flex justify-center items-center">
+                      <p className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
+                        <ModalEditAttribute data={attribute} />
+                      </p>
+                      <p
+                        // để tham số rỗng ở đầu khi khi onlick vào mới chạy hàm handleDeletedProduct
+                        onClick={() => handleDeleteAttribute(attribute.id)}
+                        className="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer"
+                      >
+                        Xoá
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
