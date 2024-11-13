@@ -3,32 +3,32 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { toast, ToastContainer } from "react-toastify";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { useDispatch, useSelector } from "react-redux";
-import { GetAllProduct } from "~/services/ProductService";
-import { initDataProduct } from "~/redux/features/Products/productsSlice";
-import { AddDiscount } from "~/services/DiscountService";
-import { addDiscount } from "~/redux/features/Discounts/discountsSlice";
-export const ModalAddDiscount = () => {
+import { updateReview } from "~/redux/features/Reviews/reviewsSlice";
+import { UpdateReview } from "~/services/ReviewService";
+export const ModalEditReview = ({ data }) => {
+    console.log(data)
     const dispatch = useDispatch()
-    const products = useSelector(state => state.productss.data)
     const [formData, setFormData] = useState({
-        name: "",
-        code: "",
-        quantity: "",
-        value: "",
-        startDate: "",
-        endDate: "",
-        productId: ""
+        id : data.id,
+        rating : data.rating,
+        comment : data.comment,
+        createdAt : data.createdAt,
+        updatedAt : data.updatedAt
     })
 
     useEffect(() => {
-        const fetchData = async () => {
-            const response = await GetAllProduct("limit=1000")
-            if (response && response.status === 200) {
-                dispatch(initDataProduct(response.data))
-            }
+        if (data) {
+            setFormData({
+                id: data.id,
+                rating: data.rating,
+               comment : data.comment,
+                createdAt: data.createdAt,
+                updatedAt: data.updatedAt,
+            })
         }
-        fetchData()
-    }, [])
+    }, [data])
+
+
 
     const handleChangeInput = (event) => {
         const { name, value } = event.target
@@ -39,13 +39,18 @@ export const ModalAddDiscount = () => {
     }
 
     const handleSubmit = async (e) => {
+        const reviewData = {
+            rating : Number(formData.rating),
+            comment : formData.comment
+        }
         e.preventDefault()
         try {
-            console.log(formData)
-            const response = await AddDiscount(formData)
-            if (response && response.status === 201) {
-                dispatch(addDiscount(response.data))
-                toast.success("Áp dụng giảm giá sản phẩm thành công")
+            console.log(reviewData)
+            const response = await UpdateReview(data.id, reviewData)
+            console.log(response)
+            if (response && response.status === 200) {
+                dispatch(updateReview({id : data.id, ...reviewData}))
+                toast.success(`Chỉnh sửa đánh giá thành công`)
             }
         }
         catch (error) {
@@ -62,8 +67,8 @@ export const ModalAddDiscount = () => {
     console.log(formData)
     return (
         <Dialog.Root>
-            <Dialog.Trigger className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm">
-                Create Discount
+            <Dialog.Trigger>
+                Sửa
             </Dialog.Trigger>
             <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 w-full h-full bg-black opacity-40" />
@@ -72,7 +77,7 @@ export const ModalAddDiscount = () => {
                     <div className="bg-white rounded-md shadow-lg">
                         <div className="flex items-center justify-between p-1 pl-4 border-b">
                             <Dialog.Title className="text-lg font-medium text-gray-800">
-                                Create Account
+                                Update Attribute
                             </Dialog.Title>
                             <Dialog.Close className="p-2 text-gray-400 rounded-md hover:bg-gray-100">
                                 <svg
@@ -92,14 +97,15 @@ export const ModalAddDiscount = () => {
 
                         <Dialog.Description className="space-y-2 p-4 mt-3 text-[15.5px] leading-relaxed text-gray-500">
                             <div className="grid grid-cols-2 gap-y-2">
+
                                 <div>
-                                    <label className="text-gray-600">Tên chương trình</label>
+                                    <label className="text-gray-600">Id</label>
                                     <div className="relative max-w-xs mt-2">
                                         <input
                                             type="text"
-                                            name="name"
-                                            onChange={handleChangeInput}
-                                            value={formData.name}
+                                            name="id"
+                                            readOnly
+                                            value={formData?.id}
                                             placeholder="Tên chương trình"
                                             className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                                         />
@@ -107,54 +113,43 @@ export const ModalAddDiscount = () => {
                                 </div>
 
                                 <div>
-                                    <label className="text-gray-600">Mã giảm giá</label>
+                                    <label className="text-gray-600">Rating</label>
                                     <div className="relative max-w-xs mt-2">
                                         <input
                                             type="text"
-                                            name="code"
-                                            value={formData.code}
+                                            name="rating"
                                             onChange={handleChangeInput}
-                                            placeholder="Mã giảm giá"
+                                            value={formData?.rating}
+                                            placeholder="Tên chương trình"
                                             className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                                         />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="text-gray-600">Số lượng</label>
+                                    <label className="text-gray-600">Comment</label>
                                     <div className="relative max-w-xs mt-2">
                                         <input
                                             type="text"
-                                            name="quantity"
-                                            value={formData.quantity}
+                                            name="comment"
+                                            value={formData?.comment}
                                             onChange={handleChangeInput}
-                                            placeholder="Số lượng"
+                                            placeholder="Tên chương trình"
                                             className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                                         />
                                     </div>
                                 </div>
 
-                                <div>
-                                    <label className="text-gray-600">Mức giảm giá</label>
-                                    <div className="relative max-w-xs mt-2">
-                                        <input
-                                            type="text"
-                                            name="value"
-                                            value={formData.value}
-                                            onChange={handleChangeInput}
-                                            placeholder="Mức giảm giá"
-                                            className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
-                                        />
-                                    </div>
-                                </div>
+                              
 
                                 <div>
-                                    <label className="text-gray-600">Ngày bắt đầu</label>
+                                    <label className="text-gray-600">Created At</label>
                                     <div className="relative max-w-xs mt-2">
                                         <input
-                                            type="date"
+                                            readOnly
+                                            type="text"
                                             name="startDate"
-                                            value={formData.startDate}
+                                            value={formData?.createdAt}
                                             onChange={handleChangeInput}
                                             className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                                         />
@@ -162,33 +157,19 @@ export const ModalAddDiscount = () => {
                                 </div>
 
                                 <div>
-                                    <label className="text-gray-600">Ngày kết thúc</label>
+                                    <label className="text-gray-600">Updated At</label>
                                     <div className="relative max-w-xs mt-2">
                                         <input
-                                            type="date"
-                                            name="endDate"
-                                            value={formData.endDate}
+                                            readOnly
+                                            type="text"
+                                            name="startDate"
+                                            value={formData?.updatedAt}
                                             onChange={handleChangeInput}
                                             className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                                         />
                                     </div>
                                 </div>
-                                <div className="relative max-w-xs mt-2">
-                                    <label className="text-gray-600">Sản phẩm</label>
-                                    <select
-                                        name="productId"
-                                        onChange={handleChangeInput}
-                                        value={formData.productId}
-                                        className="w-full pr-12 pl-3 py-2 mt-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
-                                    >
-                                        {products && products.length > 0 && products.map((product) => {
-                                            return (
-                                                <option value={product.id}>{product.name}</option>
-                                            )
-                                        })}
-
-                                    </select>
-                                </div>
+                                
                             </div>
 
                             <ToastContainer
@@ -212,7 +193,7 @@ export const ModalAddDiscount = () => {
                                 className="px-3 py-1 text-xl flex justify-center items-center gap-x-5 text-white bg-green-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2"
                                 onClick={handleSubmit}
                             >
-                                Create
+                                Update
                             </button>
                             <Dialog.Close asChild>
                                 <button

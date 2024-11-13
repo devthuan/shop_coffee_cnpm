@@ -5,26 +5,28 @@ import { HandleApiError } from "~/Utils/HandleApiError";
 import { useDispatch, useSelector } from "react-redux";
 import { GetAllProduct } from "~/services/ProductService";
 import { initDataProduct } from "~/redux/features/Products/productsSlice";
-import { AddDiscount } from "~/services/DiscountService";
-import { addDiscount } from "~/redux/features/Discounts/discountsSlice";
-export const ModalAddDiscount = () => {
+import { AddReview } from "~/services/ReviewService";
+import { addReview } from "~/redux/features/Reviews/reviewsSlice";
+import { GetAllAccountAPI } from "~/services/AccountService";
+import { initDataAccount } from "~/redux/features/Accounts/accountsSilce";
+export const ModalAddReview = () => {
     const dispatch = useDispatch()
+    const accounts = useSelector(state => state.accounts.data)
     const products = useSelector(state => state.productss.data)
     const [formData, setFormData] = useState({
-        name: "",
-        code: "",
-        quantity: "",
-        value: "",
-        startDate: "",
-        endDate: "",
-        productId: ""
+        rating: "",
+        comment: "",
+        productsId: 0
+        // accountId : ""
     })
 
     useEffect(() => {
         const fetchData = async () => {
             const response = await GetAllProduct("limit=1000")
+            const responseAccount = await GetAllAccountAPI("limit=1000")
             if (response && response.status === 200) {
                 dispatch(initDataProduct(response.data))
+                dispatch(initDataAccount(responseAccount.data))
             }
         }
         fetchData()
@@ -34,7 +36,8 @@ export const ModalAddDiscount = () => {
         const { name, value } = event.target
         setFormData({
             ...formData,
-            [name]: name === "quantity" || name === "value" ? Number(value) : value
+            [name]: name === "rating"  ? Number(value) : value
+
         })
     }
 
@@ -42,10 +45,10 @@ export const ModalAddDiscount = () => {
         e.preventDefault()
         try {
             console.log(formData)
-            const response = await AddDiscount(formData)
+            const response = await AddReview(formData)
             if (response && response.status === 201) {
-                dispatch(addDiscount(response.data))
-                toast.success("Áp dụng giảm giá sản phẩm thành công")
+                dispatch(addReview(response.data))
+                toast.success("Thêm nhận xét sản phẩm thành công")
             }
         }
         catch (error) {
@@ -63,7 +66,7 @@ export const ModalAddDiscount = () => {
     return (
         <Dialog.Root>
             <Dialog.Trigger className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm">
-                Create Discount
+                Create Review
             </Dialog.Trigger>
             <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 w-full h-full bg-black opacity-40" />
@@ -72,7 +75,7 @@ export const ModalAddDiscount = () => {
                     <div className="bg-white rounded-md shadow-lg">
                         <div className="flex items-center justify-between p-1 pl-4 border-b">
                             <Dialog.Title className="text-lg font-medium text-gray-800">
-                                Create Account
+                                Create Review
                             </Dialog.Title>
                             <Dialog.Close className="p-2 text-gray-400 rounded-md hover:bg-gray-100">
                                 <svg
@@ -93,97 +96,62 @@ export const ModalAddDiscount = () => {
                         <Dialog.Description className="space-y-2 p-4 mt-3 text-[15.5px] leading-relaxed text-gray-500">
                             <div className="grid grid-cols-2 gap-y-2">
                                 <div>
-                                    <label className="text-gray-600">Tên chương trình</label>
+                                    <label className="text-gray-600">Rating</label>
                                     <div className="relative max-w-xs mt-2">
                                         <input
                                             type="text"
-                                            name="name"
+                                            name="rating"
                                             onChange={handleChangeInput}
-                                            value={formData.name}
-                                            placeholder="Tên chương trình"
+                                            value={formData.rating}
+                                            placeholder="Rating"
                                             className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                                         />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="text-gray-600">Mã giảm giá</label>
+                                    <label className="text-gray-600">Comment</label>
                                     <div className="relative max-w-xs mt-2">
                                         <input
                                             type="text"
-                                            name="code"
-                                            value={formData.code}
+                                            name="comment"
+                                            value={formData.comment}
                                             onChange={handleChangeInput}
-                                            placeholder="Mã giảm giá"
+                                            placeholder="Comment"
                                             className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                                         />
                                     </div>
                                 </div>
 
-                                <div>
-                                    <label className="text-gray-600">Số lượng</label>
-                                    <div className="relative max-w-xs mt-2">
-                                        <input
-                                            type="text"
-                                            name="quantity"
-                                            value={formData.quantity}
-                                            onChange={handleChangeInput}
-                                            placeholder="Số lượng"
-                                            className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="text-gray-600">Mức giảm giá</label>
-                                    <div className="relative max-w-xs mt-2">
-                                        <input
-                                            type="text"
-                                            name="value"
-                                            value={formData.value}
-                                            onChange={handleChangeInput}
-                                            placeholder="Mức giảm giá"
-                                            className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="text-gray-600">Ngày bắt đầu</label>
-                                    <div className="relative max-w-xs mt-2">
-                                        <input
-                                            type="date"
-                                            name="startDate"
-                                            value={formData.startDate}
-                                            onChange={handleChangeInput}
-                                            className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="text-gray-600">Ngày kết thúc</label>
-                                    <div className="relative max-w-xs mt-2">
-                                        <input
-                                            type="date"
-                                            name="endDate"
-                                            value={formData.endDate}
-                                            onChange={handleChangeInput}
-                                            className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
-                                        />
-                                    </div>
-                                </div>
                                 <div className="relative max-w-xs mt-2">
                                     <label className="text-gray-600">Sản phẩm</label>
                                     <select
-                                        name="productId"
+                                        name="productsId"
                                         onChange={handleChangeInput}
-                                        value={formData.productId}
+                                        value={formData.productsId}
                                         className="w-full pr-12 pl-3 py-2 mt-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                                     >
+                                        <option value = "0">Chọn sản phẩm</option>
                                         {products && products.length > 0 && products.map((product) => {
                                             return (
                                                 <option value={product.id}>{product.name}</option>
+                                            )
+                                        })}
+
+                                    </select>
+                                </div>
+
+                                <div className="relative max-w-xs mt-2">
+                                    <label className="text-gray-600">Người dùng</label>
+                                    <select
+                                        name="accountId"
+                                        onChange={handleChangeInput}
+                                        value={formData.accountId}
+                                        className="w-full pr-12 pl-3 py-2 mt-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                                    >
+                                        {accounts && accounts.length > 0 && accounts.map((account) => {
+                                            return (
+                                                <option value={account.id}>{account.userName}</option>
                                             )
                                         })}
 
