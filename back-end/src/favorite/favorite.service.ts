@@ -8,6 +8,7 @@ import { CommonException } from 'src/common/exception';
 import { Accounts } from 'src/auth/entities/accounts.entity';
 import { BaseService } from 'src/common/baseService';
 import { ProductService } from 'src/product/product.service';
+import { AnyMxRecord } from 'dns';
 
 @Injectable()
 export class FavoriteService extends BaseService<Favorite> {
@@ -83,7 +84,7 @@ export class FavoriteService extends BaseService<Favorite> {
     }
   }
 
-  async addFavoriteList(createFavoriteDto: CreateFavoriteDto): Promise<{message: string}>{
+  async addFavoriteList(createFavoriteDto: CreateFavoriteDto): Promise<any>{
     try {
       // check account
       const account = await this.accountsRepository.createQueryBuilder('accounts')
@@ -121,10 +122,8 @@ export class FavoriteService extends BaseService<Favorite> {
 
       })
       await this.favoriteRepository.save(favoriteList);
-      
-      return {
-        message: 'Added to favorite list successfully',
-      }
+      delete favoriteList.account;
+      return favoriteList;
       
     } catch (error) {
       CommonException.handle(error)
@@ -141,7 +140,7 @@ export class FavoriteService extends BaseService<Favorite> {
         throw new BadRequestException('Favorite list not found');
       }
       
-      this.favoriteRepository.remove(favoriteList);
+      await this.favoriteRepository.remove(favoriteList);
       return {
         message: 'Removed from favorite list successfully',
       }
