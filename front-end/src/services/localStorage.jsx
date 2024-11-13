@@ -27,5 +27,8 @@ function getItemWithExpiration(key) {
     return false;
   }
 }
+function removeToken() {
+  localStorage.removeItem("token");
+}
 
-export { setItemWithExpiration, getItemWithExpiration };
+export { setItemWithExpiration, getItemWithExpiration, removeToken};

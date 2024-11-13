@@ -43,6 +43,7 @@ export const Receipt = () => {
     currentPage: 1,
     limit: 10,
   });
+  
   const [sortOption, setSortOption] = useState("");
   const [filterOption, setFilterOption] = useState("");
 

@@ -36,6 +36,6 @@ export const productSlice = createSlice({
 });
 
 // Export các action
-export const { initDataProduct,clearDataProduct } = productSlice.actions;
+export const { initDataProduct, clearDataProduct } = productSlice.actions;
 
 export default productSlice.reducer;

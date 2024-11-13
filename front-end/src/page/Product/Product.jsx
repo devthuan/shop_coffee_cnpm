@@ -52,10 +52,7 @@ export const Product = () => {
         toast.error("Có lỗi xảy ra, vui lòng thử lại");
       }
     }
-
-
   };
-
   var settings = {
     dots: true,
     infinite: true,
@@ -110,10 +107,7 @@ export const Product = () => {
 
   return (
     <div className="">
-      <p onClick={() => navigate('../cart')}>Vào giỏ hàng</p>
-
       <div className={cx("mb-7")}>
-
         {product && statistical && product.images ? (
           <div className={cx("rounded-s-xl grid lg:grid-cols-11 max-sm:gap-7 border border-gray-200 mb-16")}>
             <div className={cx("lg:col-span-5")}>

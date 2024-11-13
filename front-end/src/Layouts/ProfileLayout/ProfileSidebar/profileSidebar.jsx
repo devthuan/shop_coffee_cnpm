@@ -49,22 +49,23 @@ function ProfileSidebar() {
                         </Link>
                     </ul>
                 </li>
-
                 <li className={cx("list_item")}>
                     <ul className={cx("list_item_container")}>
                         Các mục của tôi
-                        
+                        <Link to="/profile/favoriteUser">
                         <li className={cx("list_item_item")}>
                             <FontAwesomeIcon icon={faHeart} className={cx("item_icon")} />
                             <div className={cx("item_text")}>yêu thích</div>
                         </li>
+                        </Link>
+                        <Link to="/profile/billAccount">
                         <li className={cx("list_item_item")}>
                             <FontAwesomeIcon icon={faCartPlus} className={cx("item_icon")} />
                             <div className={cx("item_text")}>đã mua</div>
                         </li>
+                        </Link>
                     </ul>
                 </li>
-
                 <li className={cx("list_item")}>
                     <ul className={cx("list_item_container")}>
                        hỗ trợ

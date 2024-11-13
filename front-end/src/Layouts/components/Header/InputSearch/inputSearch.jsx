@@ -21,6 +21,7 @@ function InputSearch({ handleCLickSearch }) {
             try {
                 let queryParams = `search=${valueSearch}`;
                 const response = await getALLProducts(queryParams);
+                console.log(response.data.data)
                 setResultSearch(response.data.data);
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -61,8 +62,9 @@ function InputSearch({ handleCLickSearch }) {
                             <ul className={cx("container")}>
                                 {resultSearch.map((item, index) => (
                                     <li className={cx("item")} key={index}>
-                                        <img src={item.images[0]?.urlImage || item_cf} className={cx("img_item")} alt="Item" />
+                                        <img src={item.images[0]?.urlImage} className={cx("img_item")} alt="Item" />
                                         <div className={cx("name_item")}>{item.name}</div>
+                                        <div className={cx("name_item")}>{item.productAttributes[0]?.sellPrice}</div>
                                     </li>
                                 ))}
                             </ul>

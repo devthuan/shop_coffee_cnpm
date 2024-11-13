@@ -22,6 +22,8 @@ import authReducer from "./features/AuthSlice/authSlice"; // Đường dẫn t�
 import notificationReducer from "./features/Notifications/NotificationsSilce";
 import notificationUserReducer from "./features/Notifications/NotificationsUserSlice"; //
 import paymentsReducer from "./features/Payments/paymentsSlice"
+import favoriteUserReducer from "~/redux/features/FavoriteUser/favoriteUserSlice";
+import billAccountReducer from "~/redux/features/BillAccount/billAccountSlice";
 
 
 export const store = configureStore({
@@ -47,7 +49,9 @@ export const store = configureStore({
     notifications: notificationReducer,
     notificationUser: notificationUserReducer,
     statistical: statisticalReducer,
-    payments : paymentsReducer
+    payments : paymentsReducer,
+    favoriteUser : favoriteUserReducer,
+    billAccount : billAccountReducer
   },
 
   // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
