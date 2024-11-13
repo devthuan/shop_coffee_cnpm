@@ -224,11 +224,11 @@ export const Warehouse = () => {
                         <td className="flex items-center gap-x-3 py-3 px-2 whitespace-nowrap">
                           <img
                             src={
-                              item.products?.images?.url
-                                ? item.products?.images?.url
+                              item.products?.images[0]?.urlImage
+                                ? item.products?.images[0]?.urlImage
                                 : "https://randomuser.me/api/portraits/men/86.jpg"
                             }
-                            className="w-10 h-10 rounded-full"
+                            className="w-10 h-10 "
                           />
                           <div>
                             <span className="block text-gray-700 text-sm font-medium">
