@@ -36,8 +36,6 @@ export class SupplierService extends BaseService<Supplier> {
       { column: 'name', value: createSupplierDto.name },
       { column: 'email', value: createSupplierDto.email },
       { column: 'phone', value: createSupplierDto.phone },
-      { column: 'website', value: createSupplierDto.website },
-      { column: 'bankAccountNumber', value: createSupplierDto.bankAccountNumber }
     ];
 
     for (const { column, value } of columnsToCheck) {
@@ -50,13 +48,24 @@ export class SupplierService extends BaseService<Supplier> {
       const newSupplier = await this.create(createSupplierDto);
       await queryRunner.manager.save(newSupplier);
 
+      let dataDetailSupplier =[]
       for(let detailSupplier of createSupplierDto.detailSuppliers) {
           detailSupplier.supplierId = newSupplier.id
-         await this.createDetailSupplier(detailSupplier, queryRunner);
+         dataDetailSupplier.push(await this.createDetailSupplier(detailSupplier, queryRunner))
 
       }
 
       await queryRunner.commitTransaction();
+      
+      let dataFormat = dataDetailSupplier.map(item => ({
+        id:item.id,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+        price: item.price,
+        version: item.version
+      }))
+
+      newSupplier['detailSupplier'] = dataFormat as any
 
       return newSupplier;
     } catch (error) {
@@ -123,80 +132,83 @@ export class SupplierService extends BaseService<Supplier> {
   }
 
   async findAll(
-      search: string,
-      page : number = 1,
-      limit : number = 10,
-      sortBy : string = 'createdAt',
-      sortOrder: 'ASC' | 'DESC' = 'ASC',
-      filters: Record<string, any> = {} // Nhận filters từ controller
-    ): Promise<{ total: number;  currentPage: number; totalPage: number; limit : number; data: Supplier[]}> 
-    { 
-    try {
-        const queryBuilder = this.supplierRepository.createQueryBuilder('supplier')
-          .leftJoinAndSelect('supplier.detailSupplier', 'detailSupplier')
-          .where('supplier.deletedAt IS NULL')
+  search: string,
+  page: number = 1,
+  limit: number = 10,
+  sortBy: string = 'createdAt',
+  sortOrder: 'ASC' | 'DESC' = 'ASC',
+  filters: Record<string, any> = {}
+): Promise<{ total: number; currentPage: number; totalPage: number; limit: number; data: Supplier[] }> {
+  try {
+    const queryBuilder = this.supplierRepository.createQueryBuilder('supplier')
+      .leftJoinAndSelect('supplier.detailSupplier', 'detailSupplier')
+      .leftJoinAndSelect('detailSupplier.productAttribute', 'productAttribute')
+      .leftJoinAndSelect('productAttribute.products', 'products')
+      .leftJoinAndSelect('productAttribute.attributes', 'attributes')
+      .where('supplier.deletedAt IS NULL')
+      .andWhere('detailSupplier.deletedAt IS NULL');
+  
 
-          if (search) {
-            queryBuilder.andWhere('supplier.name LIKE :search', { search: `%${search}%` });
-          }
-
-           // Filter conditions
-            Object.keys(filters).forEach((key) => {
-              if (filters[key] !== undefined && filters[key] !== null) {
-                let value = filters[key];
-                
-                // Chuyển đổi giá trị 'true' hoặc 'false' thành boolean
-                if (value === 'true') value = true;
-                if (value === 'false') value = false;
-
-                queryBuilder.andWhere(`supplier.${key} = :${key}`, { [key]: value });
-              }
-            });
-
-          // count total
-          const total = await queryBuilder.getCount();
-
-         // pagination page
-          const data = await queryBuilder
-            .skip((page - 1) * limit) // Bỏ qua các bản ghi đã được hiển thị
-            .take(limit) // Giới hạn số bản ghi trả về
-            .orderBy(`supplier.${sortBy}`, sortOrder) // Sắp xếp theo trường chỉ định
-            .getMany(); // Lấy danh sách bản ghi
-
-
-      const totalPage = Math.ceil(total / limit);
-
-      return {
-        total,
-        totalPage,
-        currentPage: +page,
-        limit: +limit,
-        data
-      }
-    } catch (error) {
-      CommonException.handle(error)
+    // Search condition
+    if (search) {
+      queryBuilder.andWhere('supplier.name LIKE :search', { search: `%${search}%` });
     }
-  }
 
-  async getDetailSupplier(supplierId: string): Promise<Supplier[]>{
+    // Valid fields for filters (replace with actual fields of the `supplier` table)
+    const validFields = ['name', 'status', 'location']; // Add other fields as needed
+
+    // Filter conditions
+    Object.keys(filters).forEach((key) => {
+      if (validFields.includes(key) && filters[key] !== undefined && filters[key] !== null) {
+        let value = filters[key];
+
+        // Convert string boolean values to actual booleans
+        if (value === 'true') value = true;
+        if (value === 'false') value = false;
+
+        queryBuilder.andWhere(`supplier.${key} = :${key}`, { [key]: value });
+      }
+    });
+
+    // Count total records
+    const total = await queryBuilder.getCount();
+
+    // Pagination, sorting, and fetching data
+    const data = await queryBuilder
+      .skip((page - 1) * limit)
+      .take(limit)
+      .orderBy(`supplier.${sortBy}`, sortOrder)
+      .getMany();
+
+    const totalPage = Math.ceil(total / limit);
+
+    return {
+      total,
+      totalPage,
+      currentPage: page,
+      limit,
+      data
+    };
+  } catch (error) {
+    CommonException.handle(error);
+    throw new Error('Failed to fetch suppliers');
+  }
+}
+
+
+  async getDetailSupplier(supplierId: string): Promise<Supplier>{
     try {
-      const supplier = await this.supplierRepository
-        .createQueryBuilder('supplier')
-        .leftJoinAndSelect('supplier.detailSupplier', 'detailSupplier', 
-          `detailSupplier.version = (
-            SELECT MAX(ds.version)
-            FROM detailSupplier ds
-            WHERE ds.productAttributeId = detailSupplier.productAttributeId
-            AND ds.deletedAt IS NULL
-          )`
-        )
-        .leftJoinAndSelect('detailSupplier.productAttribute', 'productAttribute')
-        .leftJoinAndSelect('productAttribute.attributes', 'attributes')
-        .leftJoinAndSelect('productAttribute.products', 'products')
-        .where('supplier.id = :supplierId', { supplierId })
-        .andWhere('supplier.deletedAt IS NULL')
-        .andWhere('detailSupplier.deletedAt IS NULL')
-        .getMany();
+       const supplier = await this.supplierRepository
+      .createQueryBuilder('supplier')
+      .leftJoinAndSelect('supplier.detailSupplier', 'detailSupplier')
+      .leftJoinAndSelect('detailSupplier.productAttribute', 'productAttribute')
+      .leftJoinAndSelect('productAttribute.attributes', 'attributes')
+      .leftJoinAndSelect('productAttribute.products', 'products')
+      .where('supplier.id = :supplierId', { supplierId })
+      .andWhere('supplier.deletedAt IS NULL')
+      .andWhere('detailSupplier.deletedAt IS NULL')
+      
+      .getOne();
 
 
         if (!supplier) {
@@ -209,37 +221,94 @@ export class SupplierService extends BaseService<Supplier> {
     }
   }
 
-  async updateSupplier(id: string, updateSupplierDto: UpdateSupplierDto): Promise<Supplier> {
-    try {
-      const supplier = await this.findOne(id);
-      if (!supplier) {
-        throw new BadRequestException('Supplier not found');
-      }
+ async updateSupplier(id: string, updateSupplierDto: UpdateSupplierDto): Promise<Supplier> {
+  const queryRunner = this.dataSource.createQueryRunner();
 
-      // check duplicates
-    const columnsToCheck = [
-      { column: 'name', value: updateSupplierDto.name },
-      { column: 'email', value: updateSupplierDto.email },
-      { column: 'phone', value: updateSupplierDto.phone },
-      { column: 'website', value: updateSupplierDto.website },
-      { column: 'bankAccountNumber', value: updateSupplierDto.bankAccountNumber }
-    ];
-
-    for (const { column, value } of columnsToCheck) {
-      if (value && (await this.checkExistingCommon({ column, value, id }))) {
-        throw new BadRequestException(`Supplier ${column} already exists`);
-      }
-    }
+  try {
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     
-      Object.assign(supplier, updateSupplierDto);
-      await this.update(id, supplier);
-
-
-      return supplier;
-    } catch (error) {
-      CommonException.handle(error)
+    // Fetch the supplier along with its related detailSuppliers
+    const supplier = await this.getDetailSupplier(id);
+    if (!supplier) {
+      throw new BadRequestException('Supplier not found');
     }
+
+    // Check for duplicate values if any of the fields have changed
+    if (updateSupplierDto.name !== supplier.name && updateSupplierDto.email !== supplier.email && updateSupplierDto.phone !== supplier.phone) {
+      const columnsToCheck = [
+        { column: 'name', value: updateSupplierDto.name },
+        { column: 'email', value: updateSupplierDto.email },
+        { column: 'phone', value: updateSupplierDto.phone },
+      ];
+
+      for (const { column, value } of columnsToCheck) {
+        if (value && (await this.checkExistingCommon({ column, value, id }))) {
+          throw new BadRequestException(`Supplier ${column} already exists`);
+        }
+      }
+    }
+
+    // Update or create detailSuppliers
+    if (updateSupplierDto.detailSuppliers) {
+      for (let updateDetail of updateSupplierDto.detailSuppliers) {
+        const detailSupplier = supplier.detailSupplier.find(
+          (detail) => detail.productAttribute.id === updateDetail.productAttributeId
+        );
+
+        if (detailSupplier) {
+          // Update existing detailSupplier
+          detailSupplier.price = updateDetail.price;
+          detailSupplier.updatedAt = new Date();
+
+          await queryRunner.manager.save(detailSupplier);
+        } else {
+          // Create a new detailSupplier if it doesn't exist
+          const productAttribute = await this.productService.checkExistingProductAttributeNotQuantity(updateDetail.productAttributeId);
+
+          if (!productAttribute) {
+            throw new BadRequestException('Product Attribute not found');
+          }
+
+          // Create a new detailSupplier and set the supplier field correctly
+          const newDetail = this.detailSupplierRepository.create({
+            price: updateDetail.price,
+            version: 1,
+            supplier: supplier, // Ensure supplier is assigned correctly
+            productAttribute: productAttribute, // Ensure productAttribute is assigned correctly
+          });
+          
+          await this.detailSupplierRepository.save(newDetail)
+          // Save the new detailSupplier
+          // await queryRunner.manager.save(newDetail);
+        }
+      }
+    }
+
+    // Update the supplier data
+    supplier.updatedAt = new Date();
+   
+    Object.assign(supplier, updateSupplierDto);
+    await queryRunner.manager.save(supplier);
+
+    // Commit the transaction
+    await queryRunner.commitTransaction();
+
+
+
+    return supplier;
+  } catch (error) {
+    await queryRunner.rollbackTransaction();
+    CommonException.handle(error);
+  } finally {
+    await queryRunner.release();
   }
+}
+
+
+
+
+
 
   async addDetailSupplier(createDetailSupplier: CreateDetailSupplier): Promise<DetailSupplier> {
   const queryRunner = this.dataSource.createQueryRunner();
@@ -277,8 +346,8 @@ export class SupplierService extends BaseService<Supplier> {
         const newDetailSupplier = this.detailSupplierRepository.create({
           price: createDetailSupplier.price,
           version: existingDetailSupplier.version + 1,
-          supplier,
-          productAttribute,
+          supplier: supplier,
+          productAttribute: productAttribute,
         });
       await queryRunner.manager.save(newDetailSupplier); 
 

@@ -8,10 +8,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Products } from 'src/product/entities/products.entity';
 import { Accounts } from 'src/auth/entities/accounts.entity';
 import { Bills } from 'src/bill/entities/bill.entity';
+import { ImportReceipts } from 'src/import_receipt/entities/import_receipt.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Products, Accounts, Bills])
+    TypeOrmModule.forFeature([Products, Accounts, Bills, ImportReceipts])
   
 
   ],

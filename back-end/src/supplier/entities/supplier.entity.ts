@@ -20,28 +20,28 @@ export class Supplier extends BaseEntity {
     email: string;
 
     @Column()
-    website: string;
-
-    @Column()
     description: string;
 
-    @Column()
+    @Column({nullable: true})
+    website: string;
+
+    @Column({nullable: true})
     logo: string;
 
-    @Column()
+    @Column({nullable: true})
     bankAddress: string;
 
-    @Column()
+    @Column({nullable: true})
     bankName: string;
 
-    @Column()
+    @Column({nullable: true})
     bankAccountNumber: string;
     
     @Column({default: 1})
     isActive: boolean;
 
     @OneToMany(() => DetailSupplier, detailSupplier => detailSupplier.supplier)
-    detailSupplier: DetailSupplier;
+    detailSupplier: DetailSupplier[];
 
     @OneToMany(() => ImportReceipts, ImportReceipts => ImportReceipts.supplier)
     importReceipt: ImportReceipts;

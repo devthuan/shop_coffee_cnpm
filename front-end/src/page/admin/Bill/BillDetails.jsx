@@ -63,102 +63,144 @@ function BillDetails({ billsID, handleClickToggle }) {
         "Tổng tiền"
     ]
     return (
-        <div
-            className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 p-5 z-10"
-            onClick={handleClickToggle}
-        >
-             {loading ? (
-            // absolute inset-0 flex justify-center items-center
-            <div className="flex justify-center items-center h-64">
-              <Loading />
+      <div
+        className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 p-5 z-10"
+        onClick={handleClickToggle}
+      >
+        {loading ? (
+          // absolute inset-0 flex justify-center items-center
+          <div className="flex justify-center items-center h-64">
+            <Loading />
+          </div>
+        ) : (
+          <div
+            className="w-full max-w-6xl max-h-screen overflow-y-auto p-6 bg-white rounded-lg shadow-lg h-[90vh]"
+            onClick={handleChildClick}
+          >
+            <div className="flex justify-end items-center">
+              <button
+                className="text-gray-500 hover:text-gray-700"
+                onClick={handleClickToggle}
+              >
+                Đóng
+              </button>
             </div>
-          ) :(<div
-                className="w-full max-w-6xl max-h-screen overflow-y-auto p-6 bg-white rounded-lg shadow-lg h-[90vh]"
-                onClick={handleChildClick}
-            >
-                <div className="flex justify-end items-center">
-                    <button className="text-gray-500 hover:text-gray-700" onClick={handleClickToggle}>
-                        Đóng
-                    </button>
-                </div>
 
-                <div className="flex justify-center items-center mb-6">
-                    <h2 className="text-4xl font-bold">Chi tiết hoá đơn</h2>
-                </div>
+            <div className="flex justify-center items-center mb-6">
+              <h2 className="text-4xl font-bold">Chi tiết hoá đơn</h2>
+            </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] gap-4 mb-4">
-                    <div>
-                        <div className="grid grid-cols-1 gap-4 mb-4">
-                            <div className="p-2 bg-gray-100 rounded-lg flex justify-between items-center">
-                                <div className="mb-4 text-xl">
-                                    <span className="text-gray-600">Hoá đơn: </span>
-                                    <a href="#" className="text-blue-500 underline">{id}</a>
-                                    <p className="text-gray-600">ngày tạo: {account.createdAt} </p>
-                                    <p className="text-gray-600">ngày cập nhật: {account.updatedAt || "chưa cập nhật"} </p>
-                                </div>
-                                <div className="text-right mb-4">
-                                    <span className="px-3 py-1 text-white bg-green-500 rounded-full text-xl">{status}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 gap-4 mb-4">
-                            <div className="p-4 bg-gray-100 rounded-lg text-xl">
-                                <h3 className="text-gray-700 font-semibold text-2xl">KHÁCH HÀNG</h3>
-                                <p>{fullName}</p>
-                                <p>{account.email}</p>
-                                <p>{deliverPhone}</p>
-                                <p>{deliverAddress}</p>
-                            </div>
-                        </div>
-
-                        <table className="w-full mb-4 text-left border border-gray-300 text-xl">
-                            <thead>
-                                <tr className="bg-gray-200">
-                                    {titleColumn.map((item, i) => (
-                                        <th className="px-4 py-2" key={i}>{item}</th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                <tr>
-                                    <td className="px-4 py-2 border-b">{productAttributes?.products?.name}</td>
-                                    <td className="px-4 py-2 border-b">{billDetails[0]?.quantity}</td>
-                                    <td className="px-4 py-2 border-b">{productAttributes?.attributes?.name}</td>
-                                    <td className="px-4 py-2 border-b">{total}</td>
-                                    <td className="px-4 py-2 border-b">{totalDiscount}</td>
-                                    <td className="px-4 py-2 border-b">{totalPayment}</td>
-                                </tr>
-
-                            </tbody>
-                        </table>
+            <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] gap-4 mb-4">
+              <div>
+                <div className="grid grid-cols-1 gap-4 mb-4">
+                  <div className="p-2 bg-gray-100 rounded-lg flex justify-between items-center">
+                    <div className="mb-4 text-xl">
+                      <span className="text-gray-600">Hoá đơn: </span>
+                      <a href="#" className="text-blue-500 underline">
+                        {id}
+                      </a>
+                      <p className="text-gray-600">
+                        ngày tạo: {new Date(account.createdAt).toLocaleString()}
+                      </p>
+                      <p className="text-gray-600">
+                        ngày cập nhật:{" "}
+                        {new Date(account.updatedAt).toLocaleString() ||
+                          "chưa cập nhật"}{" "}
+                      </p>
                     </div>
-
-                    <div>
-                        <div className="grid grid-cols-1 gap-4 mb-4">
-                            <div className="p-4 bg-gray-100 rounded-lg text-xl space-y-2">
-                                <h3 className="text-gray-700 font-semibold">PHƯƠNG THỨC THANH TOÁN</h3>
-                                <div className="inline">{payments?.name}:</div>
-                                <div className="inline ml-2">{totalPayment}</div>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 gap-4 mb-4">
-                            <div className="p-4 bg-gray-100 rounded-lg text-xl space-y-2">
-                                <div className="space-y-2 text-right">
-                                    <p className="text-gray-600">Tạm tính: {totalPayment}</p>
-                                    <p className="text-gray-600">Khuyến mãi: <span className="text-red-500">{vouchers?.value || "không có"}</span></p>
-                                    <p className="text-gray-600">Phương thức vận chuyển: <span className="text-green-500">{shippingMethod}</span></p>
-                                    <p className="font-semibold">Thành tiền: {totalPayment}</p>
-                                </div>
-                            </div>
-                        </div>
+                    <div className="text-right mb-4">
+                      <span
+                        className={`px-3 py-2 rounded-full font-semibold  ${
+                          status === "success"
+                            ? "text-green-600 bg-green-50"
+                            : status === "pending"
+                            ? "text-yellow-600 bg-yellow-50"
+                            : "text-red-600 bg-red-50"
+                        }`}
+                      >
+                        {status}
+                      </span>
                     </div>
+                  </div>
                 </div>
-            </div>)
-}
-        </div>
+
+                <div className="grid grid-cols-1 gap-4 mb-4">
+                  <div className="p-4 bg-gray-100 rounded-lg text-xl">
+                    <h3 className="text-gray-700 font-semibold text-2xl">
+                      KHÁCH HÀNG
+                    </h3>
+                    <p>{fullName}</p>
+                    <p>{account.email}</p>
+                    <p>{deliverPhone}</p>
+                    <p>{deliverAddress}</p>
+                  </div>
+                </div>
+
+                <table className="w-full mb-4 text-left border border-gray-300 text-xl">
+                  <thead>
+                    <tr className="bg-gray-200">
+                      {titleColumn.map((item, i) => (
+                        <th className="px-4 py-2" key={i}>
+                          {item}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="px-4 py-2 border-b">
+                        {productAttributes?.products?.name}
+                      </td>
+                      <td className="px-4 py-2 border-b">
+                        {billDetails[0]?.quantity}
+                      </td>
+                      <td className="px-4 py-2 border-b">
+                        {productAttributes?.attributes?.name}
+                      </td>
+                      <td className="px-4 py-2 border-b">{total}</td>
+                      <td className="px-4 py-2 border-b">{totalDiscount}</td>
+                      <td className="px-4 py-2 border-b">{totalPayment}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div>
+                <div className="grid grid-cols-1 gap-4 mb-4">
+                  <div className="p-4 bg-gray-100 rounded-lg text-xl space-y-2">
+                    <h3 className="text-gray-700 font-semibold">
+                      PHƯƠNG THỨC THANH TOÁN
+                    </h3>
+                    <div className="inline">{payments?.name}:</div>
+                    <div className="inline ml-2">{totalPayment}</div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 mb-4">
+                  <div className="p-4 bg-gray-100 rounded-lg text-xl space-y-2">
+                    <div className="space-y-2 text-right">
+                      <p className="text-gray-600">Tạm tính: {totalPayment}</p>
+                      <p className="text-gray-600">
+                        Khuyến mãi:{" "}
+                        <span className="text-red-500">
+                          {vouchers?.value || "không có"}
+                        </span>
+                      </p>
+                      <p className="text-gray-600">
+                        Phương thức vận chuyển:{" "}
+                        <span className="text-green-500">{shippingMethod}</span>
+                      </p>
+                      <p className="font-semibold">
+                        Thành tiền: {totalPayment}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     );
 }
 

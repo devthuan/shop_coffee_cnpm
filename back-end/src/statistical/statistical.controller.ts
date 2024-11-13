@@ -17,6 +17,10 @@ export class StatisticalController {
   async getRevenueByDate(@Body() statisticalDto: StatisticalDto): Promise<any> {
     return await this.statisticalService.statisticalByDate(statisticalDto);
   }
+  @Post('expense-by-date')
+  async statisticalExpenseByDate(@Body() statisticalDto: StatisticalDto): Promise<any> {
+    return await this.statisticalService.statisticalExpenseByDate(statisticalDto);
+  }
   @Post('billings')
   async statisticalByStatusAndDate(@Body() statisticalDto: StatisticalDto): Promise<any> {
     return await this.statisticalService.statisticalByStatusAndDate(statisticalDto);

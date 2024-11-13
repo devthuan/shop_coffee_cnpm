@@ -24,7 +24,6 @@ import { HandleApiError } from "~/Utils/HandleApiError";
 export const DashedBarsChart = () => {
   const dispatch = useDispatch();
   const dataRevenue = useSelector((state) => state.statistical.dataRevenue);
-  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,9 +65,19 @@ export const DashedBarsChart = () => {
         <YAxis />
         <Tooltip />
         <Bar
+          dataKey="totalRevenue"
+          fill="#FF9800" // Green for Revenue
+          activeBar={<Rectangle stroke="#FF9800" />}
+        />
+        <Bar
+          dataKey="totalExpense"
+          fill="#F44336" // Red for Expense
+          activeBar={<Rectangle stroke="#F44336" />}
+        />
+        <Bar
           dataKey="totalProfit"
-          fill="#B3CDAD"
-          activeBar={<Rectangle stroke="#22c55e" />}
+          fill="#4CAF50" // Orange for Profit
+          activeBar={<Rectangle stroke="#4CAF50" />}
         />
       </BarChart>
     </ResponsiveContainer>

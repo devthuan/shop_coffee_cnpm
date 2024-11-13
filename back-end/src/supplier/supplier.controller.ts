@@ -37,8 +37,6 @@ export class SupplierController {
     @Query('sortBy') sortBy: string,
     @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',
     @Query() query: Record<string, any>
-
-
   ) {
     const { page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
     limit = limit > 100 ? 100 : limit;
@@ -67,7 +65,7 @@ export class SupplierController {
   @UseGuards(PermissionsGuard)
   @Permissions("GET_SUPPLIER_BY_ID")
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  getDetailSupplier(@Param('id') id: string) {
     const data = this.supplierService.getDetailSupplier(id);
     return plainToInstance(Supplier, data)
   }

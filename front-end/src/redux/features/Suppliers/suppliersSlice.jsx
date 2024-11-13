@@ -25,7 +25,7 @@ export const suppliersSlice = createSlice({
     },
 
     addSupplier: (state, action) => {
-      state.data.push(action.payload);
+      state.data.unshift(action.payload);
       state.loading = false;
     },
 
@@ -35,7 +35,7 @@ export const suppliersSlice = createSlice({
     },
 
     removeSupplier: (state, action) => {
-      state.data = state.data.filter((item) => item.id !== action.payload);
+      state.data = state.data.filter((item) => item.id !== action.payload.id);
       state.loading = false;
     },
 

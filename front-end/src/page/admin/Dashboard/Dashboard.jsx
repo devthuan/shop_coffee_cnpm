@@ -54,7 +54,7 @@ export const Dashboard = () => {
           <FontAwesomeIcon className="size-10 px-5" icon={faMoneyBill} />
           <div class="flex flex-col w-full justify-between p-4 leading-normal">
             <h3 class="mb-2 text-base font-bold tracking-tight text-gray-900 dark:text-white">
-              Doanh thu
+              Tổng lợi nhuận
             </h3>
             <p>
               <CountUp end={totalRevenue ? totalRevenue : 0} duration={2000} />

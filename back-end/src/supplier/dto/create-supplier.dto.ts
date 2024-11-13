@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsArray, IsEmail, IsNumber, IsPhoneNumber, IsString, Min } from "class-validator";
+import { IsArray, IsEmail, IsNumber, IsOptional, IsPhoneNumber, IsString, Min } from "class-validator";
 
 export class CreateSupplierDto {
     @IsString()
@@ -20,18 +20,23 @@ export class CreateSupplierDto {
     description: string;
 
     @IsString()
+    @IsOptional()
     logo: string;
 
     @IsString()
+    @IsOptional()
     website: string;
 
     @IsString()
+    @IsOptional()
     bankAccountNumber: string;
 
     @IsString()
+    @IsOptional()
     bankName: string;
 
     @IsString()
+    @IsOptional()
     bankAddress: string;
 
     @IsArray()

@@ -13,7 +13,8 @@ export class DetailSupplier extends BaseEntity {
     
     @Column()
     version: number
- 
+    
+    
     @ManyToOne(() => Supplier, supplier => supplier.detailSupplier)
     supplier: Supplier;
     
