@@ -57,30 +57,30 @@
   background-color: var(--primary-color-background-2);
   margin-top: 20px;
   border-radius: 10px;
-  width: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 500px;
+ 
 }
 
 .container {
   display: flex;
   flex-direction: column;
-  align-items: start;
+  justify-content: s;
   gap: 20px;
   padding: 10px 0;
+  width: 100%;
 }
-
 .item {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 20px ;
+  justify-content: space-between;
+  // gap: 20px ;
+  padding: 20px;
   background-color: var(--primary-color-background-2);
   width: 230px;
   border-radius: 10px;
   height: 59px;
-}
+  width: 100%;
+  }
 .item:hover {
   background-color: var(--primary-color-background-1);
 }

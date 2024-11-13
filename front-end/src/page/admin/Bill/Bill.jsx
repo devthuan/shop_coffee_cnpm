@@ -27,6 +27,7 @@ export const Bill = () => {
     limit: 10,
   });
 
+
   const filterItems = [
     { value: "createdAt_ASC", label: "sắp xếp theo ngày tạo tăng dần" },
     { value: "createdAt_DESC", label: "sắp xếp theo ngày tạo giảm dần" },
@@ -38,12 +39,7 @@ export const Bill = () => {
     "deliverPhone",
     "deliverAddress",
     "total",
-    // "totalDiscount",
-    // "totalPayment",
     "status",
-    // "shippingMethod",
-    // "createdAt",
-    // "updatedAt",
     "note",
   ];
 
@@ -211,23 +207,16 @@ export const Bill = () => {
                       <td className="px-2 py-4 whitespace-nowrap">
                         {item.total}
                       </td>
-
-                      {/* <td className="px-2 py-4 whitespace-nowrap">
-                        {item.totalDiscount}
-                      </td> */}
-                      {/* <td className="px-2 py-4 whitespace-nowrap">
-                        {item.totalPayment}
-                      </td> */}
-
-                      <td className="pr-6 py-4 whitespace-nowrap">
+                      <td className="px-2 py-4 whitespace-nowrap">
                         <span
-                          className={`px-3 py-2 rounded-full font-semibold text-xs ${
-                            item.status === "success"
+                          className={`px-3 py-2 rounded-full font-semibold text-xs ${item.status === "success"
                               ? "text-green-600 bg-green-50"
                               : item.status === "pending"
-                              ? "text-yellow-600 bg-yellow-50"
-                              : "text-red-600 bg-red-50"
-                          }`}
+                                ? "text-yellow-600 bg-yellow-50"
+                                : item.status === "delivery" 
+                                ?  "text-orange-400 bg-red-50"
+                                : "text-red-600 bg-red-50"
+                            }`}
                         >
                           {item.status}
                         </span>

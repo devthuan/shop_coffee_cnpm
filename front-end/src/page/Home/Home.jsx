@@ -11,10 +11,10 @@ export const Home = () => {
   const loaddingProduct = useSelector((state) => state.products.loading);
 
   return <div className={cx("wrapper")}>
-    {(loadingSideBar && loaddingProduct) ? (<div className="h-full w-full flex justify-center items-center">
+    {/* {(loadingSideBar && loaddingProduct) ? (<div className="h-full w-full flex justify-center items-center">
       <Loading />
-    </div>) : (
+    </div>) : ( */}
       <ContentHome />
-    )}
+    {/* )} */}
   </div>;
 };

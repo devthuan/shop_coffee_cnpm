@@ -9,8 +9,11 @@ import CartLayout from "~/Layouts/CartLayout/CartLayout";
 import ProductLayout from "~/Layouts/ProductLayout/ProductLayout";
 import Page404 from "~/components/Page404/Page404";
 import EditProfile from "~/page/Profile/EditProfile/editProfile";
+import FavoriteUser from "~/page/Profile/FavoriteUser/FavoriteUser";
 import Payment from "~/page/Payment/Payment";
 import { Authorized } from "~/components/Authorized/Authorized";
+import Bougth from "~/page/Profile/Bougth/bougth";
+
 // routes for public
 export const publicRoutes = [
   { path: "/", component: Home },
@@ -20,6 +23,16 @@ export const publicRoutes = [
   {
     path: "/profile/editProfile",
     component: EditProfile,
+    layout: ProfileLayout,
+  },
+  {
+    path: "/profile/favoriteUser",
+    component: FavoriteUser,
+    layout: ProfileLayout,
+  },
+  {
+    path: "/profile/billAccount",
+    component: Bougth,
     layout: ProfileLayout,
   },
   { path: "/product/:id", component: Product, layout: ProductLayout },
