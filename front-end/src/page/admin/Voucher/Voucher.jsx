@@ -2,14 +2,15 @@ import classNames from "classnames/bind";
 import styles from "./Voucher.module.scss";
 import { useEffect, useMemo, useState } from "react";
 import {
-
   DeleteVoucher,
   GetVoucherByQuery,
+  UpdateVoucher
 } from "~/services/VoucherService";
 import {
   clearDataVoucher,
   initDataVoucher,
   removeVoucher,
+  updateStatusVoucher
 } from "~/redux/features/Vouchers/voucherSlice";
 import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,6 +30,8 @@ export const Voucher = () => {
   const currentPage = useSelector((state) => state.vouchers.currentPage);
   const totalPage = useSelector((state) => state.vouchers.totalPage);
   const limit = useSelector((state) => state.vouchers.limit);
+  const isActive = useSelector((state) => state.vouchers.isActive);
+
   const [optionLimit, setOptionLimit] = useState({
     currentPage: 1,
     limit: 10,
@@ -48,32 +51,24 @@ export const Voucher = () => {
   ];
   const listOptionFilters = [
     {
-      value: "filter_status_activate",
-      label: "Lọc theo trạng thái activate",
+      value: "filter_status_active",
+      label: "Lọc theo trạng thái Còn hạn",
     },
     {
       value: "filter_status_expire",
-      label: "Lọc theo trạng thái expire",
-    },
-    {
-      value: "filter_status_upcoming", // Lọc theo các voucher chưa đến hạn
-      label: "Lọc theo trạng thái upcoming",
-    },
-    {
-      value: "filter_status_past", // Lọc theo các voucher đã hết hạn
-      label: "Lọc theo trạng thái past",
+      label: "Lọc theo trạng thái Hết hạn",
     },
   ];
   const titleColumn = [
-    "name",
-    "code",
-    "value",
-    "quantity",
-    "description",
-    "startDate",
-    "endDate",
-    "status",
-    "operations",
+    "Tên",
+    "Mã",
+    "Giá trị",
+    "Số Lượng",
+    "Mô tả",
+    "Ngày bắt đầu",
+    "Ngày kết thức",
+    "Trạng thái",
+    "Hành Động",
   ];
   const handleSearch = async (e) => {
     try {
@@ -132,30 +127,41 @@ export const Voucher = () => {
     setFilterOption(e);
     fetchVouchers(sortOption, e); // Pass both sort and filter options
   };
-
   const fetchVouchers = async (sortOption, filterOption) => {
     let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
-    if (sortOption === "createdAt_ASC") {
-      queryParams += `&sortBy=createdAt&sortOrder=ASC`;
-    } else if (sortOption === "createdAt_DESC") {
-      queryParams += `&sortBy=createdAt&sortOrder=DESC`;
-    }
-    if (
-      filterOption === "isActive_true" ||
-      filterOption === "filter_status_activate"
-    ) {
-      queryParams += `&isActive=true`;
-    } else if (
-      filterOption === "isActive_false" ||
-      filterOption === "filter_status_expire"
-    ) {
-      queryParams += `&isActive=false`;
+    const sortOptionsMap = {
+      createdAt_ASC: "&sortBy=createdAt&sortOrder=ASC",
+      createdAt_DESC: "&sortBy=createdAt&sortOrder=DESC",
+    };
+    const filterOptionsMap = {
+      all: "", // Tất cả các voucher
+      filter_status_active: `&endDate[gte]=${new Date().toISOString()}`, // Voucher còn hạn
+      filter_status_expired: `&endDate[lte]=${new Date().toISOString()}`, // Voucher hết hạn
+    };
+    const queryParamsx = [];  // Dùng mảng để thêm các tham số query một cách linh hoạt
 
+    // Thêm các tham số lọc và sắp xếp vào queryParams
+    if (sortOptionsMap[sortOption]) {
+      queryParamsx.push(sortOptionsMap[sortOption]);
     }
 
-    const result = await GetVoucherByQuery(queryParams);
-    dispatch(initDataVoucher(result.data));
-  };
+    if (filterOptionsMap[filterOption]) {
+      queryParamsx.push(filterOptionsMap[filterOption]);
+    }
+
+    // Kết nối các tham số query thành chuỗi
+    const finalQueryParams = queryParamsx.join("&");
+
+    console.log("Query Params: ", finalQueryParams);
+
+    try {
+      const result = await GetVoucherByQuery(finalQueryParams);
+      dispatch(initDataVoucher(result.data));  // Lưu dữ liệu voucher vào state
+    } catch (error) {
+      // Xử lý lỗi
+      console.error("Error fetching vouchers:", error.response ? error.response.data : error.message);
+    }
+  };  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -183,7 +189,6 @@ export const Voucher = () => {
       fetchData();
     }, 500);
   }, [optionLimit.limit, optionLimit.currentPage]);
-
   return (
     <>
       {isError ? (
@@ -193,7 +198,6 @@ export const Voucher = () => {
       ) : (
         <div className="mx-auto  md:pr-5">
           <h3 className="w-full text-center mt-3">Quản lý Voucher </h3>
-
           {isLoading ? (
             // absolute inset-0 flex justify-center items-center
             <div className="flex justify-center items-center h-64">
@@ -311,7 +315,6 @@ export const Voucher = () => {
                             <th key={item} className="py-3 px-2">
                               {item}
                             </th>
-
                           );
                         })}
                     </tr>
@@ -347,13 +350,14 @@ export const Voucher = () => {
                               : "text-red-600 bg-red-50"
                               }`}
                           >
-                            {new Date(item.endDate) > new Date() ? "activate" : "expire"}
+                            {new Date(item.endDate) > new Date() ? "Còn hạn" : "Hết hạn"}
                           </span>
                         </td>
                         <td className=" px-2 py-4 whitespace-nowrap ">
                           <div className="flex">
                             <div>
-                              <ModelEditVoucher data={item} />
+                              <ModelEditVoucher data={item}
+                              />
                             </div>
                             <div
                               onClick={() => handleDeleteVoucher(item)}

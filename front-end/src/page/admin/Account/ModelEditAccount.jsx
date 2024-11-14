@@ -26,7 +26,6 @@ const ModelEditAccount = ({ data }) => {
     created_at: "",
   });
 
-
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({
@@ -46,7 +45,6 @@ const ModelEditAccount = ({ data }) => {
       });
       if (response && response.data) {
         const { statusCode, status, message } = response.data;
-
         if (statusCode === 200 && status === "success") {
           dispatch(
             updateAccount({
@@ -108,7 +106,7 @@ const ModelEditAccount = ({ data }) => {
           : toast.error("Có lỗi xảy ra, vui lòng thử lại");
       }
     };
-    if (dataRole.length === 0) {
+    if (!dataRole && dataRole.length === 0) {
       fetchAPI();
     }
   }, [dispatch]);
@@ -169,7 +167,7 @@ const ModelEditAccount = ({ data }) => {
                       type="text"
                       name="id"
                       value={formData.id}
-                      className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                      className="w-full pr-2 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                     />
                   </div>
                 </div>
@@ -181,7 +179,7 @@ const ModelEditAccount = ({ data }) => {
                       type="text"
                       name="email"
                       value={formData.email}
-                      className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                      className="w-full pr-2 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                     />
                   </div>
                 </div>
@@ -193,7 +191,7 @@ const ModelEditAccount = ({ data }) => {
                       type="text"
                       name="userName"
                       value={formData.userName}
-                      className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                      className="w-full pr-2 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                     />
                   </div>
                 </div>
@@ -204,13 +202,15 @@ const ModelEditAccount = ({ data }) => {
                     onChange={handleInputChange}
                     name="role"
                     value={formData.role}
-                    className="w-full pr-12 pl-3 py-2 mt-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                    className="w-full pr-2 pl-3 py-2 mt-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                   >
                     {dataRole &&
                       dataRole.length > 0 &&
                       dataRole.map((item) => {
                         return (
-                          <option key={item.codeName} value={item.codeName}>{item.name}</option>
+                          <option key={item.codeName} value={item.codeName}>
+                            {item.name}
+                          </option>
                         );
                       })}
                   </select>
@@ -224,7 +224,7 @@ const ModelEditAccount = ({ data }) => {
                       type="text"
                       name="balance"
                       value={formData.balance}
-                      className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                      className="w-full pr-2 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                     />
                   </div>
                 </div>
@@ -236,7 +236,7 @@ const ModelEditAccount = ({ data }) => {
                       type="text"
                       name="ip"
                       value={formData.ip}
-                      className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                      className="w-full pr-2 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                     />
                   </div>
                 </div>
@@ -248,7 +248,7 @@ const ModelEditAccount = ({ data }) => {
                       type="text"
                       name="typeLogin"
                       value={formData.typeLogin}
-                      className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                      className="w-full pr-2 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                     />
                   </div>
                 </div>
@@ -260,7 +260,7 @@ const ModelEditAccount = ({ data }) => {
                       type="text"
                       name="status"
                       value={formData.status ? "active" : "inactive"}
-                      className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                      className="w-full pr-2 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                     />
                   </div>
                 </div>
@@ -272,7 +272,7 @@ const ModelEditAccount = ({ data }) => {
                       type="text"
                       name="lastLogin"
                       value={new Date(formData.lastLogin).toLocaleString()}
-                      className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                      className="w-full pr-2 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                     />
                   </div>
                 </div>
@@ -284,7 +284,7 @@ const ModelEditAccount = ({ data }) => {
                       type="text"
                       name="createdAt"
                       value={new Date(formData.createdAt).toLocaleString()}
-                      className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                      className="w-full pr-2 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                     />
                   </div>
                 </div>
@@ -296,7 +296,7 @@ const ModelEditAccount = ({ data }) => {
                       type="text"
                       name="updatedAt"
                       value={new Date(formData.updatedAt).toLocaleString()}
-                      className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                      className="w-full pr-2 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                     />
                   </div>
                 </div>

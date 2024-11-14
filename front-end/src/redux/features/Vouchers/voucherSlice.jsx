@@ -54,8 +54,6 @@ export const vouchersSlice = createSlice({
           ...state.data[voucherIndex], // Keep other account properties
           value: action.payload.value,
           quantity: action.payload.quantity,
-
-
         };
       }
     },

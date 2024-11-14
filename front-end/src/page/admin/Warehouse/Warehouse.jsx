@@ -132,7 +132,7 @@ export const Warehouse = () => {
         <div className="mx-auto  md:pr-5">
           {/* box title */}
           <div className="w-full flex justify-center py-3">
-            <h3>Quản lý kho</h3>
+            <h3 className="text-3xl my-4">Quản lý Kho</h3>
           </div>
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
@@ -200,7 +200,7 @@ export const Warehouse = () => {
                 {/* box button create */}
                 <div className="mt-3 md:mt-0">
                   {/* import modal create */}
-                  <ImportWarehouseModal />
+                  {/* <ImportWarehouseModal /> */}
                 </div>
               </div>
 

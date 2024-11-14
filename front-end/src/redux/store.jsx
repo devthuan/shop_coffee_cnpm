@@ -2,6 +2,12 @@ import productReducer from "~/redux/features/Product/PoductSlice"; // Đường 
 import { configureStore } from "@reduxjs/toolkit";
 import accountsReducer from "./features/Accounts/accountsSilce";
 import rolesReducer from "./features/Roles/rolesSilce";
+
+
+
+import billReducer from '~/redux/features/Bill/billSilice';
+import IdBillDetailReducer from '~/redux/features/IdBillDetail/IdBillDetailSlice';
+
 import permissionsReducer from "./features/Permissions/permissionsSilce";
 import inventoriesReducer from "./features/Inventories/inventoriesSilce";
 import suppliersReducer from "./features/Suppliers/suppliersSlice";
@@ -11,25 +17,35 @@ import userInfoReducer from "./features/UserInfor/User_InforSlice";
 import cartReducer from "./features/cart/cartSlice";
 import authReducer from "./features/AuthSlice/authSlice"; // Đường dẫn tới authSlice
 import vouchersReducer from "./features/Vouchers/voucherSlice"
+import notificationReducer from "./features/Notifications/NotificationsSilce";
+import notificationUserReducer from "./features/Notifications/NotificationsUserSlice"; //
 
 export const store = configureStore({
   reducer: {
     products: productReducer,
+    bill: billReducer,
     catagories: catagoriesReducer,
     userInfo: userInfoReducer,
     cart: cartReducer,
     accounts: accountsReducer,
     roles: rolesReducer,
+    idBillDetails: IdBillDetailReducer,
+
     permissions: permissionsReducer,
     inventories: inventoriesReducer,
     suppliers: suppliersReducer,
     receipts: receiptsReducer,
     auth: authReducer, 
-    vouchers : vouchersReducer
+    vouchers : vouchersReducer,
 
+    notifications: notificationReducer,
+    notificationUser: notificationUserReducer,
 
   },
 
   // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
 });
+
+
+
 

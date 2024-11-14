@@ -14,6 +14,7 @@ import ModelAddAccount from "./ModelAddAccount";
 import ModelEditAccount from "./ModelEditAccount";
 import Loading from "~/components/Loading/Loading";
 import { HandleApiError } from "~/Utils/HandleApiError";
+import { ProtectRoutesByRole } from "~/router/ProtectRoutesAdmin";
 
 const cx = classNames.bind(styles);
 export const Account = () => {
@@ -38,6 +39,10 @@ export const Account = () => {
   ];
 
   const listOptionFilters = [
+    {
+      value: "all",
+      label: "Tất cả",
+    },
     {
       value: "filter_status_active",
       label: "Lọc theo status active",
@@ -86,7 +91,6 @@ export const Account = () => {
       console.log(response);
       if (response && response.data) {
         const { statusCode, status, message } = response.data;
-
         if (statusCode === 200) {
           // update data in redux
           dispatch(
@@ -107,7 +111,6 @@ export const Account = () => {
     }
   };
 
-  // Callback function to update currentPage
   const handlePageChange = (newPage) => {
     setOptionLimit((prevData) => ({
       ...prevData,
@@ -115,7 +118,6 @@ export const Account = () => {
     }));
   };
 
-  // Callback function to update limit
   const handleLimitChange = (newLimit) => {
     setOptionLimit((prevData) => ({
       ...prevData,
@@ -137,28 +139,27 @@ export const Account = () => {
   const fetchAccounts = async (sortOption, filterOption) => {
     let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
 
-    if (sortOption === "createdAt_ASC") {
-      queryParams += `&sortBy=createdAt&sortOrder=ASC`;
-    } else if (sortOption === "createdAt_DESC") {
-      queryParams += `&sortBy=createdAt&sortOrder=DESC`;
+    const sortOptionsMap = {
+      createdAt_ASC: "&sortBy=createdAt&sortOrder=ASC",
+      createdAt_DESC: "&sortBy=createdAt&sortOrder=DESC",
+    };
+
+    const filterOptionsMap = {
+      all: "",
+      isActive_true: "&isActive=true",
+      filter_status_active: "&isActive=true",
+      isActive_false: "&isActive=false",
+      filter_status_blocked: "&isActive=false",
+      filter_role_admin: "&role=ADMIN",
+      filter_role_user: "&role=USER",
+    };
+    if (sortOptionsMap[sortOption]) {
+      queryParams += sortOptionsMap[sortOption];
     }
 
-    if (
-      filterOption === "isActive_true" ||
-      filterOption === "filter_status_active"
-    ) {
-      queryParams += `&isActive=true`;
-    } else if (
-      filterOption === "isActive_false" ||
-      filterOption === "filter_status_blocked"
-    ) {
-      queryParams += `&isActive=false`;
-    } else if (filterOption === "filter_role_admin") {
-      queryParams += `&role=ADMIN`;
-    } else if (filterOption === "filter_role_user") {
-      queryParams += `&role=USER`;
+    if (filterOptionsMap[filterOption]) {
+      queryParams += filterOptionsMap[filterOption];
     }
-
     const result = await GetAllAccountAPI(queryParams);
     dispatch(initDataAccount(result.data));
   };
@@ -373,7 +374,10 @@ export const Account = () => {
                         <td className=" px-2 py-4 whitespace-nowrap ">
                           <div className="flex">
                             <div>
-                              <ModelEditAccount data={item} />
+                              <ProtectRoutesByRole
+                                requiredPermission={"UPDATE_ACCOUNT"}
+                                children={<ModelEditAccount data={item} />}
+                              />
                             </div>
                             <div
                               onClick={() => handleLockAccount(item)}

@@ -41,7 +41,7 @@ export class RolePermissionController {
   } 
 
   @UseGuards(PermissionsGuard)
-  @Permissions("GET_PERMISSION_BY_ROLE")
+  // @Permissions("GET_PERMISSION_BY_ROLE")
   @Get('by-role/:role')
   getRolePermissionsByRole(
     @Param('role') roleCodeName: string

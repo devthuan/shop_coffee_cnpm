@@ -87,13 +87,14 @@ export class ProductService extends BaseService<Products> {
 
 
       // create product attribute
+        const productAttributes = [];
       if(createProductDto.attributes.length > 0) {
         for(const attribute of createProductDto.attributes) {
           const existingAttribute = await this.attributeService.findOne(attribute.attributeId);
           if (!existingAttribute) {
             throw new NotFoundException('Attribute not found');
           }
-  
+          // Add product attributes
            const newProductAttributeValue = await this.productAttributesRepository.create({
               sellPrice: 0,
               buyPrice: 0,
@@ -102,7 +103,7 @@ export class ProductService extends BaseService<Products> {
               products: newProduct
             })
             await queryRunner.manager.save(newProductAttributeValue);
-          
+            productAttributes.push(newProductAttributeValue);
         }
 
       }else {
@@ -110,6 +111,7 @@ export class ProductService extends BaseService<Products> {
       }
       
       // init images product
+      const productImages = [];
       if(files && files.length > 0){
         for(const file of files){
           const uploadedFile = await this.uploadFileCloudinary(file);
@@ -118,13 +120,18 @@ export class ProductService extends BaseService<Products> {
             products: newProduct
           })
           queryRunner.manager.save(newImages);
+          productImages.push(newImages);
 
         }
       }
 
+      // Add attributes and images to the newProduct object
+        newProduct['attributes'] = productAttributes;
+        newProduct['productImages'] = productImages;
+
       // commit transaction
       await queryRunner.commitTransaction();
-      return { message: 'Product created successfully' };
+      return { message: 'Product created successfully', data: newProduct };
 
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -412,6 +419,7 @@ export class ProductService extends BaseService<Products> {
     try {
       const queryBuilder = this.productRepository.createQueryBuilder('products')
           .leftJoinAndSelect('products.images', 'images')
+          .leftJoinAndSelect('products.category', 'category')
           .leftJoinAndSelect('products.productAttributes', 'productAttributes')
           .leftJoinAndSelect('productAttributes.attributes', 'attributes')
           .where('products.deletedAt IS NULL');

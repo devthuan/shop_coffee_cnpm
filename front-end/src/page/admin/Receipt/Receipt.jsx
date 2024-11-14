@@ -184,7 +184,7 @@ export const Receipt = () => {
         <div className="max-w-full mx-auto px-4 ">
           {/* box title */}
           <div className="w-full flex justify-center py-3">
-            <h3>Quản lý phiếu nhập</h3>
+            <h3 className="text-3xl my-4">Quản lý phiếu nhập</h3>
           </div>
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
@@ -211,6 +211,7 @@ export const Receipt = () => {
                     </svg>
                     <select
                       onChange={(e) => handleSort(e.target.value)}
+                      value={sortOption}
                       className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
                     >
                       {listOptionSorts &&
@@ -264,6 +265,7 @@ export const Receipt = () => {
                     </svg>
                     <select
                       onChange={(e) => handleFilter(e.target.value)}
+                      value={filterOption}
                       className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
                     >
                       {listOptionFilters &&
@@ -306,7 +308,7 @@ export const Receipt = () => {
                       dataImportReceipts.map((item, idx) => (
                         <tr key={idx}>
                           <td className="pr-6 py-4 whitespace-nowrap ">
-                            {item.id}
+                            {item.id.slice(0, 8)} ...
                           </td>
                           <td className="pr-6 py-4 whitespace-nowrap">
                             {item?.account?.email}
