@@ -104,6 +104,7 @@ export const Product = () => {
 
   return (
     <div className="">
+      
       <div className={cx("mb-7")}>
         {product && statistical && product.images ? (
           <div
