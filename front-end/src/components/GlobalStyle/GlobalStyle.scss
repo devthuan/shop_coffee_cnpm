@@ -10,6 +10,7 @@
     --primary-color-text:#1A162E;
     --primary-color-background-1:#EEEEEE;
     --primary-color-background-2:#FFFFFF;
+    --primary-color-background-3:#f6f6f6;
     --primary-color-hover:#77DAE6;
     --default-layout-width: 1280px;
 }
@@ -39,5 +40,5 @@ body {
     // font-size: 1.6rem;
     margin: 0;
     padding: 0;
-    background-color: var(--primary-color-background-2);
+    // background-color: var(--primary-color-background-3);
 }

@@ -241,6 +241,20 @@ export const Discount = () => {
         onPageChange={handlePaginate} // truyền các trị tương ứng với biến
         onLimitChange={handleLimitAttribute} // truyền các trị tương ứng với biến
       />
+      <ToastContainer
+        className="text-base"
+        fontSize="10px"
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 };
