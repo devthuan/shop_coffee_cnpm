@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   total: 0,
   totalPage: 0,
@@ -9,7 +9,7 @@ const initialState = {
   error: null,
 };
 export const favoriteUserSlice = createSlice({
-  name: 'favoriteUser',
+  name: "favoriteUser",
   initialState,
   reducers: {
     initDataFavoriteUser: (state, action) => {
@@ -31,20 +31,20 @@ export const favoriteUserSlice = createSlice({
       state.error = null;
     },
     addFavorite: (state, action) => {
-      const newFavorite = action.payload;
-      if (!state.favoriteProducts.some(favorite => favorite.productId === newFavorite.productId)) {
-          state.favoriteProducts.push(newFavorite);
-      }
-  },
-    clearFavorite: (state, action) => {
-      const productId = action.payload;
-      if (Array.isArray(state.favoriteProducts)) {
-        state.favoriteProducts = state.favoriteProducts.filter(
-          (favorite) => favorite.productId !== productId
-        );
-      }
-    }
+      const newFavorite = action.payload.data;
+      console.log(newFavorite);
+      state.data.push(newFavorite);
+    },
+    deleteFavorite: (state, action) => {
+      console.log(action.payload.id);
+      state.data = state.data.filter((item) => item.id !== action.payload.id);
+    },
   },
 });
-export const { initDataFavoriteUser, clearDataFavoriteUser, clearFavorite, addFavorite } = favoriteUserSlice.actions;
+export const {
+  initDataFavoriteUser,
+  clearDataFavoriteUser,
+  deleteFavorite,
+  addFavorite,
+} = favoriteUserSlice.actions;
 export default favoriteUserSlice.reducer;

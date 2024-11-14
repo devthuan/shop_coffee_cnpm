@@ -10,30 +10,47 @@ import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { useEffect, useState } from "react";
 import { getALLProducts } from "~/services/ProductService";
 import { useDispatch, useSelector } from "react-redux";
-import { clearDataProduct, initDataProduct } from "~/redux/features/Product/PoductSlice";
+import {
+  clearDataProduct,
+  initDataProduct,
+} from "~/redux/features/Product/PoductSlice";
 import { HandleApiError } from "~/Utils/HandleApiError";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { Pagination } from "~/components/Pagination/Pagination";
 import Loading from "~/components/Loading/Loading";
 import { useNavigate } from "react-router-dom";
-import { clearDataFavoriteUser, initDataFavoriteUser, addFavorite, clearFavorite } from "~/redux/features/FavoriteUser/favoriteUserSlice";
-import { AddFavoriteUser, DelFavoriteUser, getFavoriteUser } from "~/services/FavoriteSevice";
+import {
+  clearDataFavoriteUser,
+  initDataFavoriteUser,
+  addFavorite,
+  clearFavorite,
+  deleteFavorite,
+} from "~/redux/features/FavoriteUser/favoriteUserSlice";
+import {
+  AddFavoriteUser,
+  DelFavoriteUser,
+  getFavoriteUser,
+} from "~/services/FavoriteSevice";
 
 const cx = classNames.bind(styles);
 
 function ContentHome() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const FavoriteUserData = useSelector((state) => state.favoriteUser.data) || [];
+  const FavoriteUserData = useSelector((state) => state.favoriteUser.data);
   const ProductsData = useSelector((state) => state.products.data) || [];
   const total = useSelector((state) => state.products.total);
   const currentPage = useSelector((state) => state.products.currentPage);
   const totalPage = useSelector((state) => state.products.totalPage);
   const limit = useSelector((state) => state.products.limit);
   const isLoading = useSelector((state) => state.products.loading);
-  const navigate = useNavigate();
+  const [optionLimit, setOptionLimit] = useState({
+    currentPage: 1,
+    limit: 10,
+  });
 
-  const [favoriteStatus, setFavoriteStatus] = useState(FavoriteUserData);
-  
+  // const [favoriteStatus, setFavoriteStatus] = useState(FavoriteUserData);
+
   const fetchData = async (type, queryParams, action, Callback) => {
     try {
       const response = await Callback(queryParams);
@@ -43,56 +60,76 @@ function ContentHome() {
         dispatch(action({ error: "không có phản hồi từ server..." }));
       }
       const result = HandleApiError(error);
-      result ? toast.error(result) : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+      result
+        ? toast.error(result)
+        : toast.error("Có lỗi xảy ra, vui lòng thử lại");
     }
   };
   useEffect(() => {
-    const queryParams = `limit=${limit}&page=${currentPage}`;
+    let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
     dispatch(clearDataProduct());
     dispatch(clearDataFavoriteUser());
     fetchData("product", queryParams, initDataProduct, getALLProducts);
     fetchData("favorite", queryParams, initDataFavoriteUser, getFavoriteUser);
-  }, [currentPage, limit, dispatch]);
+  }, [optionLimit.limit, optionLimit.currentPage]);
 
-  useEffect(() => {
-    setFavoriteStatus(FavoriteUserData);
-  }, [FavoriteUserData]);
+  // useEffect(() => {
+  //   setFavoriteStatus(FavoriteUserData);
+  // }, [dispatch]);
 
-  const handleFavoriteToggle = async (e, productId, isCurrentlyFavorite) => {
+  const handleFavoriteToggle = async (
+    e,
+    productId,
+    statusFavorite,
+    favoriteId
+  ) => {
     e.stopPropagation();
-    const idFavorite = FavoriteUserData[0]?.id;
-    if (isCurrentlyFavorite) {
+    console.log(favoriteId);
+    // const idFavorite = FavoriteUserData[0]?.id;
+    if (statusFavorite) {
       try {
-        await DelFavoriteUser(idFavorite, { productId });
-        dispatch(clearFavorite(productId));
-        setFavoriteStatus((prevStatus) =>
-          prevStatus.filter((item) => item.products?.id !== productId)
-        );
+        const response = await DelFavoriteUser(favoriteId);
+        if (response) {
+          dispatch(deleteFavorite({ id: favoriteId }));
+
+          toast.success("Đã xoá sản phẩm khỏi yêu thích");
+        }
       } catch (error) {
         toast.error("Không thể xoá sản phẩm khỏi yêu thích");
       }
     } else {
       try {
-        const response = await AddFavoriteUser({ productId: productId.toString() });
-        dispatch(addFavorite({ productId, ...response.data }));
-        setFavoriteStatus((prevStatus) => [
-          ...prevStatus,
-          { products: { id: productId } },
-        ]);
+        const response = await AddFavoriteUser({
+          productId: productId,
+        });
+        if (response) {
+          console.log(response);
+          toast.success("Đã thêm sản phẩm vào danh sách yêu thích");
+
+          dispatch(addFavorite({ data: response.data }));
+        }
       } catch (error) {
-        toast.error("Không thể thêm sản phẩm vào danh sách yêu thích");
+        const { message, status } = HandleApiError(error);
+        if (status === "error") {
+        }
       }
     }
   };
 
-const handlePageChange = (newPage) => {
-  dispatch(initDataProduct({ currentPage: newPage }));
-};
+  const handlePageChange = (newPage) => {
+    setOptionLimit((prevData) => ({
+      ...prevData,
+      currentPage: newPage,
+    }));
+  };
 
-const handleLimitChange = (newLimit) => {
-  dispatch(initDataProduct({ limit: newLimit, currentPage: 1 }));
-};
-
+  const handleLimitChange = (newLimit) => {
+    setOptionLimit((prevData) => ({
+      ...prevData,
+      limit: newLimit,
+      currentPage: 1,
+    }));
+  };
   return (
     <div className={cx("wrapper")}>
       <div className={cx("background")}>
@@ -113,31 +150,57 @@ const handleLimitChange = (newLimit) => {
         <div className={cx("info_product_title")}>Total LavAzza 1320</div>
       </div>
       <ul className={cx("list_product")}>
-        {ProductsData && ProductsData.map((item, i) => {
-          const isFavorite = favoriteStatus.some((love) => love.products?.id === item.id);
-          return (
-            <li
-              onClick={() => navigate(`/product/${item.id}`)}
-              className={cx("item_product")}
-              key={i}
-            >
-              <div className={cx("img_product")}>
-                <img src={item.images[0]?.urlImage || img_product} className={cx("img")} alt="Product" />
-              </div>
-              <FontAwesomeIcon
-                icon={isFavorite ? love : faHeart}
-                className={cx("heart_icon")}
-                style={isFavorite ? { color: "red" } : {}}
-                onClick={(e) => handleFavoriteToggle(e, item.id, isFavorite)}
-              />
-              <div className={cx("name_product")}>{item.name}</div>
-              <div className={cx("lazada")}>{item.description}</div>
-              <div className={cx("img_price")}>
-                {item.productAttributes[0]?.sellPrice || 0}
-              </div>
-            </li>
-          );
-        })}
+        {ProductsData &&
+          ProductsData.map((item, i) => {
+            const isFavorite = FavoriteUserData.some(
+              (love) => love.products?.id === item.id
+            );
+            const favoriteId = FavoriteUserData.filter(
+              (love) => love.products?.id === item.id
+            );
+            return (
+              <li className={cx("item_product")} key={i}>
+                <div className={cx("img_product")}>
+                  <img
+                    src={item.images[0]?.urlImage || img_product}
+                    className={cx("img")}
+                    alt="Product"
+                  />
+                </div>
+                <FontAwesomeIcon
+                  icon={isFavorite ? love : faHeart}
+                  className={cx("heart_icon")}
+                  style={isFavorite ? { color: "red" } : {}}
+                  onClick={(e) =>
+                    handleFavoriteToggle(
+                      e,
+                      item?.id,
+                      isFavorite,
+                      favoriteId[0]?.id
+                    )
+                  }
+                />
+                <div
+                  onClick={() => navigate(`/product/${item.id}`)}
+                  className={cx("name_product")}
+                >
+                  {item.name}
+                </div>
+                <div
+                  onClick={() => navigate(`/product/${item.id}`)}
+                  className={cx("lazada")}
+                >
+                  {item.description}
+                </div>
+                <div
+                  onClick={() => navigate(`/product/${item.id}`)}
+                  className={cx("img_price")}
+                >
+                  {item.productAttributes[0]?.sellPrice || 0}
+                </div>
+              </li>
+            );
+          })}
       </ul>
       <div className={cx("footer")}>
         <Pagination
@@ -149,6 +212,21 @@ const handleLimitChange = (newLimit) => {
           onLimitChange={handleLimitChange}
         />
       </div>
+
+      <ToastContainer
+        className="text-base"
+        fontSize="10px"
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }

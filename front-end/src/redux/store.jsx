@@ -14,15 +14,14 @@ import IdBillDetailReducer from '~/redux/features/IdBillDetail/IdBillDetailSlice
 import permissionsReducer from "./features/Permissions/permissionsSilce";
 import inventoriesReducer from "./features/Inventories/inventoriesSilce";
 import suppliersReducer from "./features/Suppliers/suppliersSlice";
-// import receiptsReducer from "./features/Receipts/ReceiptsSlice";
-// import catagoriesReducer from "./features/Categories/categoriesSlice"
 import receiptsReducer from "./features/Receipts/receiptsSlice";
-import catagoriesReducer from "./features/Categories/categoriesSlice";
+import catagoriesReducer from "./features/Categories/categoriesSlice"
 import userInfoReducer from "./features/UserInfor/User_InforSlice";
 import cartReducer from "./features/cart/cartSlice";
 import authReducer from "./features/AuthSlice/authSlice"; // Đường dẫn tới authSlice
 import notificationReducer from "./features/Notifications/NotificationsSilce";
 import notificationUserReducer from "./features/Notifications/NotificationsUserSlice"; //
+import paymentsReducer from "./features/Payments/paymentsSlice"
 import favoriteUserReducer from "~/redux/features/FavoriteUser/favoriteUserSlice";
 import billAccountReducer from "~/redux/features/BillAccount/billAccountSlice";
 
@@ -40,22 +39,17 @@ export const store = configureStore({
     idBillDetails: IdBillDetailReducer,
     permissions: permissionsReducer,
     inventories: inventoriesReducer,
-    // categories : categoriesReducer,
     attributes : attributesReducer,
     discounts : discountsReducer,
     receipts : receiptsReducer,
     suppliers: suppliersReducer,
-    // receipts: receiptsReducer,
     productss: productsReducer,
-    // categories : categoriesReducer,
-    // attributes: attributesReducer,
-    // discounts: discountsReducer,
-    // receipts: receiptsReducer,
-    // suppliers: suppliersReducer,
+  
     auth: authReducer,
     notifications: notificationReducer,
     notificationUser: notificationUserReducer,
     statistical: statisticalReducer,
+    payments : paymentsReducer,
     favoriteUser : favoriteUserReducer,
     billAccount : billAccountReducer
   },
