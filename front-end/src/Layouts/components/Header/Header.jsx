@@ -42,7 +42,7 @@ function Header() {
     removeToken();
     setIsLogin(false);
     toast.success("Đăng xuất thành công.");
-    navigate("/login");
+    navigate("/");
   };
   return (
     <header className={cx("wrapper", "sm:h-[110px] h-[82px]")}>

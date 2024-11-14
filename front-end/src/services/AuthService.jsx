@@ -34,3 +34,9 @@ export const LogOut = async () => {
     console.error("Error during logout:", error);
   }
 };
+export const GoogleAPI = async() => {
+  return api.post(`auth/goole`, {
+  });
+};
+
+

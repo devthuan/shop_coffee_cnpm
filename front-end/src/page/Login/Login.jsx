@@ -17,8 +17,10 @@ import {
 import { setItemWithExpiration } from "~/services/localStorage";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { jwtDecode } from "jwt-decode";
-import  { GetAllPermissionByRoleAPI }   from "~/services/PermissionService";
 
+import { GetAllPermissionByRoleAPI } from "~/services/PermissionService";
+import validator from 'validator'; // Thư viện để kiểm tra định dạng email
+import { Tooltip } from 'react-tooltip';
 const cx = classNames.bind(styles);
 export const Login = () => {
   const dispatch = useDispatch();
@@ -28,6 +30,9 @@ export const Login = () => {
   const navigate = useNavigate("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [isFocused, setIsFocused] = useState("")
+  const [isValid, setIsValid] = useState(false);
+  const passwordLengthValid = password.length >= 6;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,7 +50,7 @@ export const Login = () => {
           const accessToken = data.accessToken;
 
           // giai ma token
-          const { id, email, role, username } =  jwtDecode(accessToken);
+          const { id, email, role, username } = jwtDecode(accessToken);
 
           // Lưu access token vào Redux store
           dispatch(
@@ -69,12 +74,8 @@ export const Login = () => {
               responsePermission.data.data,
               22
             );
-
             // lưu access token vào local storage
-
-           
             toast.success("Đăng nhập thành công.");
-
             setTimeout(() => {
               navigate("/");
             }, 1500);
@@ -94,7 +95,20 @@ export const Login = () => {
       }, 1000);
     }
   };
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+    validateEmail(value);
+  };
 
+  const handleFocus = () => setIsFocused(true);
+  // Hàm xử lý khi input mất focus
+  const handleBlur = () => setIsFocused(false);
+  const validateEmail = (value) => {
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    setIsValid(regex.test(value));
+  };
+  
   return (
     <div
       className={cx("grid lg:grid-cols-11 max-sm:grid-cols-1  min-h-screen ")}
@@ -141,60 +155,91 @@ export const Login = () => {
                 Let’s create your account and Shop like a pro and save money.
               </h3>
             </div>
+
             <form onSubmit={handleSubmit}>
-              <input
-                type="email"
-                placeholder="Email"
-                className={cx("w-full mb-6 p-4 border rounded-md")}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <input
-                type="password"
-                placeholder="Password"
-                className={cx("w-full mb-6 p-4 border rounded-md")}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              {error ? (
-                <p className="text-xl mb-2 text-red-600">{error}</p>
-              ) : (
-                ""
-              )}
-              <div className={cx("flex justify-between items-center mb-6")}>
-                <label className={cx("flex items-center")}>
-                  <input
-                    type="checkbox"
-                    className={cx("mr-2 ")}
-                    checked={setAsDefaultCard}
-                    onChange={(e) => setSetAsDefaultCard(e.target.checked)}
-                  />
-                  Set as default card
-                </label>
-                <a
-                  href="https://chatgpt.com/c/66fdfaf9-cb74-8011-89ff-236369702781"
-                  className={cx("text-blue-500")}
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  placeholder="example@gmail.com" // Sử dụng placeholder động
+                  className={cx(
+                    "w-full mb-6 p-4 border rounded-md text-base outline-none transition-all duration-300 ease-in-out",
+                    {
+                      "border-green-500 text-green-700": isValid,
+                      "border-red-600 text-red-600": !isValid && isFocused,
+                      "border-gray-300 text-gray-700": email.length === 0 && !isFocused, // Đảm bảo màu mặc định khi chưa nhập
+                    }
+                  )}
+                  value={email}
+                  onChange={handleChange}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+
+                />
+                <span
+                  className="absolute left-0 top-0 text-gray-400 pointer-events-none transition-all duration-300 ease-in-out"
+                  // style={{
+                  //   zIndex: 1,
+                  //   whiteSpace: "nowrap", // Đảm bảo placeholder không bị ngắt dòng
+                  //   opacity: email.indexOf('@') === -1 || email.length < 5 ? 1 : 0, // Chỉ hiển thị khi chưa đủ email
+                  //   paddingLeft: email.includes("@") ? `${email.length * 8}px` : '0', // Căn chỉnh đúng vị trí sau '@'
+                  //   paddingTop: '12px', // Đảm bảo gợi ý nằm cùng hàng với input
+                  // }}
                 >
-                  Recovery Password
-                </a>
+                  {/* {createPlaceholder(email)} */}
+                </span>
+                <input
+                  type="password"
+                  placeholder="Password"
+                  className={cx(
+                    "w-full mb-6 p-4 border rounded-md text-base outline-none transition-all duration-300 ease-in-out ",
+                    {
+                      "border-gray-300": password.length === 0, // Màu xám khi chưa nhập gì
+                      "border-red-500": password.length > 0 && password.length < 6, // Màu đỏ khi chưa đủ 6 ký tự
+                      "border-green-500": passwordLengthValid, // Màu xanh khi đủ 6 ký tự
+                    }
+                  )} value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                {error ? (
+                  <p className="text-xl mb-2 text-red-600">{error}</p>
+                ) : (
+                  ""
+                )}
+
+                <div className={cx("flex justify-between items-center mb-6")}>
+                  <label className={cx("flex items-center")}>
+                    <input
+                      type="checkbox"
+                      className={cx("mr-2 ")}
+                      checked={setAsDefaultCard}
+                      onChange={(e) => setSetAsDefaultCard(e.target.checked)}
+                    />
+                    Set as default card
+                  </label>
+                  <a
+                    href="https://chatgpt.com/c/66fdfaf9-cb74-8011-89ff-236369702781"
+                    className={cx("text-blue-500")}
+                  >
+                    Recovery Password
+                  </a>
+                </div>
+                <button
+                  className={cx(
+                    "w-full bg-yellow-500 text-white py-4 rounded-md mb-6"
+                  )}
+                >
+                  Sign Up
+                </button>
+                <button
+                  className={cx(
+                    "w-full border py-4 rounded-md mb-6 flex justify-center items-center"
+                  )}
+                >
+                  <img src={google} alt="Gmail" className={cx("mr-2")} />
+                  Sign in with Gmail
+                </button>
               </div>
-              <button
-                className={cx(
-                  "w-full bg-yellow-500 text-white py-4 rounded-md mb-6"
-                )}
-              >
-                Sign Up
-              </button>
-              <button
-                className={cx(
-                  "w-full border py-4 rounded-md mb-6 flex justify-center items-center"
-                )}
-              >
-                <img src={google} alt="Gmail" className={cx("mr-2")} />
-                Sign in with Gmail
-              </button>
             </form>
             <div className={cx("bot-title")}>
               <p className={cx("text-sm mt-6  ")}>

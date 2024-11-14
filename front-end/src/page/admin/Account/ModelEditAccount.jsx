@@ -45,7 +45,6 @@ const ModelEditAccount = ({ data }) => {
       });
       if (response && response.data) {
         const { statusCode, status, message } = response.data;
-
         if (statusCode === 200 && status === "success") {
           dispatch(
             updateAccount({

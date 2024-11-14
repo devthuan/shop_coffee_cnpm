@@ -32,7 +32,7 @@ function BillDetails({ billsID, handleClickToggle }) {
   useEffect(() => {
     const fetchDataProduct = async () => {
       try {
-        const response = await GetBill_IDAPI(billsID)
+        const response = await GetBill_IDAPI(billsID)       
         dispatch(initDataIdBillDetail(response.data))
       } catch (error) {
         if (error.request) {

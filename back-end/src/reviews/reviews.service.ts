@@ -71,6 +71,41 @@ export class ReviewsService extends BaseService<Reviews> {
     CommonException.handle(error)
   }
  }
+ async createReply(replyReviewDto: ReplyReviewDto): Promise<Reviews> {
+  try {
+    const account = await this.accountRepository.createQueryBuilder('accounts')
+      .getOne();
+
+    if (!account || !account.isActive) {
+      throw new NotFoundException('Account not found or blocked');
+    }
+
+    const reviewExist = await this.reviewRepository.createQueryBuilder('reviews')
+    .leftJoinAndSelect('reviews.products', 'products')
+      .where('reviews.id = :id', { id: replyReviewDto.parentId })
+      .andWhere('reviews.deletedAt IS NULL')
+      .getOne();
+
+    if (!reviewExist) throw new NotFoundException('Review not found');
+
+    // Tạo một đối tượng bình luận mới
+    let replyReview = new Reviews();
+    replyReview.rating = reviewExist.rating; // Bạn có thể thay đổi điều này nếu không muốn sử dụng rating của bình luận gốc
+    replyReview.comment = replyReviewDto.comment;
+    replyReview.accounts = account; // Gán tài khoản hiện tại làm người tạo bình luận
+    replyReview.products = reviewExist.products; // Sử dụng sản phẩm từ bình luận gốc
+    replyReview.parent = reviewExist; // Gán bình luận gốc làm bình luận cha
+
+    // Lưu bình luận trả lời
+    const savedReplyReview = await this.reviewRepository.save(replyReview);
+
+    return savedReplyReview;
+
+  } catch (error) {
+    CommonException.handle(error);
+  }
+}
+
 
   async createReply(replyReviewDto: ReplyReviewDto): Promise<Reviews> {
   try {
@@ -119,6 +154,7 @@ export class ReviewsService extends BaseService<Reviews> {
     try{
       const queryBuilder = this.productRepository.createQueryBuilder('products')
         .leftJoinAndSelect('products.reviews', 'reviews')
+        .leftJoinAndSelect('reviews.replies', 'replies')
         .innerJoinAndSelect('reviews.accounts', 'accounts')
         .where('products.id = :id', {id: productId})
         .andWhere('products.deletedAt IS NULL')
