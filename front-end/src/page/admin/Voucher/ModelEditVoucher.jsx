@@ -6,16 +6,16 @@ import { UpdateVoucher } from "~/services/VoucherService";
 import { useDispatch } from "react-redux";
 import { updateVoucher } from "~/redux/features/Vouchers/voucherSlice";
 import { HandleApiError } from "~/Utils/HandleApiError";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
     GetVoucherById
 } from "~/services/VoucherService";
 const ModelEditVoucher = ({ data }) => {
     const reduxIsActive = useSelector((state) => state.vouchers.isActive);
-   console.log(reduxIsActive)
+    console.log(reduxIsActive)
     // Initialize local state with the Redux value
-    const [isActive, setIsActive] = useState(reduxIsActive);  
-      const dispatch = useDispatch();
+    const [isActive, setIsActive] = useState(reduxIsActive);
+    const dispatch = useDispatch();
     const [formData, setFormData] = useState({
         code: "",
         name: "",
@@ -30,7 +30,7 @@ const ModelEditVoucher = ({ data }) => {
         createdAt: "",
         status: "",
     });
-   
+
     const fetchVoucherData = async (id) => {
         try {
             const response = await GetVoucherById(id);

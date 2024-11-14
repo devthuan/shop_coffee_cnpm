@@ -62,37 +62,37 @@ export const Receipt = () => {
 
   const fetchReceipt = async () => {
     try {
-        let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
+      let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
 
-        if (sortOption === "createdAt_ASC") {
-          queryParams += `&sortBy=createdAt&sortOrder=ASC`;
-        } else if (sortOption === "createdAt_DESC") {
-          queryParams += `&sortBy=createdAt&sortOrder=DESC`;
-        } else if (sortOption === "total_ASC") {
-          queryParams += `&sortBy=totalAmount&sortOrder=ASC`;
-        } else if (sortOption === "total_DESC") {
-          queryParams += `&sortBy=totalAmount&sortOrder=DESC`;
-        }
+      if (sortOption === "createdAt_ASC") {
+        queryParams += `&sortBy=createdAt&sortOrder=ASC`;
+      } else if (sortOption === "createdAt_DESC") {
+        queryParams += `&sortBy=createdAt&sortOrder=DESC`;
+      } else if (sortOption === "total_ASC") {
+        queryParams += `&sortBy=totalAmount&sortOrder=ASC`;
+      } else if (sortOption === "total_DESC") {
+        queryParams += `&sortBy=totalAmount&sortOrder=DESC`;
+      }
 
-        if (filterOption === "filter_pending") {
-          queryParams += `&status=pending`;
-        } else if (filterOption === "filter_approved") {
-          queryParams += `&status=approved`;
-        } else if (filterOption === "filter_rejected") {
-          queryParams += `&status=rejected`;
-        } else if (filterOption === "all") {
-          queryParams += ``;
-        }
+      if (filterOption === "filter_pending") {
+        queryParams += `&status=pending`;
+      } else if (filterOption === "filter_approved") {
+        queryParams += `&status=approved`;
+      } else if (filterOption === "filter_rejected") {
+        queryParams += `&status=rejected`;
+      } else if (filterOption === "all") {
+        queryParams += ``;
+      }
 
-        const result = await GetAllReceiptAPI(queryParams);
-        dispatch(initDataReceipt(result.data));
+      const result = await GetAllReceiptAPI(queryParams);
+      dispatch(initDataReceipt(result.data));
     } catch (error) {
-       const result = HandleApiError(error);
-       result
-         ? toast.error(result)
-         : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+      const result = HandleApiError(error);
+      result
+        ? toast.error(result)
+        : toast.error("Có lỗi xảy ra, vui lòng thử lại");
     }
-  
+
   };
 
   const handleFilter = (e) => {
@@ -138,7 +138,7 @@ export const Receipt = () => {
     setTimeout(() => {
       fetchReceipt();
     }, 800);
- 
+
   }, [sortOption, filterOption, optionLimit]);
 
   useEffect(() => {
@@ -321,13 +321,12 @@ export const Receipt = () => {
                           </td>
                           <td className="pr-6 py-4 whitespace-nowrap">
                             <span
-                              className={`px-3 py-2 rounded-full font-semibold text-xs ${
-                                item.status === "approved"
-                                  ? "text-green-600 bg-green-50"
-                                  : item.status === "pending"
+                              className={`px-3 py-2 rounded-full font-semibold text-xs ${item.status === "approved"
+                                ? "text-green-600 bg-green-50"
+                                : item.status === "pending"
                                   ? "text-yellow-600 bg-yellow-50"
                                   : "text-red-600 bg-red-50"
-                              }`}
+                                }`}
                             >
                               {item.status}
                             </span>
