@@ -19,25 +19,8 @@ export const publicRoutes = [
   { path: "/", component: Home },
   { path: "/register", component: Register, layout: null },
   { path: "/login", component: Login, layout: null },
-  { path: "/profile", component: Profile, layout: ProfileLayout },
-  {
-    path: "/profile/editProfile",
-    component: EditProfile,
-    layout: ProfileLayout,
-  },
-  {
-    path: "/profile/favoriteUser",
-    component: FavoriteUser,
-    layout: ProfileLayout,
-  },
-  {
-    path: "/profile/billAccount",
-    component: Bougth,
-    layout: ProfileLayout,
-  },
+  
   { path: "/product/:id", component: Product, layout: ProductLayout },
-  { path: "/cart", component: Cart, layout: CartLayout },
-  { path: "/paynment", component: Payment, layout: ProductLayout },
   { path: "/unauthorized", component: Authorized, layout: null },
   { path: "*", component: Page404, layout: null },
 ];

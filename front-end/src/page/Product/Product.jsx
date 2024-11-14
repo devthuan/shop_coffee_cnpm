@@ -104,7 +104,6 @@ export const Product = () => {
 
   return (
     <div className="">
-      
       <div className={cx("mb-7")}>
         {product && statistical && product.images ? (
           <div
@@ -140,7 +139,7 @@ export const Product = () => {
 
             <div className={cx("p-[50px] lg:col-span-6 bg-gray-100")}>
               <p className=" text-[#1a162e] pt-2 text-[26px] font-semiblod font-['Gordita'] leading-9">
-                {product.name}
+                {productDetail.name}
               </p>
               <div className={cx("flex px-4 mt-7")}>
                 <div className={cx("w-1/2 mr-10")}>
@@ -238,15 +237,23 @@ export const Product = () => {
 
                       {selectedAttribute && (
                         <div className="text-black text-[26px] font-medium font-['Gordita'] leading-9">
-                          {(
-                            selectedAttribute.sellPrice -
+                          {selectedAttribute.sellPrice -
                             ((product?.productDiscount.length > 0
                               ? product.productDiscount[0].value
                               : 0) /
                               100) *
-                              selectedAttribute.sellPrice
-                          ).toLocaleString("vi-VN")}{" "}
-                          đ
+                              selectedAttribute.sellPrice <
+                          0
+                            ? 0
+                            : selectedAttribute.sellPrice -
+                              ((product?.productDiscount.length > 0
+                                ? product.productDiscount[0].value
+                                : 0) /
+                                100) *
+                                selectedAttribute.sellPrice.toLocaleString(
+                                  "vi-VN"
+                                )}{" "}
+                          VNĐ
                         </div>
                       )}
                     </div>
@@ -471,7 +478,7 @@ export const Product = () => {
 
         <DescriptionProduct
           show={showDescription}
-          content={product?.description}
+          content={productDetail.product?.description}
         />
         <FeedBackProduct show={showFeedBack} />
 

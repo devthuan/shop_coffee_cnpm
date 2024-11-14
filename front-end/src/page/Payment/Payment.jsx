@@ -8,13 +8,13 @@ import { GetAllPaynment } from "~/services/PaynmentService";
 import { initDataPayment } from "~/redux/features/Payments/paymentsSlice";
 import { useNavigate } from "react-router-dom";
 import { validatePaymentData } from "~/Utils/ValidatePayment";
-const Paynment = () => {
+const Payment = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const payments = useSelector((state) => state.payments.data);
   const location = useLocation();
   const carts = location.state || {};
-  console.log(carts);
+
   const [informations, setInformations] = useState({
     fullName: "",
     deliverAddress: "",
@@ -29,6 +29,8 @@ const Paynment = () => {
     })),
   });
 
+  console.log(carts);
+
   const [errors, setErrors] = useState({
     fullName: "",
     deliverAddress: "",
@@ -36,6 +38,12 @@ const Paynment = () => {
     shippingMethod: "",
     paymentMethod: "",
   });
+
+  const [paymentMethod, setPaymentMethod] = useState({
+    paymentMethod: "",
+    fee: 0,
+  });
+
   const validateField = (fieldName, value) => {
     let errorMessage = "";
     if (fieldName === "fullName" && !value) {
@@ -67,7 +75,6 @@ const Paynment = () => {
     fetchData();
   }, []);
 
-  console.log(informations.paymentMethod);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setInformations((prevData) => ({
@@ -79,6 +86,7 @@ const Paynment = () => {
 
   const handleSubmit = async () => {
     try {
+      informations.shippingMethod = paymentMethod.paymentMethod;
       const response = await AddBill(informations);
       console.log(response);
       if (response && response.status === 201) {
@@ -252,7 +260,7 @@ const Paynment = () => {
             <div className="flex-col justify-start items-start gap-[30px] flex">
               <div className="w-full justify-start items-center gap-[177px] inline-flex">
                 <div className="text-[#1a162e] text-[22px] font-medium font-['Gordita'] leading-loose">
-                  1. Shipping, arrives between Mon, May 16—Tue, May 24
+                  1. Thời gian vận chuyển, mất từ 3 đến 4 ngày
                 </div>
                 <div className="justify-start items-start gap-2.5 flex">
                   <div className="w-6 h-6 p-[3px] justify-center items-center flex">
@@ -267,16 +275,16 @@ const Paynment = () => {
 
             <div className="w-full">
               <div className="px-4 ">
-                <label
-                  for="username"
-                  className="text-left block py-2 text-gray-500"
-                >
+                <label for="username" className="text-left block py-2 ">
                   Họ và tên người nhận
                 </label>
-                <div className="flex items-center text-gray-400 border rounded-md">
+                <div className="flex items-center  border rounded-md">
                   <input
+                    id="fullName"
+                    name="fullName"
+                    value={informations.fullName}
+                    onChange={handleChange}
                     type="text"
-                    id="username"
                     className="w-full p-2.5 ml-2 bg-transparent outline-none"
                   />
                 </div>
@@ -285,16 +293,16 @@ const Paynment = () => {
 
             <div className="w-full">
               <div className="px-4 ">
-                <label
-                  for="username"
-                  className="text-left block py-2 text-gray-500"
-                >
+                <label for="deliverPhone" className="text-left block py-2 ">
                   Số điện thoại
                 </label>
-                <div className="flex items-center text-gray-400 border rounded-md">
+                <div className="flex items-center  border rounded-md">
                   <input
                     type="text"
-                    id="username"
+                    id="deliverPhone"
+                    name="deliverPhone"
+                    value={informations.deliverPhone}
+                    onChange={handleChange}
                     className="w-full p-2.5 ml-2 bg-transparent outline-none"
                   />
                 </div>
@@ -303,19 +311,52 @@ const Paynment = () => {
 
             <div className="w-full">
               <div className="px-4 ">
-                <label
-                  for="username"
-                  className="text-left block py-2 text-gray-500"
-                >
+                <label for="deliverAddress" className="text-left block py-2 ">
                   Địa chỉ nhận hàng
                 </label>
-                <div className="flex items-center text-gray-400 border rounded-md">
+                <div className="flex items-center  border rounded-md">
                   <input
                     type="text"
-                    id="username"
+                    id="deliverAddress"
+                    name="deliverAddress"
+                    value={informations.deliverAddress}
+                    onChange={handleChange}
                     className="w-full p-2.5 ml-2 bg-transparent outline-none"
                   />
                 </div>
+              </div>
+              <div className="px-4 ">
+                <label for="paymentMethod" className="text-left block py-2 ">
+                  Phương thức thanh toán
+                </label>
+                <div className="flex items-center  border rounded-md">
+                  <select
+                    name="paymentMethod"
+                    value={informations.paymentMethod}
+                    onChange={handleChange}
+                    className=" block w-full px-3 text-base py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 "
+                  >
+                    <option>Chọn phương thức thanh toán</option>
+                    {payments.map((payment, index) => (
+                      <option key={index} value={payment.id}>
+                        {payment.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="px-4 ">
+                <label for="deliverAddress" className="text-left block py-2 ">
+                  Ghi chú
+                </label>
+                <textarea
+                  id="note"
+                  name="note"
+                  value={informations.note}
+                  onChange={handleChange}
+                  rows="3"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                ></textarea>
               </div>
             </div>
           </div>
@@ -324,7 +365,7 @@ const Paynment = () => {
             <div className="flex-col justify-start items-start gap-[30px] flex">
               <div className="w-full justify-start items-center gap-[177px] inline-flex">
                 <div className="text-[#1a162e] text-[22px] font-medium font-['Gordita'] leading-loose">
-                  2. Shipping method
+                  2. Loại chuyển phát
                 </div>
                 <div className="justify-start items-start gap-2.5 flex">
                   <div className="w-6 h-6 p-[3px] justify-center items-center flex">
@@ -346,23 +387,33 @@ const Paynment = () => {
                 <div className="w-full h-[54px] justify-between items-center flex">
                   <div className="flex-col justify-start items-start gap-1 inline-flex">
                     <div className="text-[#1a162e] text-lg font-bold font-['Gordita'] leading-relaxed">
-                      Fedex Delivery
+                      Chuyển phát thường
                     </div>
                     <div className="text-[#9e9da8] text-base font-normal font-['Gordita'] leading-normal">
-                      Delivery: 2-3 days work
+                      Vận chuyển từ: 4-5 ngày làm việc
                     </div>
+                    <div className="text-[#9e9da8] text-base font-normal font-['Gordita'] leading-normal"></div>
                   </div>
                   <div className="justify-start items-center gap-3.5 flex">
                     <div className="text-right text-[#1a162e] text-lg font-medium font-['Gordita'] leading-relaxed">
-                      Free
+                      15.000 VNĐ
                     </div>
                     <div className="w-6 h-6 p-[2.75px] justify-center items-center flex">
                       <div className="w-[18.50px] h-[18.50px] relative">
                         <input
+                          checked={
+                            paymentMethod.paymentMethod === "Chuyển phát thường"
+                          }
+                          onClick={() =>
+                            setPaymentMethod({
+                              paymentMethod: "Chuyển phát thường",
+                              fee: 15000,
+                            })
+                          }
                           id="green-checkbox"
                           type="checkbox"
                           value=""
-                          class="w-4 h-4"
+                          className="w-4 h-4"
                         />
                       </div>
                     </div>
@@ -380,23 +431,77 @@ const Paynment = () => {
                 <div className="w-full h-[54px] justify-between items-center flex">
                   <div className="flex-col justify-start items-start gap-1 inline-flex">
                     <div className="text-[#1a162e] text-lg font-bold font-['Gordita'] leading-relaxed">
-                      Fedex Delivery
+                      Chuyển phát nhanh
                     </div>
                     <div className="text-[#9e9da8] text-base font-normal font-['Gordita'] leading-normal">
-                      Delivery: 2-3 days work
+                      Vận chuyển từ: 2-3 ngày làm việc
                     </div>
+                    <div className="text-[#9e9da8] text-base font-normal font-['Gordita'] leading-normal"></div>
                   </div>
                   <div className="justify-start items-center gap-3.5 flex">
                     <div className="text-right text-[#1a162e] text-lg font-medium font-['Gordita'] leading-relaxed">
-                      Free
+                      50.000 VNĐ
                     </div>
                     <div className="w-6 h-6 p-[2.75px] justify-center items-center flex">
                       <div className="w-[18.50px] h-[18.50px] relative">
                         <input
+                          checked={
+                            paymentMethod?.paymentMethod === "Chuyển phát nhanh"
+                          }
+                          onClick={() =>
+                            setPaymentMethod({
+                              paymentMethod: "Chuyển phát nhanh",
+                              fee: 50000,
+                            })
+                          }
                           id="green-checkbox"
                           type="checkbox"
                           value=""
-                          class="w-4 h-4 "
+                          className="w-4 h-4 "
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="w-full h-[94px] p-5 bg-[#f6f6f6] rounded-[20px] flex-col justify-start items-start gap-2.5 inline-flex">
+              <div className="w-full justify-start items-start gap-5 inline-flex">
+                <img
+                  className="w-[70px] h-[54px] rounded-[10px] shadow"
+                  src="https://via.placeholder.com/70x54"
+                />
+                <div className="w-full h-[54px] justify-between items-center flex">
+                  <div className="flex-col justify-start items-start gap-1 inline-flex">
+                    <div className="text-[#1a162e] text-lg font-bold font-['Gordita'] leading-relaxed">
+                      Chuyển phát hoả tốc
+                    </div>
+                    <div className="text-[#9e9da8] text-base font-normal font-['Gordita'] leading-normal">
+                      Vận chuyển từ: 24h
+                    </div>
+                    <div className="text-[#9e9da8] text-base font-normal font-['Gordita'] leading-normal"></div>
+                  </div>
+                  <div className="justify-start items-center gap-3.5 flex">
+                    <div className="text-right text-[#1a162e] text-lg font-medium font-['Gordita'] leading-relaxed">
+                      130.000 VNĐ
+                    </div>
+                    <div className="w-6 h-6 p-[2.75px] justify-center items-center flex">
+                      <div className="w-[18.50px] h-[18.50px] relative">
+                        <input
+                          checked={
+                            paymentMethod.paymentMethod ===
+                            "Chuyển phát hoả tốc"
+                          }
+                          onClick={() =>
+                            setPaymentMethod({
+                              paymentMethod: "Chuyển phát hoả tốc",
+                              fee: 130000,
+                            })
+                          }
+                          id="green-checkbox"
+                          type="checkbox"
+                          value=""
+                          className="w-4 h-4 "
                         />
                       </div>
                     </div>
@@ -407,110 +512,78 @@ const Paynment = () => {
           </div>
         </div>
         <div className="col-span-4">
-          <div className="w-full h-[94px] p-5 bg-[#f6f6f6] rounded-[20px] flex-col justify-start items-start gap-2.5 inline-flex">
-            <div className="h-[845px] flex-col justify-start items-start gap-[30px] inline-flex">
-              <div className="h-[82px] flex-col justify-start items-start gap-1.5 flex">
-                <div className="text-[#1a162e] text-[22px] font-medium font-['Gordita'] leading-loose">
-                  Payment Details
-                </div>
-                <div className="w-[321px] text-[#1a162e] text-[15px] font-normal font-['Gordita'] leading-snug">
-                  Complete your purchase item by providing your payment details
-                  order.
-                </div>
-              </div>
-              <div className="h-24 flex-col justify-start items-start gap-5 flex">
-                <div className="text-[#1a162e] text-lg font-medium font-['Gordita'] leading-relaxed">
-                  Email Address
-                </div>
-                <div className="w-[331px] pl-3 pr-[170px] py-3 rounded-[10px] border border-[#d2d1d6] justify-start items-center gap-2.5 inline-flex">
-                  <div className="text-[#d2d1d6] text-lg font-medium font-['Gordita'] leading-relaxed">
-                    example@gmail.com
-                  </div>
-                </div>
-              </div>
-              <div className="h-24 flex-col justify-start items-start gap-5 flex">
-                <div className="text-[#1a162e] text-lg font-medium font-['Gordita'] leading-relaxed">
-                  Card Holder
-                </div>
-                <div className="w-[331px] pl-3 pr-[170px] py-3 rounded-[10px] border border-[#d2d1d6] justify-start items-center gap-2.5 inline-flex">
-                  <div className="text-[#d2d1d6] text-lg font-medium font-['Gordita'] leading-relaxed">
-                    example@gmail.com
-                  </div>
-                </div>
-              </div>
-              <div className="h-24 flex-col justify-start items-start gap-5 flex">
-                <div className="text-[#1a162e] text-lg font-medium font-['Gordita'] leading-relaxed">
-                  Card Details
-                </div>
-                <div className="w-[331px] pl-3 pr-[170px] py-3 rounded-[10px] border border-[#d2d1d6] justify-start items-center gap-2.5 inline-flex">
-                  <div className="text-[#d2d1d6] text-lg font-medium font-['Gordita'] leading-relaxed">
-                    example@gmail.com
-                  </div>
-                </div>
-              </div>
-              <div className="w-[321px] pl-3 pr-[170px] py-3 rounded-[10px] border border-[#ededf6] justify-start items-center gap-2.5 inline-flex">
-                <div className="h-[26px] justify-start items-center gap-[76px] flex">
-                  <div className="text-[#ededf6] text-lg font-medium font-['Gordita'] leading-relaxed">
-                    MM/YY
-                  </div>
-                  <div className="justify-start items-center gap-3 flex">
-                    <div className="w-px h-[26px] bg-[#d2d1d6]" />
-                    <div className="text-[#ededf6] text-lg font-medium font-['Gordita'] leading-relaxed">
-                      CVC
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <div className="w-full  p-5 bg-[#f6f6f6] rounded-[20px] flex-col justify-start items-start gap-2.5 inline-flex">
+            <div className=" flex-col justify-start items-start gap-[30px] inline-flex">
               <div className="flex-col justify-start items-start gap-5 flex">
                 <div className="w-[321px] justify-between items-start inline-flex">
                   <div>
-                    <span>Subtotal </span>
-                    <span >
-                      (items)
-                    </span>
+                    <span>Tổng sản phẩm </span>
                   </div>
                   <div className="text-right text-[#1a162e] text-base font-bold font-['Gordita'] leading-normal">
-                    3
+                    {carts.cartsCheck.length ? carts.cartsCheck.length : 0}
                   </div>
                 </div>
                 <div className="w-[321px] justify-between items-start inline-flex">
                   <div>
-                    <span>Price </span>
-                    <span>(Total)</span>
+                    <span>Tổng tiền </span>
                   </div>
                   <div className="text-right text-[#1a162e] text-base font-bold font-['Gordita'] leading-normal">
-                    $191.65
+                    {carts.totalEstimate.toLocaleString("vi-VN")} VNĐ
                   </div>
                 </div>
                 <div className="w-[321px] justify-between items-start inline-flex">
                   <div className="text-[#1a162e] text-base font-medium font-['Gordita'] leading-normal">
-                    Shipping
+                    Phí vận chuyển
                   </div>
                   <div className="text-right text-[#1a162e] text-base font-bold font-['Gordita'] leading-normal">
-                    $10.00
+                    {paymentMethod.fee.toLocaleString("vi-VN")} VNĐ
                   </div>
                 </div>
                 <div className="w-[321px] h-px bg-[#ededf6]" />
                 <div className="w-[321px] justify-between items-start inline-flex">
                   <div className="text-[#1a162e] text-base font-medium font-['Gordita'] leading-normal">
-                    Estimated Total
+                    Tổng tiền thanh toán
                   </div>
                   <div className="text-right text-[#1a162e] text-base font-bold font-['Gordita'] leading-normal">
-                    $201.65
+                    {(carts.totalEstimate + paymentMethod.fee).toLocaleString(
+                      "vi-VN"
+                    )}{" "}
+                    VNĐ
                   </div>
                 </div>
               </div>
-              <div className="w-[321px] px-[70px] py-[18px] bg-[#ffb700] rounded-[10px] justify-center items-center gap-2.5 inline-flex">
+              <div
+                onClick={() => handleSubmit()}
+                className="cursor-pointer w-[321px]  py-[28px] bg-[#ffb700] rounded-[10px] justify-center items-center gap-2.5 inline-flex"
+              >
                 <div className="text-right text-[#1a162e] text-[22px] font-medium font-['Gordita'] leading-loose">
-                  Pay $465.98
+                  Thanh toán{" "}
+                  {(carts.totalEstimate + paymentMethod.fee).toLocaleString(
+                    "vi-VN"
+                  )}{" "}
+                  VNĐ
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <ToastContainer
+        className="text-base"
+        fontSize="10px"
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 };
 
-export default Paynment;
+export default Payment;

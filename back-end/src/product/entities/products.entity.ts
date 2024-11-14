@@ -13,7 +13,7 @@ export class Products extends BaseEntity {
     @Column()
     name: string;
 
-    @Column()
+    @Column({ type: 'text', nullable: true })
     description: string;
 
     @ManyToOne(() => Categories, categories => categories.products)

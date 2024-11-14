@@ -68,6 +68,7 @@ function Header() {
               <div className={cx("btn_search")} onClick={handleCLickSearch}>
                 <FontAwesomeIcon icon={faMagnifyingGlass} />
               </div>
+              
               <Link to="/cart" className={cx("btn_cart")}>
                 <FontAwesomeIcon icon={faCartShopping} />
               </Link>

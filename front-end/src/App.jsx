@@ -6,6 +6,7 @@ import { privateRoutes } from "./router/privateRoutes";
 import { adminRoutes } from "./router/adminRoutes";
 import { ProtectRoutesAdmin } from "./router/ProtectRoutesAdmin";
 import { ToastContainer } from "react-toastify";
+import ProtectedRoute from "./router/ProtectRoute";
 
 function App() {
   return (
@@ -47,9 +48,11 @@ function App() {
                 key={i}
                 path={route.path}
                 element={
-                  <Layout>
-                    <Page />
-                  </Layout>
+                  <ProtectedRoute>
+                    <Layout>
+                      <Page />
+                    </Layout>
+                  </ProtectedRoute>
                 }
               />
             );
@@ -93,7 +96,6 @@ function App() {
           pauseOnHover
           theme="light"
         />*/}
-
       </div>
     </Router>
   );

@@ -20,7 +20,6 @@ import { Pagination } from "~/components/Pagination/Pagination";
 import Loading from "~/components/Loading/Loading";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
-  clearDataFavoriteUser,
   initDataFavoriteUser,
   addFavorite,
   deleteFavorite,
@@ -89,6 +88,7 @@ function ContentHome() {
     favoriteId
   ) => {
     e.stopPropagation();
+    console.log(favoriteId);
     if (statusFavorite) {
       try {
         const response = await DelFavoriteUser(favoriteId);
@@ -163,8 +163,13 @@ function ContentHome() {
             const favoriteId = FavoriteUserData?.filter(
               (love) => love.products?.id === item.id
             );
+
+            console.log(favoriteId);
             return (
-              <div className="w-full h-auto max-h-96 p-4 bg-white rounded-2xl shadow justify-start items-start gap-2.5 inline-flex">
+              <div
+                key={i}
+                className="w-full h-auto max-h-96 p-4 bg-white rounded-2xl shadow justify-start items-start gap-2.5 inline-flex"
+              >
                 <div className="w-full flex-col justify-start items-start gap-4 inline-flex">
                   <div className="w-full h-56 justify-center items-center gap-2.5 inline-flex">
                     <div className="w-full h-56 bg-white rounded-2xl flex-col justify-center items-center gap-2.5 inline-flex">
@@ -182,7 +187,7 @@ function ContentHome() {
                                 e,
                                 item?.id,
                                 isFavorite,
-                                favoriteId?.id
+                                favoriteId[0]?.id
                               )
                             }
                             className=" cursor-pointer w-12 h-12 -right-1 bottom-0 absolute bg-white rounded-full shadow flex justify-center items-center "
