@@ -17,6 +17,7 @@
     "axios": "^1.7.7",
     "classnames": "^2.5.1",
     "customize-cra": "^1.0.0",
+    "date-fns": "^4.1.0",
     "front-end": "file:",
     "jwt-decode": "^4.0.0",
     "normalize.css": "^8.0.1",
@@ -31,6 +32,7 @@
     "react-toastify": "^10.0.6",
     "recharts": "^2.13.0",
     "redux-thunk": "^3.1.0",
+    "reselect": "^5.1.1",
     "slick-carousel": "^1.8.1",
     "web-vitals": "^2.1.4"
   },

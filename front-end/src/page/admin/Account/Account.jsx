@@ -91,7 +91,6 @@ export const Account = () => {
       console.log(response);
       if (response && response.data) {
         const { statusCode, status, message } = response.data;
-
         if (statusCode === 200) {
           // update data in redux
           dispatch(
@@ -154,7 +153,6 @@ export const Account = () => {
       filter_role_admin: "&role=ADMIN",
       filter_role_user: "&role=USER",
     };
-
     if (sortOptionsMap[sortOption]) {
       queryParams += sortOptionsMap[sortOption];
     }
@@ -162,7 +160,6 @@ export const Account = () => {
     if (filterOptionsMap[filterOption]) {
       queryParams += filterOptionsMap[filterOption];
     }
-
     const result = await GetAllAccountAPI(queryParams);
     dispatch(initDataAccount(result.data));
   };
