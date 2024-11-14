@@ -164,7 +164,11 @@ export const Cart = () => {
     <div
       className={cx("grid lg:grid-cols-12 lg:gap-x-[30px] max-sm:gap-y-[20px]")}
     >
-      <div className={cx("lg:col-span-8 flex flex-wrap gap-y-3 ")}>
+      <div
+        className={cx(
+          "lg:col-span-8 flex flex-wrap gap-y-3 p-4  shadow rounded-[20px]"
+        )}
+      >
         {carts &&
           carts?.data.map((cart, index) => (
             // <div key={index} className={cx("flex mt-2 w-full")}>
@@ -777,7 +781,7 @@ export const Cart = () => {
         </div>
       </div>
 
-      <div className={cx("lg:col-span-4 p-5 flex flex-col  gap-y-5")}>
+      <div className={cx("lg:col-span-4 p-5 flex flex-col  gap-y-5  shadow rounded-[20px]")}>
         <div className={cx("w-full flex justify-between")}>
           <div className={cx("flex items-center")}>
             <p
