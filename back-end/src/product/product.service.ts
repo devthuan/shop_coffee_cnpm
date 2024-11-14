@@ -540,6 +540,71 @@ export class ProductService extends BaseService<Products> {
       CommonException.handle(error)
     }
   }
+  async findAllForClient(
+    search: string,
+    page : number = 1,
+    limit : number = 10,
+    sortBy : string = 'createdAt',
+    sortOrder: 'ASC' | 'DESC' = 'ASC',
+    filters: Record<string, any> = {} // Nhận filters từ controller
+
+  ): Promise<{ total: number;  currentPage: number; totalPage: number; limit : number; data: Products[]}> {
+    try {
+      const queryBuilder = this.productRepository.createQueryBuilder('products')
+          .leftJoinAndSelect('products.images', 'images')
+          .leftJoinAndSelect('products.category', 'category')
+          .leftJoinAndSelect('products.productAttributes', 'productAttributes')
+          .leftJoinAndSelect('productAttributes.attributes', 'attributes')
+          .where('products.deletedAt IS NULL')
+          .andWhere('images.deletedAt IS NULL')
+          .andWhere('productAttributes.deletedAt IS NULL')
+          .andWhere('productAttributes.sellPrice > 0')
+
+
+          if (search) {
+            queryBuilder.andWhere('products.name LIKE :search', { search: `%${search}%` });
+          }
+
+           // Filter conditions
+            Object.keys(filters).forEach((key) => {
+              if (filters[key] !== undefined && filters[key] !== null) {
+                let value = filters[key];
+                
+                // Chuyển đổi giá trị 'true' hoặc 'false' thành boolean
+                if (value === 'true') value = true;
+                if (value === 'false') value = false;
+
+                queryBuilder.andWhere(`products.${key} = :${key}`, { [key]: value });
+              }
+            });
+
+          // count total
+          const total = await queryBuilder.getCount();
+
+         // pagination page
+          const data = await queryBuilder
+            .skip((page - 1) * limit) // Bỏ qua các bản ghi đã được hiển thị
+            .take(limit) // Giới hạn số bản ghi trả về
+            .orderBy(`products.${sortBy}`, sortOrder) // Sắp xếp theo trường chỉ định
+            .getMany(); // Lấy danh sách bản ghi
+
+
+      const totalPage = Math.ceil(total / limit);
+
+      return {
+        total,
+        totalPage,
+        currentPage: +page,
+        limit: +limit,
+        data
+      }
+
+      return null;
+    } catch (error) {
+      CommonException.handle(error)
+    }
+  }
+
 
 
   async uploadFileCloudinary(file : Express.Multer.File): Promise<any>{

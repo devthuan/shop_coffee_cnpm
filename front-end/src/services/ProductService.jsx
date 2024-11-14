@@ -24,6 +24,9 @@ export const DetailProduct = async (id) => {
 export const getALLProducts = (query) => {
   return api.get(`products?${query}`);
 };
+export const getALLProductsForClientAPI = (query) => {
+  return api.get(`products/client?${query}`);
+};
 
 // code demo
 // export const DetailProduct = async () => {

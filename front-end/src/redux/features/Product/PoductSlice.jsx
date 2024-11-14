@@ -6,6 +6,7 @@ const initialState = {
   currentPage: 0,
   limit: 0,
   data: [],
+  productDetail: {},
   loading: true,
   error: null,
 };
@@ -23,6 +24,12 @@ export const productSlice = createSlice({
       state.loading = false;
       state.error = action.payload?.error;
    },
+   initProductDetail: (state, action) => {
+    state.productDetail = action.payload;
+    state.loading = false;
+    state.error = null;
+   },
+
    clearDataProduct: (state, action) => {
     state.data = [];
     state.total = 0;
@@ -32,10 +39,13 @@ export const productSlice = createSlice({
     state.loading = true;
     state.error = null;
   },
+
+
   },
 });
 
 // Export các action
-export const { initDataProduct, clearDataProduct } = productSlice.actions;
+export const { initDataProduct, clearDataProduct, initProductDetail } =
+  productSlice.actions;
 
 export default productSlice.reducer;

@@ -5,8 +5,9 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import Tippy from '@tippyjs/react/headless';
 import item_cf from "src/assets/images/item_cf.png";
-import { getALLProducts } from "~/services/ProductService";
+import { getALLProducts, getALLProductsForClientAPI } from "~/services/ProductService";
 import { Navigate, useNavigate } from "react-router-dom";
+
 const cx = classNames.bind(styles);
 
 function InputSearch({ handleCLickSearch }) {
@@ -21,7 +22,7 @@ function InputSearch({ handleCLickSearch }) {
         const fetchDataProduct = async () => {
             try {
                 let queryParams = `search=${valueSearch}`;
-                const response = await getALLProducts(queryParams);
+                const response = await getALLProductsForClientAPI(queryParams);
                 console.log(response.data.data)
                 setResultSearch(response.data.data);
             } catch (error) {

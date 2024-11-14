@@ -14,7 +14,7 @@ export const SupplierModelCreate = () => {
   const inventoriesData = useSelector((item) => item.inventories.data);
   const [dataForm, setDataForm] = useState([
     {
-      productAttributeId: "",
+      productAttributeId: "0",
       price: 0,
     },
   ]);
