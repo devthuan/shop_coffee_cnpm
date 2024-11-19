@@ -13,6 +13,8 @@ import {
   initDataProduct,
   deleteProduct,
 } from "~/redux/features/Products/productsSlice";
+
+
 // const cx = classNames.bind(styles);
 export const Product = () => {
   const dispatch = useDispatch();
