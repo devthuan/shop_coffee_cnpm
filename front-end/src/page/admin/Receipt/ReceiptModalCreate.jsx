@@ -12,7 +12,10 @@ import {
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { CreateReceiptAPI } from "~/services/ReceiptServer";
 import { toast } from "react-toastify";
-import { addReceipt, initDataReceipt } from "~/redux/features/Receipts/receiptsSlice";
+import {
+  addReceipt,
+  initDataReceipt,
+} from "~/redux/features/Receipts/receiptsSlice";
 // import {
 //   addReceipt,
 //   initDataReceipt,
@@ -59,8 +62,8 @@ export const ReceiptModalCreate = () => {
     try {
       const response = await GetDetailSupplierAPI(e.target.value);
       if (response.data && response.status === 200) {
-        setDetailSupplier(response.data[0].detailSupplier);
-        console.log(response.data[0].detailSupplier);
+        setDetailSupplier(response.data.detailSupplier);
+        console.log(response.data.detailSupplier);
       }
     } catch (error) {
       const { message, status } = HandleApiError(error);
@@ -197,9 +200,13 @@ export const ReceiptModalCreate = () => {
                           />
                         </svg>
                         <select
+                          defaultValue=""
                           onClick={(e) => handleChoseSupplier(e)}
                           className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
                         >
+                          <option value="" disabled>
+                            Chọn một nhà cung cấp
+                          </option>
                           {dataSupplier &&
                             dataSupplier.map((item) => {
                               return (
@@ -242,9 +249,13 @@ export const ReceiptModalCreate = () => {
                                   />
                                 </svg>
                                 <select
+                                  defaultValue=""
                                   onChange={(e) => handleChoseProduct(index, e)}
                                   className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
                                 >
+                                  <option value="" disabled>
+                                    Chọn một sản phẩm
+                                  </option>
                                   {detailSupplier &&
                                     detailSupplier.map((detail) => (
                                       <option

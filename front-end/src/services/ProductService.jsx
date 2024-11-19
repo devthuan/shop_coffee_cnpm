@@ -24,6 +24,9 @@ export const DetailProduct = async (id) => {
 export const getALLProducts = (query) => {
   return api.get(`products?${query}`);
 };
+export const getALLProductsForClientAPI = (query) => {
+  return api.get(`products/client?${query}`);
+};
 
 // code demo
 // export const DetailProduct = async () => {
@@ -32,11 +35,7 @@ export const getALLProducts = (query) => {
 
 // };
 
-export const EvaluateProduct = async () => {
-  return await api.get(
-    `reviews/by-product/7edd9611-5cd5-4d82-9500-0be792247019`
-  );
-};
+
 
 export const DiscountProduct = async () => {
   return await api.get(`discount`);

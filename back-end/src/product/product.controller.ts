@@ -36,6 +36,21 @@ export class ProductController {
     let data = this.productService.findAll(search, page, limit, sortBy, sortOrder, filters);
     return plainToInstance(Products, data)
   }
+  @Get('client')
+  findAllForClient(
+    @Query('search') search: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('sortBy') sortBy: string = 'createdAt',
+    @Query('sortOrder') sortOrder: "ASC" | "DESC" = "DESC",
+    @Query() query: Record<string, any>
+
+  ) {
+    const {search : _search, page: _page, limit: _limit, sortBy: _sortBy, sortOrder: _sortOrder, ...filters } = query;
+    limit = limit > 100 ? 100 : limit;
+    let data = this.productService.findAllForClient(search, page, limit, sortBy, sortOrder, filters);
+    return plainToInstance(Products, data)
+  }
 
   @Get('detail/:id')
   detailProduct(@Param('id') id: string) {

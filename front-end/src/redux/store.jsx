@@ -19,6 +19,7 @@ import catagoriesReducer from "./features/Categories/categoriesSlice"
 import userInfoReducer from "./features/UserInfor/User_InforSlice";
 import cartReducer from "./features/cart/cartSlice";
 import authReducer from "./features/AuthSlice/authSlice"; // Đường dẫn tới authSlice
+import vouchersReducer from "./features/Vouchers/voucherSlice"
 import notificationReducer from "./features/Notifications/NotificationsSilce";
 import notificationUserReducer from "./features/Notifications/NotificationsUserSlice"; //
 import paymentsReducer from "./features/Payments/paymentsSlice"
@@ -38,20 +39,24 @@ export const store = configureStore({
     idBillDetails: IdBillDetailReducer,
     permissions: permissionsReducer,
     inventories: inventoriesReducer,
-    attributes : attributesReducer,
-    discounts : discountsReducer,
-    receipts : receiptsReducer,
+    attributes: attributesReducer,
+    discounts: discountsReducer,
     suppliers: suppliersReducer,
     productss: productsReducer,
-  
+
     auth: authReducer,
+    receipts: receiptsReducer,
+    auth: authReducer,
+    vouchers: vouchersReducer,
+
     notifications: notificationReducer,
     notificationUser: notificationUserReducer,
     statistical: statisticalReducer,
     payments : paymentsReducer,
-    favoriteUser : favoriteUserReducer,
-    billAccount : billAccountReducer,
-    reviews : reviewsReducer
+    reviews : reviewsReducer,
+    payments: paymentsReducer,
+    favoriteUser: favoriteUserReducer,
+    billAccount: billAccountReducer
   },
 
   // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),

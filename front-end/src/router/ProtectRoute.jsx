@@ -1,13 +1,13 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
+import { getItemWithExpiration } from "~/services/localStorage";
 
 // Define the ProtectedRoute component
 const ProtectedRoute = (props) => {
-  const checkLogin = useSelector((state) => state.auth.isLoggedIn);
-
-  if (!checkLogin) {
-    alert("You need Login !");
+  const isLogin = getItemWithExpiration("token") || null;
+  if (!isLogin) {
+    alert("Bạn cần đăng nhập để sử dụng chức năng này !");
     return <Navigate to="/" />;
   } else {
     return <>{props.children}</>;

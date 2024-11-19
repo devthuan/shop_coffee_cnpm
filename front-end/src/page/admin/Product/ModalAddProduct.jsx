@@ -10,6 +10,8 @@ import { initDataAttribute } from "~/redux/features/Attributes/attributesSlice";
 import { addProduct } from "~/redux/features/Products/productsSlice";
 import Select from "react-select";
 import { initDataCatagories } from "~/redux/features/Categories/categoriesSlice";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export const ModalAddProduct = () => {
   const dispatch = useDispatch();
@@ -34,6 +36,7 @@ export const ModalAddProduct = () => {
   const [productDescription, setProductDescription] = useState("");
   const [productImages, setProductImages] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
+  const [content, setContent] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,7 +45,6 @@ export const ModalAddProduct = () => {
       dispatch(initDataCatagories(responseCategory.data));
       dispatch(initDataAttribute(responseAttribute.data));
     };
-
     if (
       !categories ||
       categories.length === 0 ||
@@ -66,7 +68,7 @@ export const ModalAddProduct = () => {
 
     try {
       const response = await UploadFileAPI(formImage);
-      console.log(response)
+      console.log(response);
       if (response && response.status === 201) {
         toast.success("Tải ảnh thành công");
         setProductImages([...productImages, response.data.url]);
@@ -88,7 +90,6 @@ export const ModalAddProduct = () => {
       })),
       images: productImages,
     };
-
     try {
       const response = await AddProduct(productData);
       if (response && response.status === 201) {
@@ -120,7 +121,7 @@ export const ModalAddProduct = () => {
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 w-full h-full bg-black opacity-40" />
-        <Dialog.Content className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-full max-w-6xl mx-auto px-4">
+        <Dialog.Content className="max-h-[80vh] overflow-y-auto fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-full max-w-6xl mx-auto ">
           <div className="bg-white rounded-md shadow-lg">
             <div className="flex items-center justify-between p-4 border-b">
               <Dialog.Title className="text-lg font-medium text-gray-800 ">
@@ -209,12 +210,14 @@ export const ModalAddProduct = () => {
                 <label className="block text-sm text-nowrap pr-2 font-medium text-gray-700">
                   Mô tả sản phẩm
                 </label>
-                <textarea
-                  className="mt-1 text-[17px] block w-full border border-gray-300 rounded-md p-2"
-                  required
-                  value={productDescription}
-                  onChange={(e) => setProductDescription(e.target.value)}
-                ></textarea>
+                  <CKEditor
+                    editor={ClassicEditor}
+                    data={content}
+                    onChange={(event, editor) => {
+                      const data = editor.getData();
+                      setProductDescription(data);
+                    }}
+                  />
               </div>
               <div className="flex justify-end items-center gap-3 p-4 border-t">
                 <button

@@ -1,0 +1,31 @@
+        public void searchAllCheck() {
+S1        ArrayList<PhieuXuatDTO> result1 = new ArrayList<>();
+C1,C2       if (giaTu.getText().length() > 0 || giaDen.getText().length() > 0) {
+S3            double a;
+S4            double b;
+
+C3,C4            if (giaTu.getText().length() > 0 && giaDen.getText().length() == 0) {
+S5                  a = Double.parseDouble(giaTu.getText());
+C5                  for (int i = 0; i < result.size(); i++) {
+C6                      if (result.get(i).getTongTien() >= a) {
+S6                       result1.add(result.get(i));
+                        }
+                    }
+C7,C8            }else if (giaTu.getText().length() == 0 && giaDen.getText().length() > 0) {
+S7                    b = Double.parseDouble(giaDen.getText());
+C9                    for (int i = 0; i < result.size(); i++) {
+C10                         if (result.get(i).getTongTien() <= b) {
+S8                          result1.add(result.get(i));
+                            } 
+                        }       
+C11,C12          } else if (giaTu.getText().length() > 0 && giaDen.getText().length() > 0) {
+S9                      a = Double.parseDouble(giaTu.getText());
+S10                     b = Double.parseDouble(giaDen.getText());
+C13                     for (int i = 0; i < result.size(); i++) {
+C14                         if (result.get(i).getTongTien() >= a && result.get(i).getTongTien() <= b) {
+S11                                 result1.add(result.get(i));
+                             }
+                        }
+                }
+        }
+    }

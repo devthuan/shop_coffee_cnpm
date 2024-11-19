@@ -14,7 +14,7 @@ export const SupplierModelCreate = () => {
   const inventoriesData = useSelector((item) => item.inventories.data);
   const [dataForm, setDataForm] = useState([
     {
-      productAttributeId: "",
+      productAttributeId: "0",
       price: 0,
     },
   ]);
@@ -43,15 +43,14 @@ export const SupplierModelCreate = () => {
     }
   };
 
-  const handleChoseProductAttribute = (e) => {
+  const handleChoseProductAttribute = (e, index) => {
     const selectedId = e.target.value;
 
-    // Cập nhật dữ liệu cho hàng dựa trên chỉ mục `index`
+    // Cập nhật giá trị productAttributeId cho hàng tại index cụ thể
     setDataForm((prevDataForm) =>
-      prevDataForm.map((row, i) => ({
-        ...row,
-        productAttributeId: selectedId,
-      }))
+      prevDataForm.map((row, i) =>
+        i === index ? { ...row, productAttributeId: selectedId } : row
+      )
     );
   };
 
@@ -80,17 +79,17 @@ export const SupplierModelCreate = () => {
       if (response && response.status === 201) {
         dispatch(addSupplier(response.data));
         toast.success("Tạo mới nhà cung cấp thành công.");
-        setFormData({
-          name: "",
-          email: "",
-          phone: "",
-          address: "",
-          description: "",
-        });
-        setDataForm({
-          productAttributeId: "",
-          price: 0,
-        });
+        // setFormData({
+        //   name: "",
+        //   email: "",
+        //   phone: "",
+        //   address: "",
+        //   description: "",
+        // });
+        // setDataForm({
+        //   productAttributeId: "",
+        //   price: 0,
+        // });
       }
     } catch (error) {
       console.log(error);
@@ -255,8 +254,8 @@ export const SupplierModelCreate = () => {
                                 </svg>
                                 <select
                                   defaultValue=""
-                                  onClick={(e) =>
-                                    handleChoseProductAttribute(e)
+                                  onChange={(e) =>
+                                    handleChoseProductAttribute(e, index)
                                   }
                                   className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
                                 >

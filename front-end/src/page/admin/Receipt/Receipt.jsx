@@ -104,6 +104,7 @@ export const Receipt = () => {
         ? toast.error(result)
         : toast.error("Có lỗi xảy ra, vui lòng thử lại");
     }
+
   };
 
   const handleFilter = (e) => {
@@ -148,6 +149,7 @@ export const Receipt = () => {
     setTimeout(() => {
       fetchReceipt();
     }, 800);
+
   }, [sortOption, filterOption, optionLimit]);
 
   useEffect(() => {
@@ -329,13 +331,12 @@ export const Receipt = () => {
                           </td>
                           <td className="pr-6 py-4 whitespace-nowrap">
                             <span
-                              className={`px-3 py-2 rounded-full font-semibold text-xs ${
-                                item.status === "approved"
-                                  ? "text-green-600 bg-green-50"
-                                  : item.status === "pending"
+                              className={`px-3 py-2 rounded-full font-semibold text-xs ${item.status === "approved"
+                                ? "text-green-600 bg-green-50"
+                                : item.status === "pending"
                                   ? "text-yellow-600 bg-yellow-50"
                                   : "text-red-600 bg-red-50"
-                              }`}
+                                }`}
                             >
                               {item.status}
                             </span>

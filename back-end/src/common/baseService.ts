@@ -60,6 +60,7 @@ export class BaseService<T extends BaseEntity> {
     { 
     try {
         const queryBuilder = this.repository.createQueryBuilder('entity')
+    
           .where('entity.deletedAt IS NULL')
 
           if (search) {
