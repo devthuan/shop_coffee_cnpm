@@ -69,7 +69,7 @@ function InputSearch({ handleCLickSearch }) {
                                     <li className={cx("item")} key={index} onClick={()=>handleCLickProduct(item.id)}>
                                         <img src={item.images[0]?.urlImage} className={cx("img_item")} alt="Item" />
                                         <div className={cx("name_item")}>{item.name}</div>
-                                        <div className={cx("name_item")}>{item.productAttributes[0]?.sellPrice}</div>
+                                        <div className={cx("name_item")}>{item.productAttributes[0]?.sellPrice}VND</div>
                                     </li>
                                 ))}
                             </ul>

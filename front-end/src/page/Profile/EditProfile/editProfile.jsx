@@ -78,7 +78,7 @@ function EditProfile() {
                         <input type="text" className={cx("item_input")} value={name} onChange={(e) => setName(e.target.value)} />
                     </li>
                     <li className={cx("item")}>
-                        <div className={cx("item_name")}>Địa chỉ</div>
+                        <div className={cx("item_name")}>Địa chỉ nhận hàng</div>
                         <input type="text" className={cx("item_input")} value={address} onChange={(e) => setAddress(e.target.value)} />
                     </li>
                     <li className={cx("item")}>
