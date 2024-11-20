@@ -3,14 +3,17 @@ import { useEffect } from "react";
 import { useState } from "react";
 import Swal from 'sweetalert2'; // Import SweetAlert2
 // import styles from "./Template.module.scss";
-import { ModalAddReview } from "./ModalAddReview";
-import { ModalEditReview } from "./ModalEditReview";
+// import { ModalAddReview } from "./ModalAddReview";
+// import { ModalEditReview } from "./ModalEditReview";
+import { DetailReview } from "./DetailReview";
 import { Pagination } from "~/components/Pagination/Pagination";
 import { useDispatch, useSelector } from "react-redux";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { ToastContainer, toast } from "react-toastify";
-
+import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { GetAllDiscount, DeleteDiscount } from "~/services/DiscountService";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import styles from "./Review.module.scss";
 
 import { DeleteReview, GetAllReview } from "~/services/ReviewService";
 import { initDataReview, deleteReview } from "~/redux/features/Reviews/reviewsSlice";
@@ -19,7 +22,7 @@ import {
   initDataDiscount,
   deleteDiscount,
 } from "~/redux/features/Discounts/discountsSlice";
-// const cx = classNames.bind(styles);
+const cx = classNames.bind(styles);
 export const Review = () => {
   const dispatch = useDispatch();
   const reviews = useSelector((state) => state.reviews.data);
@@ -104,15 +107,7 @@ export const Review = () => {
       dispatch(initDataDiscount(response.data));
     }
   };
-  // Array chứa danh sách tiêu đề bảng
-  const tableTitles = [
-    "ID",
-    // "Sản phẩm",
-    "Rating",
-    "Comment",
-    "Created At",
-    "Updated At"
-  ];
+
 
   return (
     <div className="max-w-full mx-auto px-4 ">
@@ -182,66 +177,78 @@ export const Review = () => {
         {/* box button create */}
         <div className="mt-3 md:mt-0">
           {/* import modal create */}
-          <ModalAddReview />
+          {/* <ModalAddReview /> */}
         </div>
       </div>
-
+      <ToastContainer
+        className="text-base"
+        fontSize="10px"
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       {/* Table */}
       <div className="mt-4  h-max overflow-auto">
-        <table className="w-full table-auto text-sm text-left">
-          <thead className="bg-gray-50 text-gray-600 font-medium border-b">
-            <tr>
-              {tableTitles &&
-                tableTitles.length > 0 &&
-                tableTitles.map((item, index) => {
-                  return (
-                    <th key={index} className="py-3 pr-6">
-                      {item}
-                    </th>
-                  );
-                })}
-            </tr>
-          </thead>
-          <tbody className="text-gray-600 divide-y">
-            {reviews &&
-              reviews?.length > 0 &&
-              reviews?.map((review, idx) => (
-                <tr key={idx}>
-                  <td className="pr-6 py-4 whitespace-nowrap">{review.id}</td>
-                  {/* <td className="pr-6 py-4 whitespace-nowrap">
-                    {review.name}
-                  </td> */}
-                  <td className="pr-6 py-4 whitespace-nowrap">
-                    {review.rating}
-                  </td>
-                  <td className="pr-6 py-4 whitespace-nowrap">
-                    {review.comment}
-                  </td>
-                  <td className="pr-6 py-4 whitespace-nowrap">
-                    {new Date(review.createdAt).toLocaleString()}
-                  </td>
-                  <td className="pr-6 py-4 whitespace-nowrap">
-                    {new Date(review.updatedAt).toLocaleString()}
-                  </td>
 
-                  <td className="text-right px-6 whitespace-nowrap">
-                    <div className="max-w-5 flex justify-center items-center">
-                      <p className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
-                        <ModalEditReview data={review} />
-                      </p>
-                      <p
-                        // để tham số rỗng ở đầu khi khi onlick vào mới chạy hàm handleDeletedProduct
-                        onClick={() => handleDeleteReview(review.id)}
-                        className="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer"
-                      >
-                        Xoá
-                      </p>
+        {reviews &&
+          reviews?.length > 0 &&
+          reviews?.map((review, idx) => (
+            <div
+              key={idx}
+              className="w-full p-[30px] bg-[#fafafd] rounded-2xl flex flex-col"
+            >
+              <div className="flex items-start  gap-5 ">
+                <div className="flex items-center justify-center h-full self-center w-[25%]"> {/* Thêm phần tử này để căn giữa review.id */}
+                  <h2>{review.id}</h2>
+                </div>
+                <img
+                  width="45px"
+                  className="rounded-full"
+                  src="https://i.pinimg.com/736x/c6/e5/65/c6e56503cfdd87da299f72dc416023d4.jpg"
+                  alt="Avatar"
+                  style={{ marginTop: '6px' }}
+                />
+                <div className="flex items-center flex-col relative">
+                  <div className="flex items-center gap-2 mt-1">
+                    {/* <span className="text-[#1a162e] text-[18px] font-medium font-['Gordita']">
+                          {item.accounts.userName}
+                        </span> */}
+                    <div className="flex items-center">
+                      {Array.from({ length: 5 }, (_, starIndex) => (
+                        <FontAwesomeIcon
+                          key={starIndex}
+                          className={cx("text-yellow-400")}
+                          icon={faStar}
+                          style={{ fontSize: '14px', opacity: starIndex < review.rating ? 1 : 0.3 }}
+                        />
+                      ))}
                     </div>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
+                    <div className="text-[#1a162e] flex justify-start ">
+                      ({review.rating} star)
+                    </div>
+                    <div className="text-[#1a162e] flex justify-start ">
+                      {review.createdAt}
+                    </div>
+                  </div>
+                  <div className="absolute left-0 top-full">
+                    {review.comment}
+                  </div>
+                </div>
+                <DetailReview data={review} />
+                <button onClick={() => handleDeleteReview(review.id)} className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 mx-5">Xóa</button>
+
+              </div>
+
+            </div>
+          ))}
+
       </div>
       <Pagination
         totalItems={total} // truyền các trị tương ứng với biến

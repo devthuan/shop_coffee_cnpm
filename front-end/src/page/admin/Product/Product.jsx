@@ -1,8 +1,6 @@
 import classNames from "classnames/bind";
 import { useEffect } from "react";
 import { useState } from "react";
-import Swal from 'sweetalert2'; // Import SweetAlert2
-
 // import styles from "./Template.module.scss";
 import { ModalAddProduct } from "./ModalAddProduct";
 import { ModalEditProduct } from "./ModalEditProduct";
@@ -15,7 +13,6 @@ import {
   initDataProduct,
   deleteProduct,
 } from "~/redux/features/Products/productsSlice";
-
 
 // const cx = classNames.bind(styles);
 export const Product = () => {
@@ -51,22 +48,12 @@ export const Product = () => {
 
   const handleDeleteProduct = async (id) => {
     try {
-      const result = await Swal.fire({
-        title: 'Bạn có chắc chắn muốn xóa sản phẩm này?',
-        icon: 'warning',
-        showCancelButton: true,  // Hiển thị nút hủy
-        confirmButtonText: 'Xóa',
-        cancelButtonText: 'Hủy',
-      });
-
-      if (result.isConfirmed) {
-        console.log(response);
-        if (response && response.status === 200) {
-          dispatch(deleteProduct({ id }));
-          toast.success("Xoá sản phẩm thành công.");
-        }
-      }
       const response = await DeleteProduct(id);
+      console.log(response);
+      if (response && response.status === 200) {
+        dispatch(deleteProduct({ id }));
+        toast.success("Xoá sản phẩm thành công.");
+      }
     } catch (error) {
       const result = HandleApiError(error);
       console.log(result);

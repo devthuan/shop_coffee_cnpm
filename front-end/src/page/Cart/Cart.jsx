@@ -645,7 +645,7 @@ export const Cart = () => {
                     ref={refVoucher}
                     onChange={(e) => setCodeVoucher(e.target.value)}
                     value={codeVoucher}
-                    className="w-full border border-gray-300 rounded outline-none text-[20px] mr-2" // Thêm margin phải để tạo khoảng cách với button
+                    className="w-full border border-gray-300 rounded outline-none text-[20px] mr-2" 
                     type="text"
                   />
                 </div>
