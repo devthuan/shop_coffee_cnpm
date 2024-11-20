@@ -10,6 +10,7 @@ import Slider from "react-slick";
 import { DetailProduct } from "~/services/ProductService";
 import FeedBackProduct from "./FeedBackProduct";
 import DescriptionProduct from "./DescriptionProduct";
+import CommentProduct from "./CommentProduct";
 import { useDispatch, useSelector } from "react-redux"; // Import các hook của Redux
 import { AddToCartAPI, GetCartOfUser } from "~/services/CartService";
 import { addToCart, initCart } from "~/redux/features/cart/cartSlice";
@@ -29,8 +30,11 @@ export const Product = () => {
   const [statistical, setStatistical] = useState({});
   const [showDescription, setShowDescription] = useState(true);
   const [showFeedBack, setShowFeedBack] = useState(false);
+  const [showCommemt, setShowComment] = useState(false);
   const [textDescription, setTextDescription] = useState("gray");
   const [textFeedBack, setTextFeedBack] = useState("black");
+  const [textComment, setTextComment] = useState("black");
+
   const [selectedAttribute, setSelectedAttribute] = useState(null);
 
   const dispatch = useDispatch();
@@ -97,17 +101,30 @@ export const Product = () => {
   // click description
   const clickDescription = () => {
     setShowFeedBack(false);
+    setShowComment(false);
     setShowDescription(true);
     setTextDescription("gray");
+    setTextComment("black");
     setTextFeedBack("black");
   };
 
   // click feedback
   const clickFeedBack = () => {
     setShowFeedBack(true);
+    setShowComment(false);
     setShowDescription(false);
     setTextDescription("black");
+    setTextComment("black");
     setTextFeedBack("gray");
+  };
+
+  const clickComment = () => {
+    setShowFeedBack(false);
+    setShowDescription(false);
+    setShowComment(true);
+    setTextComment("gray");
+    setTextDescription("black");
+    setTextFeedBack("black");
   };
 
   return (
@@ -193,6 +210,115 @@ export const Product = () => {
                         : 0}
                     </p>
                   </div>
+
+                  <div
+                    style={{ border: "1px solid #ccc" }}
+                    className=" w-full flex-col justify-start items-start gap-5 flex p-3 mt-5 "
+                  >
+                    <div className="flex-col justify-start items-start gap-5 flex">
+                      <div className="justify-start items-start gap-2.5 inline-flex">
+                        {product.productDiscount.length > 0 && (
+                          <>
+                            <div
+                              className={`xt-black text-base font-medium font-['Gordita'] leading-normal ${
+                                product?.productDiscount.length > 0
+                                  ? "line-through"
+                                  : ""
+                              }`}
+                            >
+                              {selectedAttribute?.sellPrice
+                                ? selectedAttribute?.sellPrice.toLocaleString(
+                                    "vi-VN"
+                                  )
+                                : 0}{" "}
+                              đ
+                            </div>
+                            <div className="px-2 py-0.5 bg-white/80 justify-start items-start gap-2.5 flex">
+                              <div className="w-[30px] text-[21px] h-[17px] text-[#67b044] font-medium font-['Gordita'] leading-tight">
+                                {product.productDiscount[0].value}%
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </div>
+
+                      {selectedAttribute && (
+                        <div className="text-black text-[26px] font-medium font-['Gordita'] leading-9">
+                          {selectedAttribute.sellPrice -
+                            ((product?.productDiscount.length > 0
+                              ? product.productDiscount[0].value
+                              : 0) /
+                              100) *
+                              selectedAttribute.sellPrice <
+                          0
+                            ? 0
+                            : selectedAttribute.sellPrice -
+                              ((product?.productDiscount.length > 0
+                                ? product.productDiscount[0].value
+                                : 0) /
+                                100) *
+                                selectedAttribute.sellPrice.toLocaleString(
+                                  "vi-VN"
+                                )}{" "}
+                          VNĐ
+                        </div>
+                      )}
+                    </div>
+                    <div className="w-60 min-h-24 justify-start items-end gap-[19px] flex">
+                      <div className=" w-full px-4 py-2 mb-5 bg-[#ffb700] rounded-md gap-2.5 flex justify-center items-center">
+                        <div
+                          onClick={() =>
+                            selectedAttribute
+                              ? handleAddToCart(selectedAttribute.id)
+                              : toast.error(
+                                  "Vui lòng chọn loại sản phẩm cần thêm vào giỏ hàng"
+                                )
+                          }
+                          className="text-[#1a162e] text-lg font-medium font-['Gordita'] leading-relaxed"
+                        >
+                          Thêm vào giỏ hàng
+                        </div>
+                      </div>
+                      <div className="mb-5 p-[10px] rounded-md border border-[#d2d1d6] justify-center items-center gap-2.5 flex">
+                        <div className="w-6 h-6 px-[2.50px] py-[3px] justify-center items-center flex">
+                          <FontAwesomeIcon icon={faHeart} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* <div className="h-[186px] p-5 rounded-md border border-[#b9babe] flex-col justify-start items-start gap-2.5 inline-flex">
+                    <div className="flex-col justify-start items-start gap-5 flex">
+                      <div className="flex-col justify-start items-start gap-5 flex">
+                        <div className="justify-start items-start gap-2.5 inline-flex">
+                          <div className="text-black text-base font-medium font-['Gordita'] leading-normal">
+                            $500.00
+                          </div>
+                          <div className="px-2 py-0.5 bg-white/80 justify-start items-start gap-2.5 flex">
+                            <div className="w-[30px] h-[17px] text-[#67b044] text-sm font-medium font-['Gordita'] leading-tight">
+                              10%
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-black text-[26px] font-medium font-['Gordita'] leading-9">
+                          $540.00
+                        </div>
+                      </div>
+                      <div className="justify-start items-start gap-[19px] inline-flex">
+                        <div className="px-[55px] py-2.5 bg-[#ffb700] rounded-md justify-center items-center gap-2.5 flex">
+                          <div className="text-[#1a162e] text-lg font-medium font-['Gordita'] leading-relaxed">
+                            Add to cart
+                          </div>
+                        </div>
+                        <div className="p-[11px] rounded-md border border-[#d2d1d6] justify-center items-center gap-2.5 flex">
+                          <div className="w-6 h-6 relative">
+                            <div className="w-[19px] h-[18px] left-[2.50px] top-[3px] absolute"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                   */}
                 </div>
               </div>
 
@@ -348,15 +474,25 @@ export const Product = () => {
             <p>Review</p>
             <p>(1000)</p>
           </div>
-          {/* <div className={cx("")}>Similar</div> */}
+
+          <p
+            onClick={() => clickComment()}
+            className={cx(
+              `text-[20px] cursor-pointer text-${
+                textComment === "gray" ? "gray" : "black"
+              }-500`
+            )}
+          >
+            Comment
+          </p>
         </div>
 
         <DescriptionProduct
           show={showDescription}
           content={productDetail.product?.description}
         />
-        <FeedBackProduct show={showFeedBack} />
-
+        <FeedBackProduct idProduct={id} show={showFeedBack} />
+        <CommentProduct idProduct={id} show={showCommemt} />
         <ToastContainer
           className="text-base"
           fontSize="10px"

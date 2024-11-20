@@ -25,8 +25,7 @@ import notificationUserReducer from "./features/Notifications/NotificationsUserS
 import paymentsReducer from "./features/Payments/paymentsSlice"
 import favoriteUserReducer from "~/redux/features/FavoriteUser/favoriteUserSlice";
 import billAccountReducer from "~/redux/features/BillAccount/billAccountSlice";
-
-
+import reviewsReducer from "~/redux/features/Reviews/reviewsSlice"
 export const store = configureStore({
   reducer: {
     products: productReducer,
@@ -53,6 +52,8 @@ export const store = configureStore({
     notifications: notificationReducer,
     notificationUser: notificationUserReducer,
     statistical: statisticalReducer,
+    payments : paymentsReducer,
+    reviews : reviewsReducer,
     payments: paymentsReducer,
     favoriteUser: favoriteUserReducer,
     billAccount: billAccountReducer

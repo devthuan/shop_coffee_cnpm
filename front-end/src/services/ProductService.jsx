@@ -35,11 +35,7 @@ export const getALLProductsForClientAPI = (query) => {
 
 // };
 
-export const EvaluateProduct = async () => {
-  return await api.get(
-    `reviews/by-product/7edd9611-5cd5-4d82-9500-0be792247019`
-  );
-};
+
 
 export const DiscountProduct = async () => {
   return await api.get(`discount`);

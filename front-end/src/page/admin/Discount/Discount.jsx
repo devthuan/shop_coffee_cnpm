@@ -1,6 +1,7 @@
 import classNames from "classnames/bind";
 import { useEffect } from "react";
 import { useState } from "react";
+import Swal from "sweetalert2";
 // import styles from "./Template.module.scss";
 import { ModalAddDiscount } from "./ModalAddDiscount";
 import { ModalEditDiscount } from "./ModalEditDiscount";
@@ -65,10 +66,22 @@ export const Discount = () => {
 
   const handleDeleteDiscount = async (id) => {
     try {
-      const response = await DeleteDiscount(id);
-      if (response && response.status === 200) {
-        if (discounts.length - 1 < optionLimit.limit) {
-          fetchData();
+      const result = await Swal.fire({
+        title: 'Bạn có chắc chắn muốn xóa giảm giá sản phẩm này?',
+        text: "Hành động này không thể hoàn tác!",
+        icon: 'warning',
+        showCancelButton: true,  // Hiển thị nút hủy
+        confirmButtonText: 'Xóa',
+        cancelButtonText: 'Hủy',
+      });
+
+      // Nếu người dùng xác nhận xóa (ấn vào "Xóa")
+      if (result.isConfirmed) {
+        const response = await DeleteDiscount(id);
+        if (response && response.status === 200) {
+          if (discounts.length - 1 < optionLimit.limit) {
+            fetchData();
+          }
         }
       }
     } catch (error) {

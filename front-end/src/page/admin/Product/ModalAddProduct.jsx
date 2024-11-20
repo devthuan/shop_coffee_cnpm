@@ -45,7 +45,6 @@ export const ModalAddProduct = () => {
       dispatch(initDataCatagories(responseCategory.data));
       dispatch(initDataAttribute(responseAttribute.data));
     };
-
     if (
       !categories ||
       categories.length === 0 ||
@@ -91,7 +90,6 @@ export const ModalAddProduct = () => {
       })),
       images: productImages,
     };
-
     try {
       const response = await AddProduct(productData);
       if (response && response.status === 201) {
@@ -212,12 +210,6 @@ export const ModalAddProduct = () => {
                 <label className="block text-sm text-nowrap pr-2 font-medium text-gray-700">
                   Mô tả sản phẩm
                 </label>
-                {/* <textarea
-                  className="mt-1 text-[17px] block w-full border border-gray-300 rounded-md p-2"
-                  required
-                  value={productDescription}
-                  onChange={(e) => setProductDescription(e.target.value)}
-                ></textarea> */}
                   <CKEditor
                     editor={ClassicEditor}
                     data={content}

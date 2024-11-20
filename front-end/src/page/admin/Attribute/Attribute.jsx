@@ -1,6 +1,7 @@
 import classNames from "classnames/bind";
 import { useEffect } from "react";
 import { useState } from "react";
+import Swal from "sweetalert2";
 // import styles from "./Template.module.scss";
 import { ModalEditAttribute } from "./ModalEditAttribute";
 import { Pagination } from "~/components/Pagination/Pagination";
@@ -65,11 +66,23 @@ export const Attribute = () => {
 
   const handleDeleteAttribute = async (id) => {
     try {
-      const response = await DeleteAttribute(id);
-      if (response && response.status === 200) {
-        // dispatch(deleteAttribute({id}))
-        if (attributes.length - 1 < optionLimit.limit) {
-          fetchData();
+      const result = await Swal.fire({
+        title: 'Bạn có chắc chắn muốn xóa thuộc tính này?',
+        text: "Hành động này không thể hoàn tác!",
+        icon: 'warning',
+        showCancelButton: true,  // Hiển thị nút hủy
+        confirmButtonText: 'Xóa',
+        cancelButtonText: 'Hủy',
+      });
+
+      // Nếu người dùng xác nhận xóa (ấn vào "Xóa")
+      if (result.isConfirmed) {
+        const response = await DeleteAttribute(id);
+        if (response && response.status === 200) {
+          // dispatch(deleteAttribute({id}))
+          if (attributes.length - 1 < optionLimit.limit) {
+            fetchData();
+          }
         }
       }
     } catch (error) {
