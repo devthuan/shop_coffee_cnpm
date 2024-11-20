@@ -89,7 +89,7 @@ export class BillService extends BaseService<Bills> {
       let totalDiscountProduct = 0;
       for (const product of products) {
         const productData = createBillDto.products.find(p => p.productAttributeId === product.id);
-        const productDiscount = product.products.productDiscount[0].id;
+        const productDiscount = product.products.productDiscount[0]?.id;
         totalPriceOriginal = product.sellPrice * productData.quantity;
         if (productDiscount) {
            discount = product.products.productDiscount[0].value

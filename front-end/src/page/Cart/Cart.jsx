@@ -27,7 +27,7 @@ import IconMinus from "~/assets/icon/Minus.svg";
 const cx = classNames.bind(styles);
 export const Cart = () => {
   const navigate = useNavigate();
-  const carts = useSelector((state) => state.cart);
+  const carts = useSelector((state) => state.cart.data);
   const dispatch = useDispatch();
   const [cartsCheck, setCartsCheck] = useState([]);
   const [addVoucher, setAddVoucher] = useState(false);
@@ -192,7 +192,7 @@ export const Cart = () => {
       navigate("../paynment", { state: { cartsCheck, totalEstimate } });
     } else if (addVoucher && isValidVoucher) {
       navigate("../paynment", {
-        state: { cartsCheck, codeVoucher, totalEstimate },
+        state: { cartsCheck, codeVoucher, totalEstimate, voucher },
       });
     } else if (addVoucher && !isValidVoucher) {
       toast.error("Vui lòng nhập mã voucher");
@@ -216,7 +216,7 @@ export const Cart = () => {
         )}
       >
         {carts &&
-          carts?.data.map((cart, index) => (
+          carts?.map((cart, index) => (
             <>
               <div className="w-full h-[120px] justify-start items-center gap-[20px] inline-flex  ">
                 <input

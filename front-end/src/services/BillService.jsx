@@ -11,8 +11,16 @@ export const GetBill_AccountAPI = (query) => {
 };
 
 export const AddBill = async (data) => {
-  return api.post(`bills`, data)
-}
+  return api.post(`bills`, data);
+};
 export const ChangeStatus = async (id, status) => {
-  return api.patch(`bills/update-status/${id}`,status)
-}
+  return api.patch(`bills/update-status/${id}`, status);
+};
+
+export const VnpayPaymentAPI = async (amount) => {
+  return await api.get(`payment/vnpay/create_payment_url?amount=${amount}`);
+};
+
+export const VnpayReturnAPI = async (data) => {
+  return await api.get(`payment`, data);
+};

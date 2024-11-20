@@ -67,7 +67,6 @@ export const Pagination = ({
   }, [limit]);
 
   return (
-
     <div className="max-w-screen-2xl mx-auto mt-5 px-4 text-gray-600 md:px-8">
       <div className="hidden justify-end text-sm md:flex gap-x-10">
         <div className="flex justify-center items-center gap-x-6">
@@ -100,8 +99,7 @@ export const Pagination = ({
             </select>
           </div>
           <p>
-            Showing {optionLimit * (currentPage - 1) + 1} - {" "}
-
+            Showing {optionLimit * (currentPage - 1) + 1} -{" "}
             {Math.min(optionLimit * currentPage, totalItems)} of {totalItems}
           </p>
         </div>
@@ -109,7 +107,7 @@ export const Pagination = ({
         <div className="flex items-center gap-12" aria-label="Pagination">
           <p
             onClick={() => currentPage > 1 && handlePreviousClick()}
-            className="hover:text-indigo-600 cursor-default px-4 py-2 border rounded-lg duration-150 hover:bg-gray-50"
+            className="cursor-pointer hover:text-indigo-600 cursor-default px-4 py-2 border rounded-lg duration-150 hover:bg-gray-50"
           >
             Previous
           </p>
@@ -118,13 +116,12 @@ export const Pagination = ({
           </ul>
           <p
             onClick={() => currentPage < totalPage && handleNextClick()}
-            className="hover:text-indigo-600 cursor-default px-4 py-2 border rounded-lg duration-150 hover:bg-gray-50"
+            className="cursor-pointer hover:text-indigo-600 cursor-default px-4 py-2 border rounded-lg duration-150 hover:bg-gray-50"
           >
             Next
           </p>
         </div>
       </div>
-
     </div>
   );
 };

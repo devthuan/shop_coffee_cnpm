@@ -2,6 +2,7 @@ import CartLayout from "~/Layouts/CartLayout/CartLayout";
 import ProductLayout from "~/Layouts/ProductLayout/ProductLayout";
 import ProfileLayout from "~/Layouts/ProfileLayout/ProfileLayout";
 import { Cart } from "~/page/Cart/Cart";
+import PaymentResult from "~/page/Payment-result/PaymentResult";
 import Payment from "~/page/Payment/Payment";
 import Bougth from "~/page/Profile/Bougth/bougth";
 import EditProfile from "~/page/Profile/EditProfile/editProfile";
@@ -11,6 +12,7 @@ import { Profile } from "~/page/Profile/Profile";
 export const privateRoutes = [
   { path: "/cart", component: Cart, layout: CartLayout },
   { path: "/paynment", component: Payment, layout: ProductLayout },
+  { path: "/payment-result", component: PaymentResult, layout: null },
   { path: "/profile", component: Profile, layout: ProfileLayout },
   {
     path: "/profile/editProfile",
