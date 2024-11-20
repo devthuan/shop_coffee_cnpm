@@ -14,7 +14,7 @@ export class ImportReceipts extends BaseEntity {
     note: string;
 
     @Column()
-    status: string
+    status: string;
 
     @ManyToOne(() => Supplier, supplier => supplier.importReceipt)
     supplier: Supplier;

@@ -56,7 +56,9 @@ export class PaymentService extends BaseService<Payments> {
     let hmac = crypto.createHmac("sha512", this.vnpHashSecret);
     let signed = hmac.update(new Buffer(signData, "utf-8")).digest("hex");
     vnp_Params["vnp_SecureHash"] = signed;
-    let dataURL = this.vnpUrl + "?" + querystring.stringify(vnp_Params, { encode: false });
+    
+    const dataURL = `${this.vnpUrl}?${querystring.stringify(vnp_Params, { encode: false })}`;
+
 
     return dataURL;
   }

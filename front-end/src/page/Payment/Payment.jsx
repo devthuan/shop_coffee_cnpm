@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { useLocation } from "react-router-dom";
+import { redirect, useLocation } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-import { AddBill } from "~/services/BillService";
+import { AddBill, VnpayPaymentAPI } from "~/services/BillService";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { useSelector, useDispatch } from "react-redux";
 import { GetAllPaynment } from "~/services/PaynmentService";
@@ -23,7 +23,7 @@ const Payment = () => {
     paymentMethod: "",
     note: "",
     voucher: carts.codeVoucher ? carts.codeVoucher : "",
-    products: carts.cartsCheck.map((cart) => ({
+    products: carts?.cartsCheck?.map((cart) => ({
       productAttributeId: cart.productAttributes.id,
       quantity: cart.quantity,
     })),
@@ -85,15 +85,28 @@ const Payment = () => {
   };
 
   const handleSubmit = async () => {
+    console.log(informations);
+    informations.shippingMethod = paymentMethod.paymentMethod;
+
+    if (informations.shippingMethod === "") {
+      toast.error("Vui lòng chọn phương thức vận chuyển");
+      return;
+    }
+
+    const totalAmount = carts.totalEstimate + paymentMethod.fee;
+    console.log(totalAmount);
     try {
-      informations.shippingMethod = paymentMethod.paymentMethod;
+      if (informations.paymentMethod === "1") {
+        // Gọi API để lấy URL thanh toán
+        const response = await VnpayPaymentAPI(totalAmount);
+        console.log(response);
+        if (response.data?.paymentUrl) {
+          window.location.href = response.data.paymentUrl;
+        }
+      }
       const response = await AddBill(informations);
       console.log(response);
       if (response && response.status === 201) {
-        toast.success("Thanh toán thành công");
-        setTimeout(() => {
-          navigate("/");
-        }, 2500);
       }
     } catch (error) {
       const result = HandleApiError(error);
@@ -528,7 +541,11 @@ const Payment = () => {
                     <span>Tổng tiền </span>
                   </div>
                   <div className="text-right text-[#1a162e] text-base font-bold font-['Gordita'] leading-normal">
-                    {carts.totalEstimate.toLocaleString("vi-VN")} VNĐ
+                    {(
+                      carts.totalEstimate +
+                      (carts?.voucher ? carts?.voucher.value : 0)
+                    ).toLocaleString("vi-VN")}{" "}
+                    VNĐ
                   </div>
                 </div>
                 <div className="w-[321px] justify-between items-start inline-flex">
@@ -537,6 +554,18 @@ const Payment = () => {
                   </div>
                   <div className="text-right text-[#1a162e] text-base font-bold font-['Gordita'] leading-normal">
                     {paymentMethod.fee.toLocaleString("vi-VN")} VNĐ
+                  </div>
+                </div>
+                <div className="w-[321px] justify-between items-start inline-flex">
+                  <div className="text-[#1a162e] text-base font-medium font-['Gordita'] leading-normal">
+                    Giảm giá
+                  </div>
+                  <div className="text-right text-[#1a162e] text-base font-bold font-['Gordita'] leading-normal">
+                    -{" "}
+                    {carts?.voucher
+                      ? carts.voucher.value.toLocaleString("vi-VN")
+                      : 0}{" "}
+                    VNĐ
                   </div>
                 </div>
                 <div className="w-[321px] h-px bg-[#ededf6]" />

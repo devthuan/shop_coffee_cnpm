@@ -7,7 +7,7 @@ export const GetCartOfUser = async () => {
     return await api.get(`cart`)
 };
 
-export const AddToCart = async (data) => {
+export const AddToCartAPI = async (data) => {
     return await api.post(`cart`, data)
 }
 
