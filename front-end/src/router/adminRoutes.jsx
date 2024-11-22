@@ -17,7 +17,6 @@ import { Supplier } from "~/page/admin/Supplier/Supplier";
 import { Template } from "~/page/admin/Template/Template";
 import { Voucher } from "~/page/admin/Voucher/Voucher";
 import { Warehouse } from "~/page/admin/Warehouse/Warehouse";
-import Payment from "~/page/Payment/Payment";
 
 //  routes for admin
 export const adminRoutes = [

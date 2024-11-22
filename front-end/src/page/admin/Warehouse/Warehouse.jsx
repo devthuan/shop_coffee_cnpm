@@ -1,5 +1,3 @@
-import classNames from "classnames/bind";
-import styles from "./Warehouse.module.scss";
 
 import { useEffect, useState } from "react";
 
@@ -10,12 +8,9 @@ import Loading from "~/components/Loading/Loading";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { GetAllInventory } from "~/services/InventoryService";
 import {
-  clearDataInventory,
   initDataInventory,
 } from "~/redux/features/Inventories/inventoriesSilce";
-import { ImportWarehouseModal } from "./ImportWarehouseModal";
 
-const cx = classNames.bind(styles);
 export const Warehouse = () => {
   const dispatch = useDispatch();
   const invetoriesData = useSelector((state) => state.inventories.data);
