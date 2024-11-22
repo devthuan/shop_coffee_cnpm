@@ -21,3 +21,7 @@ export const AddReview = async (data) => {
 export const UpdateReview = async (id, data) => {
     return await api.patch(`reviews/${id}`, data)
 }
+
+export const ReplyReview = async(data) => {
+    return await api.post(`reviews/reply`, data)
+}

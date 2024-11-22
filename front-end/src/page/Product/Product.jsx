@@ -20,7 +20,8 @@ import { HandleApiError } from "~/Utils/HandleApiError";
 import img_product from "~/assets/images/img_product.png";
 import { initProductDetail } from "~/redux/features/Product/PoductSlice";
 import StartIcon from "~/assets/icon/start_icon.svg";
-
+import { initDataReview } from "~/redux/features/Reviews/reviewsSlice";
+import { EvaluateProduct } from "~/services/ReviewService";
 const cx = classNames.bind(styles);
 export const Product = () => {
   const navigate = useNavigate();
@@ -36,7 +37,8 @@ export const Product = () => {
   const [textComment, setTextComment] = useState("black");
 
   const [selectedAttribute, setSelectedAttribute] = useState(null);
-
+  const reviews = useSelector((state) => state.reviews.data);
+  console.log(reviews)
   const dispatch = useDispatch();
 
   const handleAddToCart = async (ProductAttributesId, quantity = 1) => {
@@ -79,10 +81,14 @@ export const Product = () => {
     const fetchDetailProduct = async () => {
       try {
         const response = await DetailProduct(id);
-        console.log(response.data.product);
         setProduct(response.data.product);
         dispatch(initProductDetail(response.data));
         setSelectedAttribute(response.data.product.productAttributes[0]);
+
+        const responseReview = await EvaluateProduct(id);
+        if (responseReview && responseReview.status === 200) {
+          dispatch(initDataReview(responseReview.data));
+        }
       } catch (error) {
         console.log("Error when get detail product : ", error);
       }
@@ -175,21 +181,37 @@ export const Product = () => {
                         className={cx("text-yellow-300 pr-2 text-[17px]")}
                         icon={faStar}
                       />
-                      <p className="text-[#323134] text-[17px] font-semibold font-['Gordita'] leading-relaxed pr-2">
+                      {/* <p className="text-[#323134] text-[17px] font-semibold font-['Gordita'] leading-relaxed pr-2">
                         ({statistical.averageRating})
+                      </p> */}
+
+                      <p className="text-[#323134] text-[17px] font-semibold font-['Gordita'] leading-relaxed pr-2">
+                        {reviews && reviews[0]?.reviews.length > 0 ? (
+                          (reviews[0].reviews.reduce((total, review) => total + review.rating, 0) / reviews[0].reviews.length).toFixed(2)
+                        ) : (
+                          0 // Nếu không có review, trả về 0
+                        )}
                       </p>
+
                     </div>
                     <div className="flex items-end gap-x-2">
                       <p className="text-[#323134] text-[17px] font-normal font-['Gordita'] leading-relaxed pr-2">
                         {statistical.totalReview}
                       </p>
-                      <p className="text-[20px] mt-1">
+                      {/* <p className="text-[20px] mt-1">
                         |{" "}
                         {productDetail?.product.reviews.length
                           ? productDetail?.product.reviews.length
                           : 0}
+                      </p> */}
+
+                      <p className="text-[20px] mt-1">
+                        |{" "}
+                        {reviews[0]?.reviews?.length > 0
+                          ? reviews[0].reviews.length
+                          : 0}
                       </p>
-                      <p className="text-[20px] mt-1">Đánh giá</p>
+                      <p className="text-[20px] mt-1">đánh giá</p>
                     </div>
                   </div>
                 </div>
@@ -225,17 +247,17 @@ export const Product = () => {
                           ? productDetail?.product.productDiscount[0].value
                           : 0) /
                           100) *
-                          selectedAttribute.sellPrice <
-                      0
+                        selectedAttribute.sellPrice <
+                        0
                         ? 0
                         : selectedAttribute.sellPrice -
-                          ((productDetail?.product?.productDiscount.length > 0
-                            ? productDetail?.product.productDiscount[0].value
-                            : 0) /
-                            100) *
-                            selectedAttribute.sellPrice.toLocaleString(
-                              "vi-VN"
-                            )}{" "}
+                        ((productDetail?.product?.productDiscount.length > 0
+                          ? productDetail?.product.productDiscount[0].value
+                          : 0) /
+                          100) *
+                        selectedAttribute.sellPrice.toLocaleString(
+                          "vi-VN"
+                        )}{" "}
                       VNĐ
                     </div>
                   )}
@@ -243,16 +265,15 @@ export const Product = () => {
                     {productDetail?.product.productDiscount.length > 0 && (
                       <>
                         <div
-                          className={`xt-black text-[20px] font-medium font-['Gordita'] leading-normal ${
-                            productDetail?.product?.productDiscount.length > 0
-                              ? "line-through"
-                              : ""
-                          }`}
+                          className={`xt-black text-[20px] font-medium font-['Gordita'] leading-normal ${productDetail?.product?.productDiscount.length > 0
+                            ? "line-through"
+                            : ""
+                            }`}
                         >
                           {selectedAttribute?.sellPrice
                             ? selectedAttribute?.sellPrice.toLocaleString(
-                                "vi-VN"
-                              )
+                              "vi-VN"
+                            )
                             : 0}{" "}
                           vnđ
                         </div>
@@ -292,10 +313,9 @@ export const Product = () => {
                     onClick={() => handleAttributeChange(item.id)}
                     className={`cursor-pointer flex justify-center items-center bg-white w-[150px] h-14  text-[20px] font-['Gordita'] leading-snug border border-gray-200 rounded-tr rounded-br px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
                       
-                      ${
-                        selectedAttribute?.id === item.id
-                          ? "border-green-500 text-green-500"
-                          : ""
+                      ${selectedAttribute?.id === item.id
+                        ? "border-green-500 text-green-500"
+                        : ""
                       }
                       
                       `}
@@ -320,8 +340,8 @@ export const Product = () => {
                       selectedAttribute
                         ? handleAddToCart(selectedAttribute.id)
                         : toast.error(
-                            "Vui lòng chọn loại sản phẩm cần thêm vào giỏ hàng"
-                          )
+                          "Vui lòng chọn loại sản phẩm cần thêm vào giỏ hàng"
+                        )
                     }
                     className=" cursor-pointer text-[#1a162e] text-lg font-medium font-['Gordita'] leading-relaxed"
                   >
@@ -346,8 +366,7 @@ export const Product = () => {
           <p
             onClick={() => clickDescription()}
             className={cx(
-              `text-[20px] cursor-pointer text-${
-                textDescription === "gray" ? "gray" : "black"
+              `text-[20px] cursor-pointer text-${textDescription === "gray" ? "gray" : "black"
               }-500`
             )}
           >
@@ -357,20 +376,20 @@ export const Product = () => {
           <div
             onClick={() => clickFeedBack()}
             className={cx(
-              `text-[20px] flex items-center cursor-pointer text-${
-                textFeedBack === "gray" ? "gray" : "black"
+              `text-[20px] flex items-center cursor-pointer text-${textFeedBack === "gray" ? "gray" : "black"
               }-500`
             )}
           >
             <p>Review</p>
-            <p>(1000)</p>
+            ({reviews && reviews.length > 0 && (
+              <p>{reviews[0].reviews.length}</p>
+            )})
           </div>
 
           <p
             onClick={() => clickComment()}
             className={cx(
-              `text-[20px] cursor-pointer text-${
-                textComment === "gray" ? "gray" : "black"
+              `text-[20px] cursor-pointer text-${textComment === "gray" ? "gray" : "black"
               }-500`
             )}
           >
