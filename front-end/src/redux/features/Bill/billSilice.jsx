@@ -32,6 +32,21 @@ export const billSlice = createSlice({
     state.loading = true;
     state.error = null;
   },
+  changeStatusBill: (state, action) => {
+    let billIndex = state?.data.findIndex(
+      (item) => item.id === action.payload.id
+    ) 
+    console.log(billIndex)
+    if(billIndex !== -1) {
+      state.data[billIndex] = {
+        ...state.data[billIndex], 
+        status: action.payload.status, 
+      };
+    } 
+    else {
+      console.log("không có bill này")
+    }
+  }
   },
 });
 

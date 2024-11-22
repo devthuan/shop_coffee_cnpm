@@ -1,7 +1,7 @@
 import classNames from "classnames/bind";
 import { useEffect } from "react";
 import { useState } from "react";
-import Swal from 'sweetalert2'; // Import SweetAlert2
+import Swal from "sweetalert2"; // Import SweetAlert2
 // import styles from "./Template.module.scss";
 import { ModalAddCategory } from "./ModalAddCategory";
 import { ModalEditCategory } from "./ModalEditCategory";
@@ -71,12 +71,12 @@ export const Category = () => {
   const handleDeleteCategory = async (id) => {
     try {
       const result = await Swal.fire({
-        title: 'Bạn có chắc chắn muốn xóa thể loại này?',
+        title: "Bạn có chắc chắn muốn xóa thể loại này?",
         text: "Hành động này không thể hoàn tác!",
-        icon: 'warning',
-        showCancelButton: true,  // Hiển thị nút hủy
-        confirmButtonText: 'Xóa',
-        cancelButtonText: 'Hủy',
+        icon: "warning",
+        showCancelButton: true, // Hiển thị nút hủy
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy",
       });
 
       // Nếu người dùng xác nhận xóa (ấn vào "Xóa")
@@ -251,6 +251,20 @@ export const Category = () => {
         limit={limit} // truyền các trị tương ứng với biến
         onPageChange={handlePaginate} // truyền các trị tương ứng với biến
         onLimitChange={handleLimitProduct} // truyền các trị tương ứng với biến
+      />
+      <ToastContainer
+        className="text-base"
+        fontSize="10px"
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
       />
     </div>
   );

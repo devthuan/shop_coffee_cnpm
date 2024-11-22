@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/register.dto';
 import {  VerifyOtpDto } from './dto/verify-otp.dto';
@@ -11,6 +11,8 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 import { LoginGoogle } from './auth.interface';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthGuardCustom } from './auth.guard';
+import { Response } from 'express';
+
 
 @Controller('auth')
 export class AuthController {
@@ -35,10 +37,18 @@ export class AuthController {
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
-  googleAuthRedirect(@Req() req) {
+  async googleAuthRedirect(@Req() req, @Res() res: Response) {
     // redirect to home page
     let infoUser : LoginGoogle = req.user
-    return this.authService.loginWithGoogle(infoUser)
+    const data = await this.authService.loginWithGoogle(infoUser)
+
+    const html = `
+    <script>
+      window.opener.postMessage({ token: "${data.data.accessToken}" }, "${process.env.FRONTEND_URL}");
+      window.close();
+    </script>
+  `;
+  res.send(html);
    
   }
   

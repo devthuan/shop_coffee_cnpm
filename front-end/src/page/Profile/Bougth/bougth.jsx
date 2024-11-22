@@ -3,7 +3,7 @@ import styles from "./bougth.module.scss"
 import { getFavoriteUser } from "~/services/FavoriteSevice";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { clearDataFavoriteUser, initDataFavoriteUser } from "~/redux/features/FavoriteUser/favoriteUserSlice";
 import { Link, useNavigate } from "react-router-dom";
@@ -14,6 +14,7 @@ import { Pagination } from "~/components/Pagination/Pagination";
 import Loading from "~/components/Loading/Loading";
 import { clearDataBillAccount, initDataBillAccount } from "~/redux/features/BillAccount/billAccountSlice";
 import { GetBill_AccountAPI } from "~/services/BillService";
+import BillDetails from "~/page/Profile/Bougth/BillDetails";
 
 
 const cx = classNames.bind(styles)
@@ -27,8 +28,7 @@ function Bougth() {
   const isloading = useSelector((state) => state.billAccount.loading);
   const isError = useSelector((state) => state.billAccount.error);
   const img = useSelector((state) => state.billAccount.data?.products?.images) || item_cf;
-  const navigate = useNavigate();
- 
+  const [showBillDetails, setShowBillDetails] = useState(null);
   const [optionLimit, setOptionLimit] = useState({
     currentPage: 1,
     limit: 10,
@@ -80,48 +80,164 @@ function Bougth() {
     }));
   };
 
+  const filterItems = [
+    { value: "createdAt_ASC", label: "sắp xếp theo ngày tạo tăng dần" },
+    { value: "createdAt_DESC", label: "sắp xếp theo ngày tạo giảm dần" },
+  ];
+
+  const titleColumn = [
+    "tên người nhận",
+    "giá thanh toán",
+    "trạng thái",
+    "ngày mua",
+    "note",
+    "hành động"
+  ];
+  const handleToggleDetail = (id) => {
+    setShowBillDetails(id)
+  }
+
+
+  const handleToggleBill = (e) => {
+    setShowBillDetails(null);
+  };
+
+
   return (<div className={cx("wrapper")}>
+    {showBillDetails && (
+      <BillDetails
+        billsID={showBillDetails}
+        handleClickToggle={handleToggleBill}
+      />
+    )}
     {isloading ? (<div className="h-full w-full flex justify-center items-center">
       <Loading />
     </div>) : (
+
       <div className={cx("container")}>
-        <div className={cx("header_title")}>
-          <Link to="/profile">
-            <div className={cx("title")}>
-              <FontAwesomeIcon icon={faArrowLeft} className={cx("btn_gear")} />
+        <div className="mx-auto  md:pr-5">
+          <div className=" ">
+            <div className="flex justify-between mt-7">
+              <div className="relative w-72 ">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <select
+                  className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
+                >
+                  {filterItems &&
+                    filterItems.length > 0 &&
+                    filterItems.map((item) => {
+                      return (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      );
+                    })}
+                </select>
+              </div>
             </div>
-          </Link>
-          <div className={cx("header_name")}>Lists</div>
-          <div className={cx("header_disc")}>2 items - Primary</div>
+          </div>
+          {isloading ? (
+            <div className="h-full w-full flex justify-center items-center">
+              <Loading />
+            </div>
+          ) : (
+            <div className="mt-5 shadow-sm border rounded-lg overflow-x-auto">
+              <table className="w-full table-auto text-sm text-left">
+                <thead className="bg-gray-50 text-gray-600 font-medium border-b">
+                  <tr>
+                    {titleColumn &&
+                      titleColumn.length > 0 &&
+                      titleColumn.map((item) => {
+                        return (
+                          <th key={item} className="py-3 px-2">
+                            {item}
+                          </th>
+                        );
+                      })}
+                  </tr>
+                </thead>
+
+                <tbody className="text-gray-600 divide-y">
+                  {BillAccountData?.map((item, idx) => (
+                    <tr key={idx}>
+
+                      <td className="px-2 py-4 whitespace-nowrap">
+                        {item.fullName}
+                      </td>
+
+                      <td className="px-2 py-4 whitespace-nowrap">
+                        {item.totalPayment}
+                      </td>
+                      <td className="px-2 py-4 whitespace-nowrap">
+                        <span
+                          className={`px-3 py-2 rounded-full font-semibold text-xs ${item.status === "success"
+                            ? "text-green-600 bg-green-50"
+                            : item.status === "pending"
+                              ? "text-yellow-600 bg-yellow-50"
+                              : item.status === "delivery"
+                                ? "text-orange-400 bg-red-50"
+                                : "text-red-600 bg-red-50"
+                            }`}
+                        >
+                          {item.status}
+                        </span>
+                      </td>
+                      <td className="px-2 py-4 whitespace-nowrap">
+                        {item.createdAt}
+                      </td>
+                      <td className="px-2 py-4 whitespace-nowrap">
+                        {item.note}
+                      </td>
+                      <td className="px-2 py-4 whitespace-nowrap text-blue-500 hover:underline cursor-pointer" onClick={() => handleToggleDetail(item.id)}>
+                        chi tiết
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
-        <ul className={cx("list_product")}>
-          {BillAccountData.map((item, i) => (
-            <li className={cx("item_product")}>
-              <img src={img} className={cx("item_img")} />
-              <div className={cx("item_info")}>
-                <div className={cx("info_name")}>
-                  {item?.products?.name}
-                </div>
-                <div className={cx("info_under")}>
-                  <div className={cx("info_desc")}>{item?.products?.description}</div>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
+
+
+        <div className={cx("footer")}>
+          <Pagination
+            totalItems={total}
+            current={currentPage}
+            totalPage={totalPage}
+            limit={limit}
+            onPageChange={handlePageChange}
+            onLimitChange={handleLimitChange}
+          />
+          <ToastContainer
+            className="text-base"
+            fontSize="10px"
+            position="top-right"
+            autoClose={2000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
+        </div>
       </div>
     )}
-    <div className={cx("footer")}>
-      <Pagination
-        totalItems={total}
-        current={currentPage}
-        totalPage={totalPage}
-        limit={limit}
-        onPageChange={handlePageChange}
-        onLimitChange={handleLimitChange}
-      />
-    </div>
   </div>);
 }
 

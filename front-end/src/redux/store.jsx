@@ -54,7 +54,7 @@ export const store = configureStore({
     statistical: statisticalReducer,
     payments : paymentsReducer,
     reviews : reviewsReducer,
-    payments: paymentsReducer,
+    // payments: paymentsReducer,
     favoriteUser: favoriteUserReducer,
     billAccount: billAccountReducer
   },
