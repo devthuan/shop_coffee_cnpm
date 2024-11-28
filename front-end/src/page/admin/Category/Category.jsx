@@ -211,7 +211,7 @@ export const Category = () => {
               categories?.map((category, idx) => (
                 <tr key={idx}>
                   <td className="pr-6 py-4 whitespace-nowrap">
-                    {category.id.slice(0, 12)} ...
+                    {category?.id?.slice(0, 12)} ...
                   </td>
                   <td className="pr-6 py-4 whitespace-nowrap">
                     {category.name}

@@ -58,7 +58,7 @@ export const PaymentModelEdit = ({ data }) => {
             <div className="flex items-center justify-between p-4 border-b">
               {/* title modal */}
               <Dialog.Title className="text-lg font-medium text-gray-800 ">
-                Create item
+                Chỉnh sửa pương thức thanh toán
               </Dialog.Title>
 
               <Dialog.Close className="p-2 text-gray-400 rounded-md hover:bg-gray-100">
