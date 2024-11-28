@@ -38,7 +38,7 @@
 
 .info_name {
     color: var(--primary-color-text);
-    font-size: 15px;
+    font-size: 18px;
     font-weight: 500;
     line-height: 22px;
 
@@ -53,11 +53,11 @@
 
 .item_product {
     display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
     border-bottom: 0.5px solid #292E39;
     padding: 20px;
+    width: 100%;
 }
 
 .info_under {
@@ -86,7 +86,6 @@
     color: #1A162E;
 
     font-size: 15px;
-
     font-weight: 500;
     line-height: 22px;
     /* 146.667% */
@@ -96,8 +95,29 @@
     background-color: #f3b71e;
 }
 
-.item_product:hover {
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    border-radius: 8px;
+// .item_product:hover {
+//     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+//     cursor: pointer;
+//     border-radius: 8px;
+// }
+.action_btn {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+.info_desc {
+    font-size: 12px;
+}
+.item_info {
+    display: flex;
+    align-items: start;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 60%;
+}
+.btn_delete {
+    background-color: red;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
 }

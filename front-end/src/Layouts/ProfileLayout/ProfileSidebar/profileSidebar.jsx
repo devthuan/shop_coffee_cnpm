@@ -69,14 +69,14 @@ function ProfileSidebar() {
                 <li className={cx("list_item")}>
                     <ul className={cx("list_item_container")}>
                        Quản lý
+                       <Link to="/admin">
                         <li className={cx("list_item_item")}>
                             <FontAwesomeIcon icon={faUser} className={cx("item_icon")} />
                             <div className={cx("item_text")}>Trang quản lý</div>
                         </li>
+                        </Link>
                     </ul>
-                </li>
-
-               
+                </li>  
             </ul>
         </div>
     </div>);

@@ -88,13 +88,11 @@ function ContentHome() {
     favoriteId
   ) => {
     e.stopPropagation();
-    console.log(favoriteId);
     if (statusFavorite) {
       try {
         const response = await DelFavoriteUser(favoriteId);
         if (response) {
           dispatch(deleteFavorite({ id: favoriteId }));
-
           toast.success("Đã xoá sản phẩm khỏi yêu thích");
         }
       } catch (error) {

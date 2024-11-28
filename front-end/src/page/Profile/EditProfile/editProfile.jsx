@@ -4,7 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { updateInfoUser } from "~/services/UserCurrentService";
 import { getItemWithExpiration } from "~/services/localStorage";
 import { HandleApiError } from "~/Utils/HandleApiError";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { updateUserInfo } from "~/redux/features/UserInfor/User_InforSlice";
 import classNames from "classnames/bind";
 import styles from "./EditProfile.module.scss";
@@ -29,74 +29,83 @@ function EditProfile() {
         const dataToUpdate = {
             fullName: name ? String(name) : undefined,
             phoneNumber: phone ? String(phone) : undefined,
-            avatar: avatar ? String(avatar) : "http://www.w3.org/2000/svg" ,
             address1: address ? String(address) : undefined
         };
-    
         try {
-            // Gọi API cập nhật thông tin người dùng
             const response = await updateInfoUser(
-                dataToUpdate.fullName, 
-                dataToUpdate.phoneNumber, 
+                dataToUpdate.fullName,
+                dataToUpdate.phoneNumber,
                 dataToUpdate.address1,
-                dataToUpdate.avatar, 
+                dataToUpdate.avatar,
             );
-            // Kiểm tra phản hồi từ API
             if (response && response.data) {
                 dispatch(updateUserInfo(dataToUpdate));
                 toast.success(response.data.message || "Cập nhật thành công");
-                navigate("/profile");  // Điều hướng về trang hồ sơ
+                navigate("/profile"); 
             } else {
                 toast.error("Phản hồi từ server không hợp lệ.");
             }
-        } catch (error) {
-            const { message, statusCode } = error.response?.data || {};
-            if (statusCode === 400 && message === "Account not found") {
-                toast.error("Tài khoản không tồn tại. Vui lòng kiểm tra lại thông tin.");
-            } else {
-                toast.error("Có lỗi xảy ra, vui lòng thử lại sau.");
-                console.log(message)
-            }
+        } catch (error) {       
+                if(error.status === 400){
+                    toast.error('yêu cầu nhập đúng số điện thoại');
+                }
+                else{
+                    toast.error("Có lỗi xảy ra, vui lòng thử lại sau.");
+                }      
         }
-        console.log("Data to update:", dataToUpdate); 
+        console.log("Data to update:", dataToUpdate);
     };
     return (
         <div className={cx("content")}>
-              {isloading ? (<div className="h-full w-full flex justify-center items-center">
-            <Loading />
-          </div>) : (
-            <div className={cx("container")}>
-                <Link to="/profile">
-                    <div className={cx("title")}>
-                        <FontAwesomeIcon icon={faArrowLeft} className={cx("btn_gear")} />
-                        <div className={cx("header_name")}>Thông tin cá nhân</div>
-                    </div>
-                </Link>
-                <ul className={cx("list_profile")}>
-                    <li className={cx("item")}>
-                        <div className={cx("item_name")}>Họ tên</div>
-                        <input type="text" className={cx("item_input")} value={name} onChange={(e) => setName(e.target.value)} />
-                    </li>
-                    <li className={cx("item")}>
-                        <div className={cx("item_name")}>Địa chỉ nhận hàng</div>
-                        <input type="text" className={cx("item_input")} value={address} onChange={(e) => setAddress(e.target.value)} />
-                    </li>
-                    <li className={cx("item")}>
-                        <div className={cx("item_name")}>Số điện thoại</div>
-                        <input type="tel" className={cx("item_input")} value={phone} onChange={(e) => setPhone(e.target.value)} />
-                    </li>
-                </ul>
-            </div>
-          )}
+            {isloading ? (<div className="h-full w-full flex justify-center items-center">
+                <Loading />
+            </div>) : (
+                <div className={cx("container")}>
+                    <Link to="/profile">
+                        <div className={cx("title")}>
+                            <FontAwesomeIcon icon={faArrowLeft} className={cx("btn_gear")} />
+                            <div className={cx("header_name")}>Thông tin cá nhân</div>
+                        </div>
+                    </Link>
+                    <ul className={cx("list_profile")}>
+                        <li className={cx("item")}>
+                            <div className={cx("item_name")}>Họ tên</div>
+                            <input type="text" className={cx("item_input")} value={name} onChange={(e) => setName(e.target.value)} />
+                        </li>
+                        <li className={cx("item")}>
+                            <div className={cx("item_name")}>Địa chỉ nhận hàng</div>
+                            <input type="text" className={cx("item_input")} value={address} onChange={(e) => setAddress(e.target.value)} />
+                        </li>
+                        <li className={cx("item")}>
+                            <div className={cx("item_name")}>Số điện thoại</div>
+                            <input type="tel" className={cx("item_input")} value={phone} onChange={(e) => setPhone(e.target.value)} />
+                        </li>
+                    </ul>
+                </div>
+            )}
             <div className={cx("save")}>
                 <Link to="/profile">
                     <button className={cx("btn_cancel")}>Thoát</button>
                 </Link>
                 <button className={cx("btn_save")} onClick={handleBtnUpdate}>Lưu</button>
             </div>
-     
+            <ToastContainer
+                className="text-base"
+                fontSize="10px"
+                position="top-right"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
+
         </div>
-          
+
     );
 }
 
