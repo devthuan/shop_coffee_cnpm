@@ -6,6 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { UpdateAttribute } from "~/services/AttributeService";
 import { updateAttribute } from "~/redux/features/Attributes/attributesSlice";
+import { validateAttribute } from "~/Utils/Attribute/validateAttribute";
 export const ModalEditAttribute = ({ data }) => {
   const dispatch = useDispatch();
   const [formData, setFromData] = useState({
@@ -39,6 +40,11 @@ export const ModalEditAttribute = ({ data }) => {
       name: formData.name,
       description: formData.description,
     };
+
+    if(!validateAttribute(attributeData))
+    {
+      return;
+    }
     try {
       const response = await UpdateAttribute(data.id, attributeData);
       console.log(response);

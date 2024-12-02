@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef} from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { toast, ToastContainer } from "react-toastify";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { useDispatch, useSelector } from "react-redux";
 import { AddCategory } from "~/services/CategoryService";
 import { addCategory } from "~/redux/features/Categories/categoriesSlice";
+import { validateCategory } from "~/Utils/Category/validateCategory";
 
 export const ModalAddCategory = () => {
     const dispatch = useDispatch()
@@ -17,6 +18,10 @@ export const ModalAddCategory = () => {
             name: nameCategory,
             description: descriptionCategory,
         };
+
+        if (!validateCategory(categoryData)) {
+            return;
+        }
         try {
             const response = await AddCategory(categoryData)
             console.log(response)
@@ -30,7 +35,9 @@ export const ModalAddCategory = () => {
             const result = HandleApiError(error);
             console.log(result)
             if (result) {
-                toast.error(result.message);
+                // toast.error(result.message);
+                toast.error("Tên danh mục đã tồn tại trong hệ thống");
+
             } else {
                 toast.error("Có lỗi xảy ra, vui lòng thử lại");
             }

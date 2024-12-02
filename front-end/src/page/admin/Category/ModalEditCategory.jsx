@@ -6,7 +6,8 @@ import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { UpdateCategory } from "~/services/CategoryService";
 import { updateCategory } from "~/redux/features/Categories/categoriesSlice";
-export const ModalEditCategory= ({ data }) => {
+import { validateCategory } from "~/Utils/Category/validateCategory";
+export const ModalEditCategory = ({ data }) => {
   const dispatch = useDispatch();
   const [formData, setFromData] = useState({
     // id: "",
@@ -32,7 +33,7 @@ export const ModalEditCategory= ({ data }) => {
       [name]: value
     })
   }
- 
+
   const handleUpdateCategory = async (e) => {
     e.preventDefault();
     const categoryData = {
@@ -40,11 +41,15 @@ export const ModalEditCategory= ({ data }) => {
       name: formData.name,
       description: formData.description,
     };
+
+    if (!validateCategory(categoryData)) {
+      return;
+    }
     try {
       const response = await UpdateCategory(data.id, categoryData)
       console.log(response)
       if (response && response.status === 200) {
-        dispatch(updateCategory({id : data.id, ...categoryData}))
+        dispatch(updateCategory({ id: data.id, ...categoryData }))
         toast.success("Chỉnh sửa thể loại thành công")
       }
     }
@@ -52,7 +57,9 @@ export const ModalEditCategory= ({ data }) => {
       const result = HandleApiError(error);
       console.log(result)
       if (result) {
-        toast.error(result.message);
+        toast.error("Tên danh mục đã tồn tại trong hệ thống");
+
+        // toast.error(result.message);
       } else {
         toast.error("Có lỗi xảy ra, vui lòng thử lại");
       }

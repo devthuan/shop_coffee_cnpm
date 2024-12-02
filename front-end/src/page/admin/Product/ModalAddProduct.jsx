@@ -12,15 +12,10 @@ import Select from "react-select";
 import { initDataCatagories } from "~/redux/features/Categories/categoriesSlice";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-
+import { validateProduct } from "~/Utils/Product/validateProduct";
 export const ModalAddProduct = () => {
   const dispatch = useDispatch();
-  // const attributes = useSelector((state) =>
-  //   state.attributes.data.map((attributes) => ({
-  //     value: attributes.id,
-  //     label: attributes.name,
-  //   }))
-  // );
+ 
 
   const attributesOriginal = useSelector((state) => state.attributes.data);
   const attributes = attributesOriginal.map((attributes) => ({
@@ -30,7 +25,7 @@ export const ModalAddProduct = () => {
 
   const categories = useSelector((state) => state.catagories.data);
 
-  const [productName, setProductName] = useState();
+  const [productName, setProductName] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedAttributes, setSelectedAttributes] = useState([]);
   const [productDescription, setProductDescription] = useState("");
@@ -81,15 +76,24 @@ export const ModalAddProduct = () => {
     }
   };
   const handleSubmit = async () => {
+    const plainTextDescription = productDescription.replace(/<[^>]*>/g, '').trim();
+
     const productData = {
       name: productName,
       categoryId: selectedCategory,
-      description: productDescription,
+      description: plainTextDescription,
       attributes: selectedOptions?.map((attributeId) => ({
         attributeId: attributeId.value,
       })),
       images: productImages,
     };
+    console.log(selectedOptions)
+    if(!validateProduct(productData, true))
+    {
+      return;
+    }
+   
+  
     try {
       const response = await AddProduct(productData);
       if (response && response.status === 201) {
@@ -107,7 +111,8 @@ export const ModalAddProduct = () => {
       const result = HandleApiError(error);
       console.log(result);
       if (result) {
-        toast.error(result.message);
+        // toast.error(result.message);
+        toast.error(("Tên sản phẩm đã tồn tại trong hệ thống"))
       } else {
         toast.error("Có lỗi xảy ra, vui lòng thử lại");
       }

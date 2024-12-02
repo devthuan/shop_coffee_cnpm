@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { initDataProduct } from "~/redux/features/Products/productsSlice";
 import { UpdateDiscount } from "~/services/DiscountService";
 import { updateDiscount } from "~/redux/features/Discounts/discountsSlice";
+import { validateDiscount } from "~/Utils/Discount/validateDiscount";
 
 export const ModalEditDiscount = ({ data }) => {
   console.log(data);
@@ -61,9 +62,11 @@ export const ModalEditDiscount = ({ data }) => {
       startDate: formData.startDate,
       endDate: formData.endDate,
     };
-    console.log(formData);
-    console.log(discountData);
     e.preventDefault();
+    if(!validateDiscount(discountData))
+    {
+      return;
+    }
     try {
       const response = await UpdateDiscount(data.id, discountData);
       console.log(response);
