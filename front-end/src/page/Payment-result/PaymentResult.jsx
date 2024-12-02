@@ -46,7 +46,11 @@ const PaymentResult = () => {
           </h3>
           <h3 className="text-gray-600 text-2xl">Mã đơn hàng: {orderId}</h3>
           <h3 className="text-gray-600 text-2xl">
-            Tổng tiền: {parseInt(amount).toLocaleString("vi-VN")} VNĐ
+            Tổng tiền:{" "}
+            {parseInt(parseInt(amount).toString().slice(0, -1)).toLocaleString(
+              "vi-VN"
+            )}{" "}
+            VNĐ
           </h3>
           <h3 className="text-gray-600 text-2xl">Ngày tạo: {formattedDate}</h3>
           <h3 className="text-gray-600 text-2xl">trạng thái: {status}</h3>

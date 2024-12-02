@@ -271,7 +271,7 @@ export const Login = () => {
                     Đồng ý tất cả điều khoản
                   </label>
                   <a
-                    href="https://chatgpt.com/c/66fdfaf9-cb74-8011-89ff-236369702781"
+                    href="/recoverypass"
                     className={cx("text-blue-500")}
                   >
                     Recovery Password

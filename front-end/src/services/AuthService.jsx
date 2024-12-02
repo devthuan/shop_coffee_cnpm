@@ -10,7 +10,6 @@ export const RegisAPI = (email, username, password, confirmPassword) => {
 };
 
 export const LoginAPI = (email, password) => {
-
   let ip = "0.0.0.0";
 
   return api.post(`auth/login`, { email: email, password: password, ip: ip });
@@ -18,10 +17,10 @@ export const LoginAPI = (email, password) => {
 
 export const LoginWithGoogleAPI = () => {
   return api.get(`auth/google`);
-}
+};
 export const LoginWithGoogleCallBackAPI = () => {
   return api.get(`auth/google/callback`);
-}
+};
 
 export const SendOTPAPI = (email) => {
   return api.post(`auth/send-otp`, { email });
@@ -42,9 +41,10 @@ export const LogOut = async () => {
     console.error("Error during logout:", error);
   }
 };
-export const GoogleAPI = async() => {
-  return api.post(`auth/goole`, {
-  });
+export const GoogleAPI = async () => {
+  return api.post(`auth/goole`, {});
 };
 
-
+export const RecoverPass = async (email) => {
+  return await api.post("auth/forgot-password", { email });
+};

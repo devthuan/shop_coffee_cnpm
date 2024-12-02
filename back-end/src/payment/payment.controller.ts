@@ -23,9 +23,9 @@ export class PaymentController {
     return this.paymentService.create(createPaymentDto);
   }
 
-  @UseGuards(PermissionsGuard)
-  @UseGuards(AuthGuardCustom)
-  @Permissions("GET_PAYMENT_METHOD")
+  // @UseGuards(PermissionsGuard)
+  // @UseGuards(AuthGuardCustom)
+  // @Permissions("GET_PAYMENT_METHOD")
   @Get()
   findAll(
     @Query('search') search: string,
