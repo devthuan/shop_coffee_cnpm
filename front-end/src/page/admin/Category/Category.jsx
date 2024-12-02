@@ -70,12 +70,12 @@ export const Category = () => {
   const handleDeleteCategory = async (id) => {
     try {
       const result = await Swal.fire({
-        title: 'Bạn có chắc chắn muốn xóa thể loại này?',
+        title: "Bạn có chắc chắn muốn xóa thể loại này?",
         text: "Hành động này không thể hoàn tác!",
-        icon: 'warning',
-        showCancelButton: true,  // Hiển thị nút hủy
-        confirmButtonText: 'Xóa',
-        cancelButtonText: 'Hủy',
+        icon: "warning",
+        showCancelButton: true, // Hiển thị nút hủy
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy",
       });
 
       // Nếu người dùng xác nhận xóa (ấn vào "Xóa")
@@ -210,7 +210,7 @@ export const Category = () => {
               categories?.map((category, idx) => (
                 <tr key={idx}>
                   <td className="pr-6 py-4 whitespace-nowrap">
-                    {category.id.slice(0, 12)} ...
+                    {category?.id?.slice(0, 12)} ...
                   </td>
                   <td className="pr-6 py-4 whitespace-nowrap">
                     {category.name}
@@ -250,6 +250,20 @@ export const Category = () => {
         limit={limit} // truyền các trị tương ứng với biến
         onPageChange={handlePaginate} // truyền các trị tương ứng với biến
         onLimitChange={handleLimitProduct} // truyền các trị tương ứng với biến
+      />
+      <ToastContainer
+        className="text-base"
+        fontSize="10px"
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
       />
     </div>
   );

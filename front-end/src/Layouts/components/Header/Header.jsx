@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 import { GetCartOfUser } from "~/services/CartService";
 import { initCart } from "~/redux/features/cart/cartSlice";
 import { HandleApiError } from "~/Utils/HandleApiError";
+import { Notification } from "~/Layouts/components/HeaderAdmin/Notification";
 
 const cx = classNames.bind(styles);
 
@@ -104,7 +105,11 @@ function Header() {
               </Link>
             </div>
           ) : (
+           
+
             <div className={cx("content")}>
+               <Notification />
+
               <div className={cx("btn_search")} onClick={handleCLickSearch}>
                 <FontAwesomeIcon icon={faMagnifyingGlass} />
               </div>

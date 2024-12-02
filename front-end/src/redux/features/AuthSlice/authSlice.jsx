@@ -1,6 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { RegisAPI } from "~/services/AuthService";
 
 const initialState = {
   email: null,

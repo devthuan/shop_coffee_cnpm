@@ -30,7 +30,7 @@ export const ReviewsSlice = createSlice({
         updateReview : (state, action) => {
             const id = action.payload.id 
             const reivewIndex = state.data.findIndex(review => review.id === id)
-            if(reivewIndex != -1)
+            if(reivewIndex !== -1)
             {
                 state.data[reivewIndex] = {
                     ...state.data[reivewIndex],
@@ -45,7 +45,7 @@ export const ReviewsSlice = createSlice({
             const isExistReview = state.data.find(review => review.id === id)
             if(isExistReview)
             {
-                state.data = state.data.filter(review => review.id != id)
+                state.data = state.data.filter(review => review.id !== id)
             }
         }
     }

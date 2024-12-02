@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { DeleteAttribute } from "~/services/AttributeService";
 const initialState = {
     total : 0,
     totalPage : 0,
@@ -38,7 +37,7 @@ export const attributesSlice = createSlice({
         updateAttribute : (state, action) => {
             const id = action.payload.id 
             const attributeIndex = state.data.findIndex(attribute => attribute.id === id)
-            if(attributeIndex != -1)
+            if(attributeIndex !== -1)
             {
                 state.data[attributeIndex] = {
                     ...state.data[attributeIndex],

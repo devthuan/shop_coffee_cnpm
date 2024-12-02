@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef} from "react";
+import React, { useEffect, useState, useRef } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { toast, ToastContainer } from "react-toastify";
 import { HandleApiError } from "~/Utils/HandleApiError";
@@ -43,7 +43,31 @@ export const ModalAddCategory = () => {
             }
         }
 
-    };
+    }
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     const categoryData = {
+    //         name: nameCategory,
+    //         description: descriptionCategory,
+    //     };
+    //     try {
+    //         const response = await AddCategory(categoryData);
+    //         console.log(response);
+    //         if (response && response.status === 201) {
+    //             console.log("categoryData", categoryData);
+    //             dispatch(addCategory(categoryData));
+    //             toast.success("Thêm thể loại thành công");
+    //         }
+    //     } catch (error) {
+    //         const result = HandleApiError(error);
+    //         console.log(result);
+    //         if (result) {
+    //             toast.error(result.message);
+    //         } else {
+    //             toast.error("Có lỗi xảy ra, vui lòng thử lại");
+    //         }
+    //     }
+    // };
 
     return (
         <Dialog.Root
@@ -125,25 +149,10 @@ export const ModalAddCategory = () => {
                                     </Dialog.Close>
                                 </div>
                             </form>
-                            <ToastContainer
-                                className="text-base"
-                                fontSize="10px"
-                                position="top-right"
-                                autoClose={2000}
-                                hideProgressBar={false}
-                                newestOnTop={false}
-                                closeOnClick
-                                rtl={false}
-                                pauseOnFocusLoss
-                                draggable
-                                pauseOnHover
-                                theme="light"
-                            />
-
                         </Dialog.Description>
                     </div>
                 </Dialog.Content>
             </Dialog.Portal>
-        </Dialog.Root >
+        </Dialog.Root>
     );
 };

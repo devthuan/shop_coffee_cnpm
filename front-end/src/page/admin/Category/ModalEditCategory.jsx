@@ -165,20 +165,7 @@ export const ModalEditCategory = ({ data }) => {
               </form>
 
             </Dialog.Description>
-            <ToastContainer
-              className="text-base"
-              fontSize="10px"
-              position="top-right"
-              autoClose={2000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="light"
-            />
+            
           </div>
         </Dialog.Content>
       </Dialog.Portal>

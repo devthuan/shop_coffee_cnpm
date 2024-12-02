@@ -40,7 +40,7 @@ function ProfileSidebar() {
             <ul className={cx("list_container")}>
                 <li className={cx("list_item")}>
                     <ul className={cx("list_item_container")}>
-                        quản lí
+                        quản lý
                         <Link to="/profile/editProfile">
                         <li className={cx("list_item_item")}>
                             <FontAwesomeIcon icon={faUser} className={cx("item_icon")} />
@@ -68,27 +68,15 @@ function ProfileSidebar() {
                 </li>
                 <li className={cx("list_item")}>
                     <ul className={cx("list_item_container")}>
-                       hỗ trợ
+                       Quản lý
+                       <Link to="/admin">
                         <li className={cx("list_item_item")}>
-                            <FontAwesomeIcon icon={faShieldHalved} className={cx("item_icon")} />
-                            <div className={cx("item_text")}>bảo vệ</div>
+                            <FontAwesomeIcon icon={faUser} className={cx("item_icon")} />
+                            <div className={cx("item_text")}>Trang quản lý</div>
                         </li>
+                        </Link>
                     </ul>
-                </li>
-
-                <li className={cx("list_item")}>
-                    <ul className={cx("list_item_container")}>
-                        Dịch vụ
-                        <li className={cx("list_item_item")}>
-                            <FontAwesomeIcon icon={faCircleInfo} className={cx("item_icon")} />
-                            <div className={cx("item_text")}>Giúp</div>
-                        </li>
-                        <li className={cx("list_item_item")}>
-                            <FontAwesomeIcon icon={faCircleExclamation} className={cx("item_icon")} />
-                            <div className={cx("item_text")}>Điều khoản</div>
-                        </li>
-                    </ul>
-                </li>
+                </li>  
             </ul>
         </div>
     </div>);

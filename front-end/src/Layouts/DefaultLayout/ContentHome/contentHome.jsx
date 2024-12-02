@@ -88,13 +88,11 @@ function ContentHome() {
     favoriteId
   ) => {
     e.stopPropagation();
-    console.log(favoriteId);
     if (statusFavorite) {
       try {
         const response = await DelFavoriteUser(favoriteId);
         if (response) {
           dispatch(deleteFavorite({ id: favoriteId }));
-
           toast.success("Đã xoá sản phẩm khỏi yêu thích");
         }
       } catch (error) {
@@ -154,7 +152,7 @@ function ContentHome() {
         <div className={cx("info_product_title")}>Total LavAzza 1320</div>
       </div>
 
-      <div className="grid grid-cols-3 gap-5">
+      <div className="grid grid-cols-4 gap-5">
         {ProductsData &&
           ProductsData.map((item, i) => {
             const isFavorite = FavoriteUserData?.some(
@@ -173,7 +171,7 @@ function ContentHome() {
                 <div className="w-full flex-col justify-start items-start gap-4 inline-flex">
                   <div className="w-full h-56 justify-center items-center gap-2.5 inline-flex">
                     <div className="w-full h-56 bg-white rounded-2xl flex-col justify-center items-center gap-2.5 inline-flex">
-                      <div className=" relative w-full h-56 py-2.5 flex-col justify-center items-center flex">
+                      <div className="relative w-full h-56 py-2.5 flex-col justify-center items-center flex">
                         <NavLink to={`/product/${item.id}`}>
                           <img
                             className="w-auto h-auto max-h-56" //h-56 w-60

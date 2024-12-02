@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   total: 0,
@@ -6,15 +6,16 @@ const initialState = {
   currentPage: 0,
   limit: 0,
   data: [],
+  detail: "",
   loading: true,
   error: null,
 };
 
 export const billSlice = createSlice({
-  name: 'bill',
+  name: "bill",
   initialState,
   reducers: {
-   initDataBill: (state,action) => {
+    initDataBill: (state, action) => {
       state.data = action.payload?.data;
       state.total = action.payload?.total;
       state.currentPage = action.payload?.currentPage;
@@ -22,20 +23,51 @@ export const billSlice = createSlice({
       state.limit = action.payload?.limit;
       state.loading = false;
       state.error = action.payload?.error;
-   },
-   clearDataBill: (state, action) => {
-    state.data = [];
-    state.total = 0;
-    state.currentPage = 0;
-    state.totalPage = 0;
-    state.limit = 0;
-    state.loading = true;
-    state.error = null;
-  },
+    },
+
+    initDetailBill: (state, action) => {
+      state.detail = action.payload;
+    },
+
+    clearDataBill: (state, action) => {
+      state.data = [];
+      state.total = 0;
+      state.currentPage = 0;
+      state.totalPage = 0;
+      state.limit = 0;
+      state.loading = true;
+      state.error = null;
+    },
+    changeStatusBill: (state, action) => {
+      let billIndex = state?.data.findIndex(
+        (item) => item.id === action.payload.id
+      );
+      console.log(billIndex);
+      if (billIndex !== -1) {
+        state.data[billIndex] = {
+          ...state.data[billIndex],
+          status: action.payload.status,
+        };
+      } else {
+        console.log("không có bill này");
+      }
+    },
+
+    initErrorBill: (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+      state.data = [];
+      state.total = 0;
+      state.currentPage = 0;
+      state.totalPage = 0;
+      state.limit = 0;
+      state.detail = "";
+    },
   },
 });
 
 // Export các action
-export const { initDataBill,clearDataBill } = billSlice.actions;
+export const { initDataBill, initErrorBill, initDetailBill, clearDataBill } =
+  billSlice.actions;
 
 export default billSlice.reducer;

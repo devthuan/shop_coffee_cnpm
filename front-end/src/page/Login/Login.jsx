@@ -7,7 +7,7 @@ import google from "~/assets/icon/google.svg";
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-import { LoginAPI } from "~/services/AuthService";
+import { LoginAPI, LoginWithGoogleAPI } from "~/services/AuthService";
 import { useDispatch } from "react-redux";
 import {
   initDataPermission,
@@ -19,8 +19,8 @@ import { HandleApiError } from "~/Utils/HandleApiError";
 import { jwtDecode } from "jwt-decode";
 
 import { GetAllPermissionByRoleAPI } from "~/services/PermissionService";
-import validator from 'validator'; // Thư viện để kiểm tra định dạng email
-import { Tooltip } from 'react-tooltip';
+import validator from "validator"; // Thư viện để kiểm tra định dạng email
+import { Tooltip } from "react-tooltip";
 const cx = classNames.bind(styles);
 export const Login = () => {
   const dispatch = useDispatch();
@@ -30,7 +30,7 @@ export const Login = () => {
   const navigate = useNavigate("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [isFocused, setIsFocused] = useState("")
+  const [isFocused, setIsFocused] = useState("");
   const [isValid, setIsValid] = useState(false);
   const passwordLengthValid = password.length >= 6;
 
@@ -108,7 +108,61 @@ export const Login = () => {
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     setIsValid(regex.test(value));
   };
-  
+
+  const handleLoginWithGoogle = async () => {
+    const popup = window.open(
+      "http://localhost:8080/api/v1/auth/google",
+      "_blank",
+      "width=500,height=600"
+    );
+
+    // Lắng nghe token trả về từ popup
+    window.addEventListener("message", async (event) => {
+      // Nhận token từ message
+      const token = event.data.token;
+
+      if (token) {
+        console.log("Token received from popup:", token);
+        localStorage.setItem("authToken", token); // Lưu token
+
+        // Giải mã token
+        const { id, email, role, username } = jwtDecode(token);
+
+        // Lưu access token vào Redux store
+        dispatch(
+          setLogin({
+            token: token,
+            email: email,
+          })
+        );
+        setItemWithExpiration("role", role, 2);
+        setItemWithExpiration("token", token, 2);
+        setItemWithExpiration("email", email, 2);
+
+        // Lấy quyền từ API theo role
+        const responsePermission = await GetAllPermissionByRoleAPI(role);
+
+        // Lưu quyền vào Redux store
+        if (responsePermission && responsePermission.data) {
+          console.log(responsePermission.data);
+          dispatch(initDataPermission(responsePermission.data.data));
+
+          setItemWithExpiration(
+            "permissions",
+            responsePermission.data.data,
+            22
+          );
+
+          // Lưu access token vào local storage
+          toast.success("Đăng nhập thành công.");
+          setTimeout(() => {
+            navigate("/"); // Chuyển hướng về trang chủ
+          }, 1500);
+        }
+      }
+    });
+  };
+
   return (
     <div
       className={cx("grid lg:grid-cols-11 max-sm:grid-cols-1  min-h-screen ")}
@@ -151,9 +205,6 @@ export const Login = () => {
             </div>
             <div className={cx("title-1")}>
               <h1 className={cx(" font-bold mb-6")}>Sign Up</h1>
-              <h3>
-                Let’s create your account and Shop like a pro and save money.
-              </h3>
             </div>
 
             <form onSubmit={handleSubmit}>
@@ -166,14 +217,14 @@ export const Login = () => {
                     {
                       "border-green-500 text-green-700": isValid,
                       "border-red-600 text-red-600": !isValid && isFocused,
-                      "border-gray-300 text-gray-700": email.length === 0 && !isFocused, // Đảm bảo màu mặc định khi chưa nhập
+                      "border-gray-300 text-gray-700":
+                        email.length === 0 && !isFocused, // Đảm bảo màu mặc định khi chưa nhập
                     }
                   )}
                   value={email}
                   onChange={handleChange}
                   onFocus={handleFocus}
                   onBlur={handleBlur}
-
                 />
                 <span
                   className="absolute left-0 top-0 text-gray-400 pointer-events-none transition-all duration-300 ease-in-out"
@@ -194,10 +245,12 @@ export const Login = () => {
                     "w-full mb-6 p-4 border rounded-md text-base outline-none transition-all duration-300 ease-in-out ",
                     {
                       "border-gray-300": password.length === 0, // Màu xám khi chưa nhập gì
-                      "border-red-500": password.length > 0 && password.length < 6, // Màu đỏ khi chưa đủ 6 ký tự
+                      "border-red-500":
+                        password.length > 0 && password.length < 6, // Màu đỏ khi chưa đủ 6 ký tự
                       "border-green-500": passwordLengthValid, // Màu xanh khi đủ 6 ký tự
                     }
-                  )} value={password}
+                  )}
+                  value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
@@ -215,10 +268,10 @@ export const Login = () => {
                       checked={setAsDefaultCard}
                       onChange={(e) => setSetAsDefaultCard(e.target.checked)}
                     />
-                    Set as default card
+                    Đồng ý tất cả điều khoản
                   </label>
                   <a
-                    href="https://chatgpt.com/c/66fdfaf9-cb74-8011-89ff-236369702781"
+                    href="/recoverypass"
                     className={cx("text-blue-500")}
                   >
                     Recovery Password
@@ -231,16 +284,17 @@ export const Login = () => {
                 >
                   Sign Up
                 </button>
-                <button
-                  className={cx(
-                    "w-full border py-4 rounded-md mb-6 flex justify-center items-center"
-                  )}
-                >
-                  <img src={google} alt="Gmail" className={cx("mr-2")} />
-                  Sign in with Gmail
-                </button>
               </div>
             </form>
+            <button
+              onClick={() => handleLoginWithGoogle()}
+              className={cx(
+                "w-full border py-4 rounded-md mb-6 flex justify-center items-center"
+              )}
+            >
+              <img src={google} alt="Gmail" className={cx("mr-2")} />
+              Sign in with Gmail
+            </button>
             <div className={cx("bot-title")}>
               <p className={cx("text-sm mt-6  ")}>
                 <span>You have an account yet?</span>

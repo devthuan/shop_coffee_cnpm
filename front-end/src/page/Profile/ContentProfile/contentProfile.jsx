@@ -106,7 +106,7 @@ function ContentProfile() {
                   <FontAwesomeIcon icon={faLocationDot} />{" "}
                 </div>
                 <div className={cx("item_profile_info")}>
-                  <div className={cx("info_name")}>Địa chỉ</div>
+                  <div className={cx("info_name")}>Địa chỉ nhận hàng</div>
                   <div className={cx("info_disc")}>
                     {userInformation?.address1 || userInformation?.address2 || "chưa cập nhật"}
                   </div>

@@ -1,5 +1,4 @@
-import classNames from "classnames/bind";
-import styles from "./Bill.module.scss";
+
 import { useSelector } from "react-redux";
 import Loading from "~/components/Loading/Loading";
 import { useEffect, useState } from "react";
@@ -10,8 +9,8 @@ import { HandleApiError } from "~/Utils/HandleApiError";
 import { toast, ToastContainer } from "react-toastify";
 import { Pagination } from "~/components/Pagination/Pagination";
 import BillDetails from "~/page/admin/Bill/BillDetails";
-const cx = classNames.bind(styles);
 export const Bill = () => {
+
   const dispatch = useDispatch();
   const BillsData = useSelector((state) => state.bill.data);
   const total = useSelector((state) => state.bill.total);
@@ -27,6 +26,8 @@ export const Bill = () => {
     limit: 10,
   });
 
+ 
+
 
   const filterItems = [
     { value: "createdAt_ASC", label: "sắp xếp theo ngày tạo tăng dần" },
@@ -41,8 +42,8 @@ export const Bill = () => {
     "total",
     "status",
     "note",
+    "Hành động"
   ];
-
   const handleFilter = async (e) => {
     if (e === "createdAt_ASC") {
       let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&sortBy=createdAt&sortOrder=ASC`;
@@ -190,8 +191,7 @@ export const Bill = () => {
                   {BillsData?.map((item, idx) => (
                     <tr key={idx}>
                       <td
-                        className="px-2 py-4 whitespace-nowrap w-[20px]  hover:text-blue-500 hover:underline cursor-pointer"
-                        onClick={() => handleClickIDBill(item.id)}
+                        className="px-2 py-4 whitespace-nowrap w-[20px] "
                       >
                         {item.id.slice(0, 8)} ...
                       </td>
@@ -233,6 +233,9 @@ export const Bill = () => {
                       </td> */}
                       <td className="px-2 py-4 whitespace-nowrap">
                         {item.note}
+                      </td>
+                      <td className="px-2 py-4 whitespace-nowrap text-blue-500 hover:underline cursor-pointer" onClick={() => handleClickIDBill(item.id)}>
+                        chi tiết
                       </td>
                     </tr>
                   ))}

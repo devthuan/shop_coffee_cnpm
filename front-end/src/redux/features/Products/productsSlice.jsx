@@ -16,7 +16,7 @@ export const productsSlice = createSlice({
       state.totalPage = action.payload?.totalPage;
       state.currentPage = action.payload?.currentPage;
       state.limit = action.payload?.limit;
-      state.data = action.payload.data;
+      state.data = action.payload?.data;
       state.isLoading = false;
     },
 

@@ -204,7 +204,7 @@ export const Product = () => {
               products.map((product, idx) => (
                 <tr key={idx}>
                   <td className="pr-6 py-4 whitespace-nowrap">
-                    {product.id.slice(0, 8)} ...
+                    {product.id?.slice(0, 8)} ...
                   </td>
                   <td className="pr-6 py-4 whitespace-nowrap flex items-center">
                     {product.images.length > 0 && (
@@ -226,7 +226,7 @@ export const Product = () => {
                     {product.productAttributes.length}
                   </td>
                   <td className="pr-6 py-4 whitespace-nowrap">
-                    {product.description.slice(0, 20)} ...
+                    {product.description} ...
                   </td>
                   <td className="pr-6 py-4 whitespace-nowrap">
                     {new Date(product.createdAt).toLocaleString()}
