@@ -47,7 +47,7 @@
 .register_login_text,
 .register_login_date {
     color: var(--primary-color-text);
-    font-size: 15px;
+    font-size: 12px;
     font-weight: 500;
     line-height: 22px;
 }
@@ -77,7 +77,7 @@
 
 .list_item_container {
     color: var(--primary-color-text);
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 500;
     line-height: 26px;
     display: flex;
@@ -90,7 +90,6 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    margin-left: 5px;
 }
 .item_icon {
     width: 10px;

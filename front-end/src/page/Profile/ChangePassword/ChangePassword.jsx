@@ -56,7 +56,7 @@ function ChangePassword() {
         }
     };
     return (
-        <div className={cx("content")}>
+        <div className={cx("content shadow-lg p-2")}>
             {isloading ? (<div className="h-full w-full flex justify-center items-center">
                 <Loading />
             </div>) : (
@@ -64,12 +64,13 @@ function ChangePassword() {
                     <Link to="/profile">
                         <div className={cx("title")}>
                             <FontAwesomeIcon icon={faArrowLeft} className={cx("btn_gear")} />
-                            <div className={cx("header_name")}>Đổi mật khẩu</div>
+                            <div className={cx("header_name font-roboto text-2xl")}>Đổi mật khẩu</div>
+                            
                         </div>
                     </Link>
                     <ul className={cx("list_profile")}>
                         <li className="w-full mb-4 flex items-center">
-                            <label htmlFor="phone1" className="block text-sm font-medium text-gray-700 mb-1 mr-4 w-[100px]">
+                            <label htmlFor="phone1" className="block text-sm font-medium text-gray-700 mb-1 mr-4 w-[120px]">
                                 Mật khẩu hiện tại
                             </label>
                             <input
@@ -82,7 +83,7 @@ function ChangePassword() {
                             />
                         </li>
                         <li className="w-full mb-4 flex items-center">
-                            <label htmlFor="phone1" className="block text-sm font-medium text-gray-700 mb-1 mr-4 w-[100px]">
+                            <label htmlFor="phone1" className="block text-sm font-medium text-gray-700 mb-1 mr-4 w-[120px]">
                                 Mật khẩu mới
                             </label>
                             <input
@@ -95,12 +96,12 @@ function ChangePassword() {
                             />
                         </li>
                         <li className="w-full mb-4 flex items-center">
-                            <label htmlFor="phone2" className="block text-sm font-medium text-gray-700 mb-1 mr-4 w-[100px]">
+                            <label htmlFor="phone2" className="block text-sm font-medium text-gray-700 mb-1 mr-4 w-[120px]">
                                 Xác nhận Mật khẩu mới
                             </label>
                             <input
                                 id="phone2"
-                                type="tel"
+                                type="text"
                                 className="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -111,11 +112,12 @@ function ChangePassword() {
                     </ul>
                 </div>
             )}
-            <div className={cx("save")}>
-                <Link to="/profile">
+            <div className={cx("save p-5")}>
+                {/* <Link to="/profile">
                     <button className={cx("btn_cancel")}>Thoát</button>
-                </Link>
-                <button className={cx("btn_save")} onClick={handleBtnUpdate}>Đổi mật khẩu</button>
+                </Link> */}
+                <button className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600" onClick={handleBtnUpdate}>Đổi mật khẩu</button>
+
             </div>
             <ToastContainer
                 className="text-base"

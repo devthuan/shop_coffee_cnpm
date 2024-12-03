@@ -4,6 +4,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus, faCircle, faCircleExclamation, faCircleInfo, faDownload, faEnvelope, faGift, faHeart, faInfo, faLocation, faLocationDot, faSchoolCircleExclamation, faShield, faShieldHalved, faUser } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { CiHeart } from "react-icons/ci";
+import { BsHandbag } from "react-icons/bs";
+import { IoBagCheckOutline } from "react-icons/io5";
+import { CiUser } from "react-icons/ci";
 
 const cx = classNames.bind(styles)
 
@@ -25,14 +29,14 @@ function ProfileSidebar() {
     const isError = useSelector((state) => state.userInfo.error);
     const isloading = useSelector((state) => state.userInfo.loading);
 
-    return (<div className={cx("wrapper")}>
-        <div className={cx("avatar")}>
+    return (<div className={cx("wrapper bg-white shadow-xl")}>
+        <div className={cx("avatar bg-slate-500")}>
             <div className={cx("avatar_content")}>
                 {userInformation?.avatar ? <img src={userInformation?.avatar} className={cx("img_user")} /> : <FontAwesomeIcon icon={faUser} className={cx("img_user")} />}
-                <div className={cx("name_user")}>{userInformation?.fullName}</div>
-                <div className={cx("register_login")}>
-                    <div className={cx("register_login_text")}>ngày đăng kí:</div>
-                    <div className={cx("register_login_date")}>{createdAt}</div>
+                <div className={cx("name_user text-white font-semibold pt-2 text-lg")}>{userInformation?.fullName}</div>
+                <div className={cx("register_login flex items-center")}>
+                    <div className={cx("register_login_text font-normal text-white")}>Register : </div>
+                    <div className={cx("register_login_date font-normal text-white pl-2")}>{createdAt && new Date(createdAt).toLocaleDateString('vi-VN')}</div>
                 </div>
             </div>
         </div>
@@ -40,44 +44,51 @@ function ProfileSidebar() {
             <ul className={cx("list_container")}>
                 <li className={cx("list_item")}>
                     <ul className={cx("list_item_container")}>
-                        quản lý
-                        <Link to="/profile/editProfile">
+                        <li className="text-[#1a162e] text-lg font-medium font-roboto leading-relaxed mb-2 ">Manage Account</li>
+                        <Link className={cx("mb-2")} to="/profile/editProfile">
                             <li className={cx("list_item_item")}>
-                                <FontAwesomeIcon icon={faUser} className={cx("item_icon")} />
-                                <div className={cx("item_text")}>chỉnh sửa thông tin cá nhân</div>
+                                <CiUser size={23} color="#111" />
+                                <div className="text-[#1a162e] text-[15px] font-normal font-mono leading-snug">
+                                    Thông tin cá nhân
+                                </div>
                             </li>
                         </Link>
                         <Link to="/profile/changePassword">
                             <li className={cx("list_item_item")}>
-                                <FontAwesomeIcon icon={faUser} className={cx("item_icon")} />
-                                <div className={cx("item_text")}>Đổi mật khẩu</div>
+                                <IoBagCheckOutline size={23} color="#666" />
+
+                                <div className="text-[#1a162e] text-[15px] font-normal font-mono leading-snug">Đổi mật khẩu</div>
+
                             </li>
                         </Link>
                     </ul>
                 </li>
                 <li className={cx("list_item")}>
                     <ul className={cx("list_item_container")}>
-                        Các mục của tôi
-                        <Link to="/profile/favoriteUser">
+                        <li className="text-[#1a162e] text-lg font-medium font-roboto leading-relaxed mb-2 ">Các mục của tôi</li>
+                        <Link className="mb-2" to="/profile/favoriteUser">
                             <li className={cx("list_item_item")}>
-                                <FontAwesomeIcon icon={faHeart} className={cx("item_icon")} />
-                                <div className={cx("item_text")}>yêu thích</div>
+                                <CiHeart size={23} color="black" />
+
+                                <div className="text-[#1a162e] text-[15px] font-normal font-mono leading-snug">Yêu thích</div>
                             </li>
                         </Link>
-                        <Link to="/profile/billAccount">
+                        <Link className="mb-2" to="/profile/billAccount">
                             <li className={cx("list_item_item")}>
-                                <FontAwesomeIcon icon={faCartPlus} className={cx("item_icon")} />
-                                <div className={cx("item_text")}>đã mua</div>
+                                <BsHandbag size={23} color="#666" />
+                                <div className="text-[#1a162e] text-[15px] font-normal font-mono leading-snug">Đã mua</div>
+
                             </li>
                         </Link>
                     </ul>
                 </li>
                 <li className={cx("list_item")}>
                     <ul className={cx("list_item_container")}>
-                        Quản lý
+                        <li className="text-[#1a162e] text-lg font-medium font-roboto leading-relaxed mb-2 ">Quản lý</li>
                         <Link to="/admin">
                             <li className={cx("list_item_item")}>
-                                <FontAwesomeIcon icon={faUser} className={cx("item_icon")} />
+                                <CiUser size={23} color="#111" />
+
                                 <div className={cx("item_text")}>Trang quản lý</div>
                             </li>
                         </Link>

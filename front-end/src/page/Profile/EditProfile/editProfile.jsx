@@ -23,7 +23,7 @@ function EditProfile() {
     const isloading = useSelector((state) => state.userInfo.loading);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
+    console.log(userInformation)
 
     const handleBtnUpdate = async () => {
         const dataToUpdate = {
@@ -41,22 +41,22 @@ function EditProfile() {
             if (response && response.data) {
                 dispatch(updateUserInfo(dataToUpdate));
                 toast.success(response.data.message || "Cập nhật thành công");
-                navigate("/profile"); 
+                navigate("/profile");
             } else {
                 toast.error("Phản hồi từ server không hợp lệ.");
             }
-        } catch (error) {       
-                if(error.status === 400){
-                    toast.error('yêu cầu nhập đúng số điện thoại');
-                }
-                else{
-                    toast.error("Có lỗi xảy ra, vui lòng thử lại sau.");
-                }      
+        } catch (error) {
+            if (error.status === 400) {
+                toast.error('yêu cầu nhập đúng số điện thoại');
+            }
+            else {
+                toast.error("Có lỗi xảy ra, vui lòng thử lại sau.");
+            }
         }
         console.log("Data to update:", dataToUpdate);
     };
     return (
-        <div className={cx("content")}>
+        <div className={cx("content shadow-lg p-2")}>
             {isloading ? (<div className="h-full w-full flex justify-center items-center">
                 <Loading />
             </div>) : (
@@ -64,30 +64,40 @@ function EditProfile() {
                     <Link to="/profile">
                         <div className={cx("title")}>
                             <FontAwesomeIcon icon={faArrowLeft} className={cx("btn_gear")} />
-                            <div className={cx("header_name")}>Thông tin cá nhân</div>
+                            <div className={cx("header_name font-roboto text-2xl")}>Thông tin cá nhân</div>
                         </div>
                     </Link>
                     <ul className={cx("list_profile")}>
-                        <li className={cx("item")}>
-                            <div className={cx("item_name")}>Họ tên</div>
-                            <input type="text" className={cx("item_input")} value={name} onChange={(e) => setName(e.target.value)} />
+                        <li className={cx("item w-full flex items-center")}>
+                            <label htmlFor="phone1" className="block text-sm font-medium text-gray-700 mb-1 mr-4 w-[150px]">
+                                Họ tên
+                            </label>
+                            <input type="text" className="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
+                                value={name} onChange={(e) => setName(e.target.value)} />
+
                         </li>
-                        <li className={cx("item")}>
-                            <div className={cx("item_name")}>Địa chỉ nhận hàng</div>
-                            <input type="text" className={cx("item_input")} value={address} onChange={(e) => setAddress(e.target.value)} />
+                        <li className={cx("item w-full flex items-center")}>
+                            <label htmlFor="phone1" className="block text-sm font-medium text-gray-700 mb-1 mr-4 w-[150px]">
+                                Địa chỉ nhận hàng
+                            </label>
+                            <input type="text" className="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
+                                value={address} onChange={(e) => setAddress(e.target.value)} />
                         </li>
-                        <li className={cx("item")}>
-                            <div className={cx("item_name")}>Số điện thoại</div>
-                            <input type="tel" className={cx("item_input")} value={phone} onChange={(e) => setPhone(e.target.value)} />
+                        <li className={cx("item w-full flex items-center")}>
+                            <label htmlFor="phone1" className="block text-sm font-medium text-gray-700 mb-1 mr-4 w-[150px]">
+                                Số điện thoại
+                            </label>
+                            <input type="tel" className="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
+                                value={phone} onChange={(e) => setPhone(e.target.value)} />
                         </li>
                     </ul>
                 </div>
             )}
-            <div className={cx("save")}>
-                <Link to="/profile">
+            <div className={cx("save py-5")}>
+                {/* <Link to="/profile">
                     <button className={cx("btn_cancel")}>Thoát</button>
-                </Link>
-                <button className={cx("btn_save")} onClick={handleBtnUpdate}>Lưu</button>
+                </Link> */}
+                <button className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600" onClick={handleBtnUpdate}>Lưu</button>
             </div>
             <ToastContainer
                 className="text-base"
