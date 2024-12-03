@@ -9,7 +9,7 @@ const cx = classNames.bind(styles)
 
 function ProfileSidebar() {
 
-   
+
     const id = useSelector((state) => state.userInfo.id)
     const createdAt = useSelector((state) => state.userInfo.createdAt)
     const updatedAt = useSelector((state) => state.userInfo.updatedAt)
@@ -42,10 +42,16 @@ function ProfileSidebar() {
                     <ul className={cx("list_item_container")}>
                         quản lý
                         <Link to="/profile/editProfile">
-                        <li className={cx("list_item_item")}>
-                            <FontAwesomeIcon icon={faUser} className={cx("item_icon")} />
-                            <div className={cx("item_text")}>chỉnh sửa thông tin cá nhân</div>
-                        </li>
+                            <li className={cx("list_item_item")}>
+                                <FontAwesomeIcon icon={faUser} className={cx("item_icon")} />
+                                <div className={cx("item_text")}>chỉnh sửa thông tin cá nhân</div>
+                            </li>
+                        </Link>
+                        <Link to="/profile/changePassword">
+                            <li className={cx("list_item_item")}>
+                                <FontAwesomeIcon icon={faUser} className={cx("item_icon")} />
+                                <div className={cx("item_text")}>Đổi mật khẩu</div>
+                            </li>
                         </Link>
                     </ul>
                 </li>
@@ -53,30 +59,30 @@ function ProfileSidebar() {
                     <ul className={cx("list_item_container")}>
                         Các mục của tôi
                         <Link to="/profile/favoriteUser">
-                        <li className={cx("list_item_item")}>
-                            <FontAwesomeIcon icon={faHeart} className={cx("item_icon")} />
-                            <div className={cx("item_text")}>yêu thích</div>
-                        </li>
+                            <li className={cx("list_item_item")}>
+                                <FontAwesomeIcon icon={faHeart} className={cx("item_icon")} />
+                                <div className={cx("item_text")}>yêu thích</div>
+                            </li>
                         </Link>
                         <Link to="/profile/billAccount">
-                        <li className={cx("list_item_item")}>
-                            <FontAwesomeIcon icon={faCartPlus} className={cx("item_icon")} />
-                            <div className={cx("item_text")}>đã mua</div>
-                        </li>
+                            <li className={cx("list_item_item")}>
+                                <FontAwesomeIcon icon={faCartPlus} className={cx("item_icon")} />
+                                <div className={cx("item_text")}>đã mua</div>
+                            </li>
                         </Link>
                     </ul>
                 </li>
                 <li className={cx("list_item")}>
                     <ul className={cx("list_item_container")}>
-                       Quản lý
-                       <Link to="/admin">
-                        <li className={cx("list_item_item")}>
-                            <FontAwesomeIcon icon={faUser} className={cx("item_icon")} />
-                            <div className={cx("item_text")}>Trang quản lý</div>
-                        </li>
+                        Quản lý
+                        <Link to="/admin">
+                            <li className={cx("list_item_item")}>
+                                <FontAwesomeIcon icon={faUser} className={cx("item_icon")} />
+                                <div className={cx("item_text")}>Trang quản lý</div>
+                            </li>
                         </Link>
                     </ul>
-                </li>  
+                </li>
             </ul>
         </div>
     </div>);
