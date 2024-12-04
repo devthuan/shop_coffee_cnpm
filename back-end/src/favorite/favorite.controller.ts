@@ -41,7 +41,7 @@ export class FavoriteController {
     }
 
     @UseGuards(PermissionsGuard)
-  @Permissions("GET_FAVORITES_BY_USER") 
+  // @Permissions("GET_FAVORITES_BY_USER") 
   @Get('user')
   getListFavoriteByAccount(
     @Req() request: Request,

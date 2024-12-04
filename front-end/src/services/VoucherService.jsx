@@ -13,6 +13,10 @@ export const GetVoucherById = async (id) => {
   return await api.get(`vouchers/${id}`);
 };
 
+export const CheckUseVoucherAPI = async (code) => {
+  return await api.get(`vouchers/check/${code}`);
+};
+
 // Thêm một voucher mới
 export const CreateVoucher = async (data) => {
   return await api.post(`vouchers`, data);

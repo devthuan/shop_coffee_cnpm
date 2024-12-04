@@ -189,9 +189,9 @@ export const Cart = () => {
         return total + (sellPrice || 0) * (cart.quantity || 0);
       }, 0) - (voucher.value || 0);
     if (!addVoucher && cartsCheck.length > 0) {
-      navigate("../paynment", { state: { cartsCheck, totalEstimate } });
+      navigate("../cart/payment", { state: { cartsCheck, totalEstimate } });
     } else if (addVoucher && isValidVoucher) {
-      navigate("../paynment", {
+      navigate("../cart/payment", {
         state: { cartsCheck, codeVoucher, totalEstimate, voucher },
       });
     } else if (addVoucher && !isValidVoucher) {
@@ -365,149 +365,6 @@ export const Cart = () => {
               <div className="w-[859px] h-px bg-[#d2d1d6]" />
             </>
           ))}
-
-        <div
-          className={cx(
-            "lg:col-span-12 flex justify-between items-center w-full px-4"
-          )}
-        >
-          <div className="flex items-center">
-            <FontAwesomeIcon style={{ opacity: 0.5 }} icon={faAngleLeft} />
-            <p
-              style={{
-                paddingLeft: "6px",
-                color: "#1A162E",
-                fontSize: 18,
-                fontFamily: "Gordita",
-                fontWeight: "500",
-                wordWrap: "break-word",
-              }}
-            >
-              Continue Shopping
-            </p>
-          </div>
-          {/* <div>
-            <div
-              className={cx("pb-4")}
-              style={{ borderBottom: "1px solid #ccc" }}
-            >
-              <div className="flex items-center p-2 justify-between">
-                <p
-                  style={{
-                    color: "#1A162E",
-                    fontSize: 18,
-                    fontFamily: "Gordita",
-                    fontWeight: "500",
-                  }}
-                  className={cx("pr-20 ")}
-                >
-                  Tạm tính
-                </p>
-                <p
-                  style={{
-                    color: "#1A162E",
-                    fontSize: 18,
-                    fontFamily: "Gordita",
-                    fontWeight: "500",
-                  }}
-                  className={cx()}
-                >
-                  {carts &&
-                    carts.data &&
-                    carts.data
-                      .reduce((total, cart) => {
-                        var sellPrice;
-                        if (
-                          cart.productAttributes.products.productDiscount
-                            .length > 0
-                        ) {
-                          sellPrice =
-                            cart.productAttributes.sellPrice -
-                            (cart.productAttributes.products.productDiscount[0]
-                              .value /
-                              100) *
-                              cart.productAttributes.sellPrice;
-                        } else {
-                          sellPrice = cart.productAttributes.sellPrice;
-                        }
-                        const quantity = cart.quantity || 0;
-                        return total + sellPrice * quantity;
-                      }, 0)
-                      .toLocaleString("vi-VN") + " đ"}
-                </p>
-              </div>
-
-              <div className="flex items-center justify-between p-2">
-                <p
-                  style={{
-                    color: "#1A162E",
-                    fontSize: 18,
-                    fontFamily: "Gordita",
-                    fontWeight: "500",
-                  }}
-                  className={cx("pr-20")}
-                >
-                  Shipping
-                </p>
-                <p
-                  style={{
-                    color: "#1A162E",
-                    fontSize: 18,
-                    fontFamily: "Gordita",
-                    fontWeight: "500",
-                  }}
-                  className={cx()}
-                >
-                  10%
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center p-2 justify-between mt-6">
-              <p
-                style={{
-                  color: "#1A162E",
-                  fontSize: 18,
-                  fontFamily: "Gordita",
-                  fontWeight: "500",
-                }}
-                className={cx("pr-20")}
-              >
-                Total
-              </p>
-              <p
-                style={{
-                  color: "rgb(255, 66, 78)",
-                  fontSize: 18,
-                  fontFamily: "Gordita",
-                  fontWeight: "500",
-                }}
-              >
-                {carts &&
-                  carts &&
-                  (
-                    carts.data.reduce((total, cart) => {
-                      var sellPrice;
-                      if (
-                        cart.productAttributes.products.productDiscount.length >
-                        0
-                      ) {
-                        sellPrice =
-                          cart.productAttributes.sellPrice -
-                          (cart.productAttributes.products.productDiscount[0]
-                            .value /
-                            100) *
-                            cart.productAttributes.sellPrice;
-                      } else {
-                        sellPrice = cart.productAttributes.sellPrice;
-                      }
-                      const quantity = cart.quantity || 0;
-                      return total + sellPrice * quantity;
-                    }, 0) * 1.1
-                  ).toLocaleString("vi-VN") + " đ"}
-              </p>
-            </div>
-          </div> */}
-        </div>
       </div>
 
       <div
@@ -645,7 +502,7 @@ export const Cart = () => {
                     ref={refVoucher}
                     onChange={(e) => setCodeVoucher(e.target.value)}
                     value={codeVoucher}
-                    className="w-full border border-gray-300 rounded outline-none text-[20px] mr-2" 
+                    className="w-full border border-gray-300 rounded outline-none text-[20px] mr-2"
                     type="text"
                   />
                 </div>
@@ -691,30 +548,6 @@ export const Cart = () => {
               }}
               className={cx("text-xl font-semibold")}
             >
-              {/* {cartsCheck.length > 0
-                ? `${(
-                    cartsCheck.reduce((total, cart) => {
-                      var sellPrice;
-                      if (
-                        cart.productAttributes.products.productDiscount.length >
-                        0
-                      ) {
-                        sellPrice =
-                          cart.productAttributes.sellPrice -
-                          (cart.productAttributes.products.productDiscount[0]
-                            .value /
-                            100) *
-                            cart.productAttributes.sellPrice;
-                      } else {
-                        sellPrice = cart.productAttributes.sellPrice;
-                      }
-                      return total + (sellPrice || 0) * (cart.quantity || 0) < 0
-                        ? 0
-                        : total + (sellPrice || 0) * (cart.quantity || 0);
-                    }, 0) - (voucher.value || 0)
-                  ).toLocaleString("vi-VN")} VNĐ`
-                : 0} */}
-
               {cartsCheck &&
                 cartsCheck
                   .reduce((total, cart) => {
@@ -747,7 +580,7 @@ export const Cart = () => {
               "text-xl w-full h-[50px] bg-blue-500 text-white py-2 px-4 rounded-full"
             )}
           >
-            Continue to checkout
+            Tiếp tục thanh toán
           </button>
         </div>
       </div>

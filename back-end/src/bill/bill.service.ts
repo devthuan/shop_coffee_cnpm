@@ -47,7 +47,7 @@ export class BillService extends BaseService<Bills> {
 
       let feeShip = 0;
       if(createBillDto.shippingMethod === "Chuyển phát thường"){
-        feeShip = 150000
+        feeShip = 15000
       }else if(createBillDto.shippingMethod === "Chuyển phát nhanh"){
         feeShip = 50000
       }else if(createBillDto.shippingMethod === "Chuyển phát hoả tốc") {

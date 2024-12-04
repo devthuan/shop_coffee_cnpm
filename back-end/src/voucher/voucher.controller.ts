@@ -49,6 +49,16 @@ export class VoucherController {
   }
 
   @UseGuards(PermissionsGuard)
+  // @Permissions("GET_VOUCHER_BY_ID")
+  @Get('check/:code')
+  checkUseVouchers(@Param('code') voucherCode: string,
+    @Req() req: Request,) {
+    let  accountId = req['user'].id
+    let data = this.voucherService.checkUseVouchers(voucherCode, accountId);
+    return plainToInstance(Vouchers, data)
+  }
+
+  @UseGuards(PermissionsGuard)
   @Permissions("UPDATE_VOUCHER")
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateVoucherDto: UpdateVoucherDto) {

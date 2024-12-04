@@ -8,6 +8,7 @@ import { GetAllPaynment } from "~/services/PaynmentService";
 import { initDataPayment } from "~/redux/features/Payments/paymentsSlice";
 import { useNavigate } from "react-router-dom";
 import { validatePaymentData } from "~/Utils/ValidatePayment";
+import { CheckUseVoucherAPI, GetAllVoucher } from "~/services/VoucherService";
 const Payment = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -15,6 +16,8 @@ const Payment = () => {
   const location = useLocation();
   const carts = location.state || {};
 
+  const [usingVoucher, setUsingVoucher] = useState("");
+  const [voucherObject, setVoucherObject] = useState();
   const [informations, setInformations] = useState({
     fullName: "",
     deliverAddress: "",
@@ -84,6 +87,22 @@ const Payment = () => {
     validateField(name, value);
   };
 
+  const checkVoucher = async () => {
+    try {
+      const response = await CheckUseVoucherAPI(usingVoucher);
+      if (response && response.status === 200) {
+        toast.success("Mã giảm giá đã được sử dụng");
+        setInformations((prevData) => ({
+          ...prevData,
+          voucher: response.data.code,
+        }));
+        setVoucherObject(response.data);
+      }
+    } catch (error) {
+      const result = HandleApiError(error);
+    }
+  };
+
   const handleSubmit = async () => {
     console.log(informations);
     informations.shippingMethod = paymentMethod.paymentMethod;
@@ -101,13 +120,17 @@ const Payment = () => {
         const response = await VnpayPaymentAPI(totalAmount);
         console.log(response);
         if (response.data?.paymentUrl) {
+          const response = await AddBill(informations);
           window.location.href = response.data.paymentUrl;
         }
-      }
-      const response = await AddBill(informations);
-      console.log(response);
-      if (response && response.status === 201) {
-        navigate(`/payment-result?amount=${response.data.totalPayment}&date=${response.data.createdAt}&status=success`);
+      } else {
+        const response = await AddBill(informations);
+        console.log(response);
+        if (response && response.status === 201) {
+          navigate(
+            `/payment-result?amount=${response.data.totalPayment}&date=${response.data.createdAt}&status=success`
+          );
+        }
       }
     } catch (error) {
       const result = HandleApiError(error);
@@ -526,6 +549,35 @@ const Payment = () => {
           </div>
         </div>
         <div className="col-span-4">
+          <div className="w-full  p-5 bg-[#f6f6f6] rounded-[20px] flex justify-between items-center gap-x-5  mb-2">
+            <div className="">
+              {/* <input
+                      // ref={refVoucher}
+                      // onChange={(e) => setCodeVoucher(e.target.value)}
+                      // value={codeVoucher}
+                      className="ádas"
+                      type="text"
+                    /> */}
+              <input
+                type="text"
+                id="voucher"
+                name="voucher"
+                value={usingVoucher}
+                placeholder="Nhập mã voucher"
+                onChange={(e) => setUsingVoucher(e.target.value)}
+                className="p-2 w-full h-[50px]  ml-2 border-spacing-1"
+              />
+            </div>
+            <div className=" w-[150px] ">
+              <button
+                onClick={() => checkVoucher()}
+                className=" w-full h-[50px] bg-blue-500 text-[17px] text-white rounded-md shadow hover:bg-blue-600"
+              >
+                áp dụng
+              </button>
+            </div>
+          </div>
+
           <div className="w-full  p-5 bg-[#f6f6f6] rounded-[20px] flex-col justify-start items-start gap-2.5 inline-flex">
             <div className=" flex-col justify-start items-start gap-[30px] inline-flex">
               <div className="flex-col justify-start items-start gap-5 flex">
@@ -534,7 +586,7 @@ const Payment = () => {
                     <span>Tổng sản phẩm </span>
                   </div>
                   <div className="text-right text-[#1a162e] text-base font-bold font-['Gordita'] leading-normal">
-                    {carts.cartsCheck.length ? carts.cartsCheck.length : 0}
+                    {carts.cartsCheck?.length ? carts.cartsCheck.length : 0}
                   </div>
                 </div>
                 <div className="w-[321px] justify-between items-start inline-flex">
@@ -563,8 +615,8 @@ const Payment = () => {
                   </div>
                   <div className="text-right text-[#1a162e] text-base font-bold font-['Gordita'] leading-normal">
                     -{" "}
-                    {carts?.voucher
-                      ? carts.voucher.value.toLocaleString("vi-VN")
+                    {voucherObject
+                      ? voucherObject?.value.toLocaleString("vi-VN")
                       : 0}{" "}
                     VNĐ
                   </div>
@@ -575,9 +627,11 @@ const Payment = () => {
                     Tổng tiền thanh toán
                   </div>
                   <div className="text-right text-[#1a162e] text-base font-bold font-['Gordita'] leading-normal">
-                    {(carts.totalEstimate + paymentMethod.fee).toLocaleString(
-                      "vi-VN"
-                    )}{" "}
+                    {(
+                      carts.totalEstimate +
+                      paymentMethod.fee -
+                      (voucherObject?.value || 0)
+                    ).toLocaleString("vi-VN")}{" "}
                     VNĐ
                   </div>
                 </div>
@@ -588,9 +642,11 @@ const Payment = () => {
               >
                 <div className="text-right text-[#1a162e] text-[22px] font-medium font-['Gordita'] leading-loose">
                   Thanh toán{" "}
-                  {(carts.totalEstimate + paymentMethod.fee).toLocaleString(
-                    "vi-VN"
-                  )}{" "}
+                  {(
+                    carts.totalEstimate +
+                    paymentMethod.fee -
+                    (voucherObject?.value || 0)
+                  ).toLocaleString("vi-VN")}{" "}
                   VNĐ
                 </div>
               </div>

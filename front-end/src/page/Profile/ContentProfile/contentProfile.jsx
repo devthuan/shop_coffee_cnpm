@@ -63,16 +63,18 @@ function ContentProfile() {
 
   return (
     <div className={cx("wrapper")}>
-      {isloading ? (<div className="h-full w-full flex justify-center items-center">
-        <Loading />
-      </div>) : (
+      {isloading ? (
+        <div className="h-full w-full flex justify-center items-center">
+          <Loading />
+        </div>
+      ) : (
         <div className={cx("content")}>
           <div className={cx("container")}>
             <div className={cx("header")}>
               <div className={cx("header_title")}>
-                <div className={cx("header_name")}>Account info</div>
+                <div className={cx("header_name")}>Thông tin tài khoản </div>
                 <div className={cx("header_disc")}>
-                  Addresses, contact information and password
+                  Địa chỉ, email, số điện thoại...
                 </div>
               </div>
               {/* <Link to="/profile/editProfile">
@@ -86,7 +88,7 @@ function ContentProfile() {
                 </div>
                 <div className={cx("item_profile_info")}>
                   <div className={cx("info_name")}>Email</div>
-                  <div className={cx("info_disc")}>{userInformation?.email}</div>
+                  <div className={cx("info_disc")}>{email}</div>
                 </div>
               </li>
               <li className={cx("item_profile")}>
@@ -96,7 +98,9 @@ function ContentProfile() {
                 </div>
                 <div className={cx("item_profile_info")}>
                   <div className={cx("info_name")}>Số điện thoại</div>
-                  <div className={cx("info_disc")}>{userInformation?.phoneNumber}</div>
+                  <div className={cx("info_disc")}>
+                    {userInformation?.phoneNumber}
+                  </div>
                 </div>
               </li>
               <li className={cx("item_profile")}>
@@ -107,7 +111,9 @@ function ContentProfile() {
                 <div className={cx("item_profile_info")}>
                   <div className={cx("info_name")}>Địa chỉ nhận hàng</div>
                   <div className={cx("info_disc")}>
-                    {userInformation?.address1 || userInformation?.address2 || "chưa cập nhật"}
+                    {userInformation?.address1 ||
+                      userInformation?.address2 ||
+                      "chưa cập nhật"}
                   </div>
                 </div>
               </li>

@@ -12,7 +12,7 @@ import { Profile } from "~/page/Profile/Profile";
 // routes for private
 export const privateRoutes = [
   { path: "/cart", component: Cart, layout: CartLayout },
-  { path: "/paynment", component: Payment, layout: ProductLayout },
+  { path: "/cart/payment", component: Payment, layout: CartLayout },
   { path: "/payment-result", component: PaymentResult, layout: null },
   { path: "/profile", component: Profile, layout: ProfileLayout },
   {

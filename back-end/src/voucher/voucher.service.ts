@@ -148,6 +148,51 @@ export class VoucherService extends BaseService<Vouchers> {
       CommonException.handle(error)
     }
   }
+  async checkUseVouchers(voucherCode : string, accountId: string): Promise<Vouchers> {
+    try {
+     
+      // check using voucher
+      const useVoucher = await this.vouchersRepository.createQueryBuilder('vouchers')
+        .leftJoinAndSelect('vouchers.useVouchers', 'useVouchers')
+        .where('useVouchers.accountsId = :accountsId ', { accountsId: accountId})
+        .andWhere('vouchers.code = :voucherCode', { voucherCode: voucherCode})
+        .getOne();
+      
+      if (useVoucher) {
+        throw new BadRequestException('Voucher has been used')
+      }
+
+      // check account
+      const account = await this.accountsRepository.createQueryBuilder('accounts')
+      .where('accounts.id = :id', { id: accountId })
+      .andWhere('accounts.deletedAt IS NULL')
+      .andWhere('accounts.isActive = :isActive', { isActive: true})
+      .getOne();
+
+      if (!account) {
+        throw new BadRequestException('Account not found or is lock')
+      }
+
+      // check voucher
+      const voucher = await this.vouchersRepository.createQueryBuilder('vouchers')
+      .where('vouchers.code = :code', { code: voucherCode })
+      .andWhere('vouchers.deletedAt IS NULL')
+      .andWhere('vouchers.startDate <= :startDate ', { startDate: new Date()})
+      .andWhere(' vouchers.endDate >= :endDate', {  endDate: new Date() })
+      .andWhere('vouchers.quantity > 0')
+      .getOne();
+
+      
+      if (!voucher) { 
+        throw new BadRequestException('Voucher not found or is expired')
+      }
+      
+      return voucher
+
+    } catch (error) {
+      CommonException.handle(error)
+    }
+  }
 
 
   async checkStatusVoucher(codeVoucher: string, accountId: string): Promise<Vouchers> {
