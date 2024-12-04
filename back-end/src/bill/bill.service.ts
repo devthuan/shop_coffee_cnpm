@@ -45,6 +45,15 @@ export class BillService extends BaseService<Bills> {
       await queryRunner.connect()
       await queryRunner.startTransaction()
 
+      let feeShip = 0;
+      if(createBillDto.shippingMethod === "Chuyển phát thường"){
+        feeShip = 150000
+      }else if(createBillDto.shippingMethod === "Chuyển phát nhanh"){
+        feeShip = 50000
+      }else if(createBillDto.shippingMethod === "Chuyển phát hoả tốc") {
+        feeShip = 130000
+      }
+
       // check accounts
       const account = await this.accountsRepository.createQueryBuilder('accounts')
       .where('accounts.id = :accountId', { accountId: createBillDto.accountId })
@@ -110,9 +119,9 @@ export class BillService extends BaseService<Bills> {
       // create new bill
       const newBill = this.billsRepository.create({
         status: 'pending',
-        total: totalPriceOriginal,
+        total: totalPriceOriginal + feeShip,
         totalDiscount: totalDiscountProduct + voucherValue ? totalDiscountProduct + voucherValue : 0,
-        totalPayment: finalTotalPrice > 0 ? finalTotalPrice : 0,
+        totalPayment: finalTotalPrice + feeShip > 0 ? finalTotalPrice + feeShip : 0,
         vouchers: voucher? voucher : null,
         fullName: createBillDto.fullName,
         deliverAddress: createBillDto.deliverAddress,

@@ -60,7 +60,7 @@ export class PaymentController {
       const status = vnp_ResponseCode === '00' ? 'success' : 'failed';
 
           // Redirect về FE với trạng thái thanh toán
-      const frontendUrl = `${process.env.FRONTEND_URL}/payment-result?orderId=${vnp_TransactionNo}&status=${status}&amount=${vnp_Amount.slice(0,-1)}&date=${vnp_PayDate}`;
+      const frontendUrl = `${process.env.FRONTEND_URL}/payment-result?orderId=${vnp_TransactionNo}&status=${status}&amount=${vnp_Amount.slice(0,-2)}&date=${vnp_PayDate}`;
       return res.redirect(frontendUrl);
 
 

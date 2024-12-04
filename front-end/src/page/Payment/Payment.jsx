@@ -107,6 +107,7 @@ const Payment = () => {
       const response = await AddBill(informations);
       console.log(response);
       if (response && response.status === 201) {
+        navigate(`/payment-result?amount=${response.data.totalPayment}&date=${response.data.createdAt}&status=success`);
       }
     } catch (error) {
       const result = HandleApiError(error);
