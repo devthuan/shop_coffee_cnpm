@@ -1,7 +1,6 @@
 import classNames from "classnames/bind";
-import { useEffect } from "react";
-import { useState } from "react";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import { useState, useEffect } from "react";
+import Swal from 'sweetalert2'; // Import SweetAlert2
 // import styles from "./Template.module.scss";
 import { ModalAddCategory } from "./ModalAddCategory";
 import { ModalEditCategory } from "./ModalEditCategory";

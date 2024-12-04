@@ -13,6 +13,7 @@ import { UpdateProduct, UploadFileAPI } from "~/services/ProductService";
 import { updateProduct } from "~/redux/features/Products/productsSlice";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { validateProduct } from "~/Utils/Product/validateProduct";
 
 export const ModalEditProduct = ({ data }) => {
   const dispatch = useDispatch();
@@ -25,7 +26,7 @@ export const ModalEditProduct = ({ data }) => {
   const [selectedAttributes, setSelectedAttributes] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [productImages, setProductImages] = useState([]);
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(data.description);
 
   const [formData, setFromData] = useState({
     id: "",
@@ -126,17 +127,24 @@ export const ModalEditProduct = ({ data }) => {
     const categoryNew = categories.filter(
       (category) => category.id === formData.category
     );
+    const plainTextDescription = content.replace(/<[^>]*>/g, '').trim();
+
+    const productData = {
+      name: formData.name,
+      categoryId: formData.category,
+      description: plainTextDescription,
+      attributes: selectedOptions.map((attributeId) => ({
+        attributeId: attributeId.value,
+      })),
+      images: productImages,
+    }
+    console.log(productData.description)
+    if (!validateProduct(productData, false)) {
+      return;
+    }
 
     try {
-      const response = await UpdateProduct(data.id, {
-        name: formData.name,
-        categoryId: formData.category,
-        description: content,
-        attributes: selectedOptions.map((attributeId) => ({
-          attributeId: attributeId.value,
-        })),
-        images: productImages,
-      });
+      const response = await UpdateProduct(data.id, productData);
 
       if (response && response.status === 200) {
         dispatch(

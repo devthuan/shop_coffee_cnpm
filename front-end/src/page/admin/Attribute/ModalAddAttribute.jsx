@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { AddAttribute } from "~/services/AttributeService";
 import { addAttribute } from "~/redux/features/Attributes/attributesSlice";
+import { validateAttribute } from "~/Utils/Attribute/validateAttribute";
 export const ModalAddAttribute = () => {
     const dispatch = useDispatch()
     const [nameAttribute, setNameAttribute] = useState("");
@@ -18,6 +19,11 @@ export const ModalAddAttribute = () => {
             name: nameAttribute,
             description: descriptionAttribute,
         };
+        
+        if(!validateAttribute(attributeData))
+        {
+            return;
+        }
         try {
             const response = await AddAttribute(attributeData)
             console.log(response)

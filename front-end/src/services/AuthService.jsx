@@ -48,3 +48,8 @@ export const GoogleAPI = async () => {
 export const RecoverPass = async (email) => {
   return await api.post("auth/forgot-password", { email });
 };
+
+
+export const ChangePasswordAPI = async (data) => {
+  return await api.post("auth/change-password", data );
+};

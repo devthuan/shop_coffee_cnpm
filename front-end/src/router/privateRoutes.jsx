@@ -7,6 +7,7 @@ import Payment from "~/page/Payment/Payment";
 import Bougth from "~/page/Profile/Bougth/bougth";
 import EditProfile from "~/page/Profile/EditProfile/editProfile";
 import FavoriteUser from "~/page/Profile/FavoriteUser/FavoriteUser";
+import ChangePassword from "~/page/Profile/ChangePassword/ChangePassword";
 import { Profile } from "~/page/Profile/Profile";
 // routes for private
 export const privateRoutes = [
@@ -17,6 +18,11 @@ export const privateRoutes = [
   {
     path: "/profile/editProfile",
     component: EditProfile,
+    layout: ProfileLayout,
+  },
+  {
+    path: "/profile/changePassword",
+    component: ChangePassword,
     layout: ProfileLayout,
   },
   {

@@ -2,8 +2,8 @@ import axios from "axios";
 import { getItemWithExpiration } from "./localStorage";
 
 const api = axios.create({
-  // baseURL: "http://103.218.123.12:8080/api/v1",
-  baseURL: "http://localhost:8080/api/v1",
+  baseURL: "http://103.218.123.12:8080/api/v1",
+  // baseURL: "http://localhost:8080/api/v1",
 
   timeout: 5000, // Đặt timeout tùy ý
 });

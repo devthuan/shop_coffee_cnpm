@@ -82,7 +82,6 @@ function ContentProfile() {
             <ul className={cx("list_profile")}>
               <li className={cx("item_profile")}>
                 <div className={cx("item_profile_icon")}>
-                  {" "}
                   <FontAwesomeIcon icon={faEnvelope} />{" "}
                 </div>
                 <div className={cx("item_profile_info")}>
