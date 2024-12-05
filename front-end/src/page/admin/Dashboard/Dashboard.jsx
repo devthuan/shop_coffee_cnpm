@@ -11,14 +11,25 @@ import { DashedBarsChart } from "./DashedBarsChart";
 import { DashedLinesChartOrder } from "./DashedLinesChartOrder";
 import CountUp from "~/components/CountUp/CountUp";
 import { DashboardPieChart, DashedPieChart } from "./DashedPieChart";
-import { useEffect } from "react";
-import { GetStatisticalAPI } from "~/services/StatisticalService";
+import { useEffect, useState } from "react";
+import {
+  GetStatisticalAPI,
+  GetStatisticalBillsAPI,
+  GetStatisticalImportReceiptAPI,
+  GetStatisticalProductsAPI,
+  GetStatisticalRevenueAPI,
+} from "~/services/StatisticalService";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  initDataBillings,
+  initDataImportReceipt,
+  initDataProducts,
+  initDataRevenue,
   initDataStatistical,
   initError,
 } from "~/redux/features/Statistical/statisticalSlice";
 import { HandleApiError } from "~/Utils/HandleApiError";
+import { DashedBarsChartImportReceipt } from "./DashedBarsChartImportReceipt";
 const cx = classNames.bind(styles);
 export const Dashboard = () => {
   const dispatch = useDispatch();
@@ -26,6 +37,113 @@ export const Dashboard = () => {
   const totalBills = useSelector((state) => state.statistical.totalBills);
   const totalProduct = useSelector((state) => state.statistical.totalProduct);
   const totalAccount = useSelector((state) => state.statistical.totalAccount);
+
+  const [dateStatistical, setDateStatistical] = useState({
+    startDate: "",
+    endDate: "",
+  });
+  const [dateBill, setDateBill] = useState({ startDate: "", endDate: "" });
+  const [dateImport, setDateImport] = useState({ startDate: "", endDate: "" });
+  const [dateProduct, setDateProduct] = useState({
+    startDate: "",
+    endDate: "",
+  });
+
+  const [chooseDateStatistical, setChooseDateStatistical] = useState({
+    startDate: "",
+    endDate: "",
+  });
+  const [chooseDateBill, setChooseDateBill] = useState({
+    startDate: "",
+    endDate: "",
+  });
+  const [chooseDateImport, setChooseDateImport] = useState({
+    startDate: "",
+    endDate: "",
+  });
+  const [chooseDateProduct, setChooseDateProduct] = useState({
+    startDate: "",
+    endDate: "",
+  });
+
+  const handleInputChange = (type, field, value) => {
+    switch (type) {
+      case "statistical":
+        setDateStatistical((prev) => ({ ...prev, [field]: value }));
+        break;
+      case "bill":
+        setDateBill((prev) => ({ ...prev, [field]: value }));
+        break;
+      case "import":
+        setDateImport((prev) => ({ ...prev, [field]: value }));
+        break;
+      case "product":
+        setDateProduct((prev) => ({ ...prev, [field]: value }));
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleSubmit = (title) => {
+    switch (title) {
+      case "statistical":
+        setChooseDateStatistical(dateStatistical);
+        fetchingData(
+          dateStatistical.startDate,
+          dateStatistical.endDate,
+          GetStatisticalRevenueAPI,
+          initDataRevenue
+        );
+        break;
+      case "bill":
+        setChooseDateBill(dateBill);
+         fetchingData(
+           dateBill.startDate,
+           dateBill.endDate,
+           GetStatisticalBillsAPI,
+           initDataBillings
+           
+         );
+        break;
+      case "import":
+        setChooseDateImport(dateImport);
+         fetchingData(
+           dateImport.startDate,
+           dateImport.endDate,
+           GetStatisticalImportReceiptAPI,
+           initDataImportReceipt
+         );
+        break;
+      case "product":
+        setChooseDateProduct(dateProduct);
+         fetchingData(
+          dateProduct.startDate,
+          dateProduct.endDate,
+          GetStatisticalProductsAPI,
+          initDataProducts
+        );
+        break;
+      default:
+        break;
+    }
+  };
+
+  const fetchingData = async (startDate, endDate, CallBack, dataRedux) => {
+    try {
+   
+      const response = await CallBack(startDate, endDate);
+      if (response && response.status === 201) {
+        console.log(response);
+        dispatch(dataRedux({ data: response.data }));
+      }
+    } catch (error) {
+      const { message, status } = HandleApiError(error);
+      if (status === "error") {
+        dispatch(initError({ error: message }));
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,20 +217,163 @@ export const Dashboard = () => {
       </div>
 
       {/* box chart statistical profit */}
-      <div className="mt-5 w-full pr-10 mx-auto">
-        <h3 className="my-5">Thống kê doanh thu:</h3>
-        <DashedBarsChart />
+      <div className="mt-5 w-full pr-10 mx-auto  ">
+        <div className="flex justify-start items-center gap-x-5">
+          <div className="">
+            <h3 className="my-5">Thống kê doanh thu:</h3>
+          </div>
+          <div className="relative max-w-xs flex justify-start items-center">
+            <h3 className="w-32">Từ ngày: </h3>
+            <input
+              onChange={(e) =>
+                handleInputChange("statistical", "startDate", e.target.value)
+              }
+              type="date"
+              placeholder="Enter your email"
+              className="w-full pl-4 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+            />
+          </div>
+          <div className="relative max-w-xs flex justify-start items-center">
+            <h3 className="w-32">Đến ngày: </h3>
+            <input
+              onChange={(e) =>
+                handleInputChange("statistical", "endDate", e.target.value)
+              }
+              type="date"
+              placeholder="Enter your email"
+              className="w-full pl-4 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+            />
+          </div>
+          <div className="relative max-w-xs flex justify-start items-center">
+            <button
+              onClick={() => handleSubmit("statistical")}
+              className="flex items-center gap-2 px-4 py-2 text-white bg-indigo-600 rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700"
+            >
+              Tìm kiếm
+            </button>
+          </div>
+        </div>
+        <div className="">
+          <DashedBarsChart  />
+        </div>
       </div>
       {/* box chart statistical order*/}
       <div className="mt-5 w-full pr-10 mx-auto">
-        <h3 className="my-5">Thống kê số lượng hoá đơn:</h3>
-        <DashedLinesChartOrder />
+        <div className="flex justify-start items-center gap-x-5">
+          <div className="">
+            <h3 className="my-5">Thống kê số lượng hoá đơn:</h3>
+          </div>
+          <div className="relative max-w-xs flex justify-start items-center">
+            <h3 className="w-32">Từ ngày: </h3>
+            <input
+              onChange={(e) =>
+                handleInputChange("bill", "startDate", e.target.value)
+              }
+              type="date"
+              placeholder="Enter your email"
+              className="w-full pl-4 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+            />
+          </div>
+          <div className="relative max-w-xs flex justify-start items-center">
+            <h3 className="w-32">Đến ngày: </h3>
+            <input
+              onChange={(e) =>
+                handleInputChange("bill", "endDate", e.target.value)
+              }
+              type="date"
+              placeholder="Enter your email"
+              className="w-full pl-4 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+            />
+          </div>
+          <div className="relative max-w-xs flex justify-start items-center">
+            <button
+              onClick={() => handleSubmit("bill")}
+              className="flex items-center gap-2 px-4 py-2 text-white bg-indigo-600 rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700"
+            >
+              Tìm kiếm
+            </button>
+          </div>
+        </div>
+        <DashedLinesChartOrder  />
+      </div>
+      {/* box chart statistical import receipt*/}
+      <div className="mt-5 w-full pr-10 mx-auto">
+        <div className="flex justify-start items-center gap-x-5">
+          <div className="">
+            <h3 className="my-5">Thống kê nhập hàng:</h3>
+          </div>
+          <div className="relative max-w-xs flex justify-start items-center">
+            <h3 className="w-32">Từ ngày: </h3>
+            <input
+              onChange={(e) =>
+                handleInputChange("importReceipt", "startDate", e.target.value)
+              }
+              type="date"
+              placeholder="Enter your email"
+              className="w-full pl-4 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+            />
+          </div>
+          <div className="relative max-w-xs flex justify-start items-center">
+            <h3 className="w-32">Đến ngày: </h3>
+            <input
+              onChange={(e) =>
+                handleInputChange("importReceipt", "startDate", e.target.value)
+              }
+              type="date"
+              placeholder="Enter your email"
+              className="w-full pl-4 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+            />
+          </div>
+          <div className="relative max-w-xs flex justify-start items-center">
+            <button
+              onClick={() => handleSubmit("importReceipt")}
+              className="flex items-center gap-2 px-4 py-2 text-white bg-indigo-600 rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700"
+            >
+              Tìm kiếm
+            </button>
+          </div>
+        </div>
+        <DashedBarsChartImportReceipt  />
       </div>
 
       {/* box chart statistical product*/}
       <div className="mt-5 w-full pr-10 mx-auto">
-        <h3 className="my-5">Thống kê doanh số lượng bán theo sản phẩm:</h3>
-        <DashedPieChart />
+        <div className="flex justify-start items-center gap-x-5">
+          <div className="">
+            <h3 className="my-5">Thống kê doanh số lượng bán theo sản phẩm:</h3>
+          </div>
+          <div className="relative max-w-xs flex justify-start items-center">
+            <h3 className="w-32">Từ ngày: </h3>
+            <input
+              onChange={(e) =>
+                handleInputChange("product", "startDate", e.target.value)
+              }
+              type="date"
+              placeholder="Enter your email"
+              className="w-full pl-4 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+            />
+          </div>
+          <div className="relative max-w-xs flex justify-start items-center">
+            <h3 className="w-32">Đến ngày: </h3>
+            <input
+              onChange={(e) =>
+                handleInputChange("product", "startDate", e.target.value)
+              }
+              type="date"
+              placeholder="Enter your email"
+              className="w-full pl-4 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+            />
+          </div>
+          <div className="relative max-w-xs flex justify-start items-center">
+            <button
+              onClick={() => handleSubmit("product")}
+              className="flex items-center gap-2 px-4 py-2 text-white bg-indigo-600 rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700"
+            >
+              Tìm kiếm
+            </button>
+          </div>
+        </div>
+        <DashedPieChart  />
       </div>
     </div>
   );

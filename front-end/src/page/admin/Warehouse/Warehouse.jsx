@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 
 import { ToastContainer, toast } from "react-toastify";
@@ -9,6 +8,7 @@ import { HandleApiError } from "~/Utils/HandleApiError";
 import { GetAllInventory } from "~/services/InventoryService";
 import {
   initDataInventory,
+  setErrorInventory,
 } from "~/redux/features/Inventories/inventoriesSilce";
 
 export const Warehouse = () => {
@@ -53,6 +53,8 @@ export const Warehouse = () => {
       result
         ? toast.error(result)
         : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+
+      dispatch(setErrorInventory({ error: result.message }));
     }
   };
 
@@ -98,15 +100,12 @@ export const Warehouse = () => {
           // laod false
         }
       } catch (error) {
-        if (error.request) {
-          dispatch(
-            initDataInventory({ error: "Không có phản hồi từ server..." })
-          );
-        }
         const result = HandleApiError(error);
         result
           ? toast.error(result)
           : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+
+        dispatch(setErrorInventory({ error: result.message }));
       }
     };
 

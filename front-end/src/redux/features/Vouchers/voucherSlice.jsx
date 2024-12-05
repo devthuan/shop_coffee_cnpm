@@ -25,7 +25,7 @@ export const vouchersSlice = createSlice({
     },
 
     addVoucher: (state, action) => {
-      console.log(action.payload)
+      console.log(action.payload);
       state.data.push(action.payload);
       state.loading = false;
     },
@@ -63,10 +63,10 @@ export const vouchersSlice = createSlice({
       state.loading = false;
     },
 
-
     // Nếu cần, bạn có thể thêm các reducer khác
-
-
+    initErrorVoucher: (state, action) => {
+      state.error = action.payload.error;
+    },
     clearDataVoucher: (state, action) => {
       state.data = [];
       state.permission = [];
@@ -77,12 +77,12 @@ export const vouchersSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
-
   },
 });
 
 // Action creators are generated for each case reducer function
 export const {
+  initErrorVoucher,
   initDataVoucher,
   addVoucher,
   removeVoucher,

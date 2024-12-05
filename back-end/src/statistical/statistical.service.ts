@@ -66,9 +66,9 @@ async statisticalByDate(statisticalDto: StatisticalDto): Promise<any> {
             )
             SELECT  
                 DATE_FORMAT(date_range.date, '%Y-%m-%d') AS date, 
-                IFNULL(SUM(bills.totalPayment), 0) AS totalRevenue,
-                IFNULL(SUM(importReceipts.totalAmount), 0) AS totalExpense,
-                IFNULL(SUM(bills.totalPayment), 0) - IFNULL(SUM(importReceipts.totalAmount), 0) AS totalProfit
+                IFNULL(SUM(bills.totalPayment), 0) AS 'Doanh thu',
+                IFNULL(SUM(importReceipts.totalAmount), 0) AS 'Chi phí',
+                IFNULL(SUM(bills.totalPayment), 0) - IFNULL(SUM(importReceipts.totalAmount), 0) AS 'Lợi nhuận'
             FROM date_range
             LEFT JOIN bills 
                 ON DATE(CONVERT_TZ(bills.createdAt, "+00:00", "+07:00")) = date_range.date
@@ -136,6 +136,30 @@ async statisticalByDate(statisticalDto: StatisticalDto): Promise<any> {
             CommonException.handle(error);
         }
     }
+    async statisticalImportReceiptByDate(statisticalDto: StatisticalDto): Promise<any> {
+        try {
+            // Fetch aggregated data by date and status
+            const totalImportReceiptAndDate = await this.importReceiptsRepository.createQueryBuilder('importReceipts')
+                .select('DATE(CONVERT_TZ(importReceipts.createdAt, "+00:00", "+07:00"))', 'date') // Adjust timezone
+                .addSelect('SUM(importReceipts.totalAmount)', 'Tổng') // Assuming 'cost' is the column for the import cost
+                .where('importReceipts.createdAt >= :startDate', { startDate: statisticalDto.startDate })
+                .andWhere('importReceipts.createdAt <= :endDate', { endDate: statisticalDto.endDate })
+                .groupBy('DATE(CONVERT_TZ(importReceipts.createdAt, "+00:00", "+07:00"))')
+                .getRawMany();
+
+            // Format the date into 'YYYY-MM-DD'
+            const formattedResult = totalImportReceiptAndDate.map((item) => ({
+                ...item,
+                date: new Date(item.date).toISOString().split('T')[0], // Format date
+            }));
+
+            // Return the formatted data
+            return formattedResult;
+        } catch (error) {
+            CommonException.handle(error);
+        }
+    }
+
 
     // statistical calculation quantity sell product by product
     async statisticalByProduct(statisticalDto: StatisticalDto): Promise<any> {

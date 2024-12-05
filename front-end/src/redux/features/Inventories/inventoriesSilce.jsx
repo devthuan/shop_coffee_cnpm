@@ -34,6 +34,10 @@ export const inventoriesSlice = createSlice({
       state.loading = false;
     },
 
+    setErrorInventory: (state, action) => {
+      state.error = action.payload.error;
+    },
+
     clearDataInventory: (state, action) => {
       state.data = [];
       state.total = 0;
@@ -48,6 +52,7 @@ export const inventoriesSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const {
+  setErrorInventory,
   initDataInventory,
   addInventory,
   removeInventory,

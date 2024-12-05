@@ -16,6 +16,12 @@ export const GetStatisticalBillsAPI = (startDate, endDate) => {
     endDate: endDate,
   });
 };
+export const GetStatisticalImportReceiptAPI = (startDate, endDate) => {
+  return api.post(`statistical/import-receipt`, {
+    startDate: startDate,
+    endDate: endDate,
+  });
+};
 export const GetStatisticalProductsAPI = (startDate, endDate) => {
   return api.post(`statistical/product`, {
     startDate: startDate,

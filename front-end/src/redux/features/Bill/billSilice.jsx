@@ -7,6 +7,7 @@ const initialState = {
   limit: 0,
   data: [],
   detail: "",
+  dataOrderPending: [],
   loading: true,
   error: null,
 };
@@ -27,6 +28,9 @@ export const billSlice = createSlice({
 
     initDetailBill: (state, action) => {
       state.detail = action.payload;
+    },
+    initOrderPending: (state, action) => {
+      state.dataOrderPending = action.payload;
     },
 
     clearDataBill: (state, action) => {
@@ -54,7 +58,7 @@ export const billSlice = createSlice({
     },
 
     initErrorBill: (state, action) => {
-      state.error = action.payload;
+      state.error = action.payload.error;
       state.loading = false;
       state.data = [];
       state.total = 0;
@@ -67,7 +71,13 @@ export const billSlice = createSlice({
 });
 
 // Export các action
-export const { initDataBill, initErrorBill, initDetailBill, clearDataBill } =
-  billSlice.actions;
+export const {
+  initOrderPending,
+  initDataBill,
+  changeStatusBill,
+  initErrorBill,
+  initDetailBill,
+  clearDataBill,
+} = billSlice.actions;
 
 export default billSlice.reducer;

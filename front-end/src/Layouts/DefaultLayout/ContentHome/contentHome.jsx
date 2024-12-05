@@ -32,12 +32,15 @@ import {
 import StartIcon from "~/assets/icon/start_icon.svg";
 import HeartIconRed from "~/assets/icon/heart_red.svg";
 import HeartIcon from "~/assets/icon/heart.svg";
+import { getItemWithExpiration } from "~/services/localStorage";
 
 const cx = classNames.bind(styles);
 
 function ContentHome() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const isLogin = getItemWithExpiration("token") || null;
+
   const FavoriteUserData = useSelector((state) => state.favoriteUser.data);
   const ProductsData = useSelector((state) => state.products.data) || [];
 
@@ -46,6 +49,7 @@ function ContentHome() {
   const totalPage = useSelector((state) => state.products.totalPage);
   const limit = useSelector((state) => state.products.limit);
   const isLoading = useSelector((state) => state.products.loading);
+
   const [optionLimit, setOptionLimit] = useState({
     currentPage: 1,
     limit: 10,
@@ -54,6 +58,10 @@ function ContentHome() {
   // const [favoriteStatus, setFavoriteStatus] = useState(FavoriteUserData);
 
   const fetchData = async (type, queryParams, action, Callback) => {
+    if (type === "favorite" && !isLogin) {
+      return;
+    }
+
     try {
       const response = await Callback(queryParams);
       dispatch(action(response.data));
@@ -61,10 +69,7 @@ function ContentHome() {
       if (error.request) {
         dispatch(action({ error: "không có phản hồi từ server..." }));
       }
-      const result = HandleApiError(error);
-      result
-        ? toast.error(result)
-        : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+      HandleApiError(error);
     }
   };
 
@@ -162,7 +167,6 @@ function ContentHome() {
               (love) => love.products?.id === item.id
             );
 
-            console.log(favoriteId);
             return (
               <div
                 key={i}

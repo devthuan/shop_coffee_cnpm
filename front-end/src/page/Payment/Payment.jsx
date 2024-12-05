@@ -120,15 +120,16 @@ const Payment = () => {
         const response = await VnpayPaymentAPI(totalAmount);
         console.log(response);
         if (response.data?.paymentUrl) {
-          const response = await AddBill(informations);
           window.location.href = response.data.paymentUrl;
         }
+        localStorage.setItem("paymentInfo", JSON.stringify(informations));
+        // await AddBill(informations);
       } else {
         const response = await AddBill(informations);
-        console.log(response);
+
         if (response && response.status === 201) {
           navigate(
-            `/payment-result?amount=${response.data.totalPayment}&date=${response.data.createdAt}&status=success`
+            `/payment-result?orderId=${response.data.id}&amount=${response.data.totalPayment}&date=${response.data.createdAt}&status=success`
           );
         }
       }
@@ -297,14 +298,11 @@ const Payment = () => {
             <div className="flex-col justify-start items-start gap-[30px] flex">
               <div className="w-full justify-start items-center gap-[177px] inline-flex">
                 <div className="text-[#1a162e] text-[22px] font-medium font-['Gordita'] leading-loose">
-                  1. Thời gian vận chuyển, mất từ 3 đến 4 ngày
+                  1. Thông tin nhận người nhận hàng
                 </div>
                 <div className="justify-start items-start gap-2.5 flex">
                   <div className="w-6 h-6 p-[3px] justify-center items-center flex">
                     <div className="w-[18px] h-[18px] relative"></div>
-                  </div>
-                  <div className="text-[#1a162e] text-lg font-normal font-['Gordita'] leading-relaxed">
-                    Edit
                   </div>
                 </div>
               </div>

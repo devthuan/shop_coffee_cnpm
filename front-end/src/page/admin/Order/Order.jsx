@@ -6,16 +6,23 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { GetAllBillAPI } from "~/services/BillService";
 import { HandleApiError } from "~/Utils/HandleApiError";
-import { initDataBill } from "~/redux/features/Bill/billSilice";
+import {
+  initDataBill,
+  initErrorBill,
+  initOrderPending,
+} from "~/redux/features/Bill/billSilice";
 
 export const Order = () => {
   const dispatch = useDispatch();
-  const dataRedux = useSelector((state) => state.bill.data);
-  const BillsData = dataRedux.filter((item) => item.status === "pending");
-  const total = useSelector((state) => state.bill.total);
-  const currentPage = useSelector((state) => state.bill.currentPage);
-  const totalPage = useSelector((state) => state.bill.totalPage);
-  const limit = useSelector((state) => state.bill.limit);
+  const orderPending = useSelector((state) => state.bill.dataOrderPending.data);
+  const total = useSelector((state) => state.bill.dataOrderPending.total);
+  const currentPage = useSelector(
+    (state) => state.bill.dataOrderPending.currentPage
+  );
+  const totalPage = useSelector(
+    (state) => state.bill.dataOrderPending.totalPage
+  );
+  const limit = useSelector((state) => state.bill.dataOrderPending.limit);
 
   const [sortOption, setSortOption] = useState("");
   const [filterOption, setFilterOption] = useState("");
@@ -24,44 +31,11 @@ export const Order = () => {
     limit: 10,
   });
 
-  // biến chứa danh sách nội dung của bảng
-  const tableItems = [
-    {
-      name: "Solo learn app",
-      date: "Oct 9, 2023",
-      status: "Active",
-      price: "$35.000",
-      plan: "Monthly subscription",
-    },
-    {
-      name: "Window wrapper",
-      date: "Oct 12, 2023",
-      status: "Active",
-      price: "$12.000",
-      plan: "Monthly subscription",
-    },
-    {
-      name: "Unity loroin",
-      date: "Oct 22, 2023",
-      status: "Archived",
-      price: "$20.000",
-      plan: "Annually subscription",
-    },
-    {
-      name: "Background remover",
-      date: "Jan 5, 2023",
-      status: "Active",
-      price: "$5.000",
-      plan: "Monthly subscription",
-    },
-    {
-      name: "Colon tiger",
-      date: "Jan 6, 2023",
-      status: "Active",
-      price: "$9.000",
-      plan: "Annually subscription",
-    },
+  const listOptionSorts = [
+    { value: "createdAt_ASC", label: "sắp xếp theo ngày tạo tăng dần" },
+    { value: "createdAt_DESC", label: "sắp xếp theo ngày tạo giảm dần" },
   ];
+
   // Array chứa danh sách tiêu đề bảng
   const tableTitles = [
     "id",
@@ -72,6 +46,11 @@ export const Order = () => {
     "Ngày đặt hàng",
     "Hành động",
   ];
+
+  const handleSort = async (e) => {
+    setSortOption(e);
+    fetchNotification(e, filterOption); // Pass both sort and filter options
+  };
 
   // Callback function to update currentPage
   const handlePageChange = (newPage) => {
@@ -90,19 +69,32 @@ export const Order = () => {
     }));
   };
 
+  const fetchNotification = async (sortOption) => {
+    let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&status=pending`;
+
+    if (sortOption === "createdAt_ASC") {
+      queryParams += `&sortBy=createdAt&sortOrder=ASC`;
+    } else if (sortOption === "createdAt_DESC") {
+      queryParams += `&sortBy=createdAt&sortOrder=DESC`;
+    }
+
+    const result = await GetAllBillAPI(queryParams);
+    dispatch(initOrderPending(result.data));
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         // API call here
-        let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
+        let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}&status=pending`;
         const response = await GetAllBillAPI(queryParams);
         if (response.status === 200 && response.data.data) {
-          dispatch(initDataBill(response.data));
+          dispatch(initOrderPending(response.data));
         }
       } catch (error) {
         const { message, status } = HandleApiError(error);
         if (status === "error") {
-          dispatch(initDataBill({ error: message }));
+          dispatch(initErrorBill({ error: message }));
         }
       }
     };
@@ -123,7 +115,7 @@ export const Order = () => {
       <div className="flex items-start justify-between ">
         <div className="flex gap-x-3">
           {/* box filter */}
-          <div className="relative w-52 max-w-full ">
+          <div className="relative w-60 max-w-full ">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
@@ -136,11 +128,19 @@ export const Order = () => {
                 clipRule="evenodd"
               />
             </svg>
-            <select className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2">
-              <option>Project manager</option>
-              <option>Software engineer</option>
-              <option>IT manager</option>
-              <option>UI / UX designer</option>
+            <select
+              onChange={(e) => {
+                handleSort(e.target.value);
+              }}
+              className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
+            >
+              {listOptionSorts.map((item) => {
+                return (
+                  <option key={item.value} value={item.value}>
+                    {item.label}
+                  </option>
+                );
+              })}
             </select>
           </div>
           {/* box input search */}
@@ -187,43 +187,46 @@ export const Order = () => {
             </tr>
           </thead>
           <tbody className="text-gray-600 divide-y">
-            {BillsData?.map((item, idx) => (
-              <tr key={idx}>
-                <td className="px-2 py-4 whitespace-nowrap w-[20px] ">
-                  {item.id.slice(0, 8)} ...
-                </td>
-                <td className="px-2 py-4 whitespace-nowrap">{item.fullName}</td>
-                <td className="px-2 py-4 whitespace-nowrap">
-                  {item.deliverPhone}
-                </td>
-                <td className="px-2 py-4 whitespace-nowrap">{item.total}</td>
-                <td className="px-2 py-4 whitespace-nowrap">
-                  <span
-                    className={`px-3 py-2 rounded-full font-semibold text-xs ${
-                      item.status === "success"
-                        ? "text-green-600 bg-green-50"
-                        : item.status === "pending"
-                        ? "text-yellow-600 bg-yellow-50"
-                        : item.status === "delivery"
-                        ? "text-orange-400 bg-red-50"
-                        : "text-red-600 bg-red-50"
-                    }`}
-                  >
-                    {item.status}
-                  </span>
-                </td>
-                <td className="pr-6 py-4 whitespace-nowrap">
-                  {new Date(item.createdAt).toLocaleString()}
-                </td>
+            {orderPending &&
+              orderPending?.map((item, idx) => (
+                <tr key={idx}>
+                  <td className="px-2 py-4 whitespace-nowrap w-[20px] ">
+                    {item.id.slice(0, 8)} ...
+                  </td>
+                  <td className="px-2 py-4 whitespace-nowrap">
+                    {item.fullName}
+                  </td>
+                  <td className="px-2 py-4 whitespace-nowrap">
+                    {item.deliverPhone}
+                  </td>
+                  <td className="px-2 py-4 whitespace-nowrap">{item.total}</td>
+                  <td className="px-2 py-4 whitespace-nowrap">
+                    <span
+                      className={`px-3 py-2 rounded-full font-semibold text-xs ${
+                        item.status === "success"
+                          ? "text-green-600 bg-green-50"
+                          : item.status === "pending"
+                          ? "text-yellow-600 bg-yellow-50"
+                          : item.status === "delivery"
+                          ? "text-orange-400 bg-red-50"
+                          : "text-red-600 bg-red-50"
+                      }`}
+                    >
+                      {item.status}
+                    </span>
+                  </td>
+                  <td className="pr-6 py-4 whitespace-nowrap">
+                    {new Date(item.createdAt).toLocaleString()}
+                  </td>
 
-                <td
-                  className="px-2 py-4 whitespace-nowrap text-blue-500 hover:underline cursor-pointer"
-                  // onClick={() => handleClickIDBill(item.id)}
-                >
-                  <OrderModelEdit data={item} />
-                </td>
-              </tr>
-            ))}
+                  <td
+                    className="px-2 py-4 whitespace-nowrap text-blue-500 hover:underline cursor-pointer"
+                    // onClick={() => handleClickIDBill(item.id)}
+                  >
+                    <OrderModelEdit data={item} />
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

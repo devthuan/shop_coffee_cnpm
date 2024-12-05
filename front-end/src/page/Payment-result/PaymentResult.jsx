@@ -13,6 +13,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 const PaymentResult = () => {
   const location = useLocation();
+  const [paymentInfo, setPaymentInfo] = useState(null);
   // Tạo đối tượng URLSearchParams để dễ dàng truy cập các tham số trong URL
   const params = new URLSearchParams(location.search);
 
@@ -28,6 +29,24 @@ const PaymentResult = () => {
   const formattedDate = moment(date, "YYYYMMDDHHmmss").format(
     "YYYY-MM-DD HH:mm:ss"
   );
+
+  useEffect(() => {
+    const fetchAndAddBill = async () => {
+      if (status === "success") {
+        const storedInfo = localStorage.getItem("paymentInfo");
+        if (storedInfo) {
+          const parsedInfo = JSON.parse(storedInfo);
+          setPaymentInfo(parsedInfo);
+          const response = await AddBill(parsedInfo);
+          if (response && response.status === 201) {
+            localStorage.removeItem("paymentInfo");
+          }
+        }
+      }
+    };
+
+    fetchAndAddBill();
+  }, [status]);
 
   return (
     <main>

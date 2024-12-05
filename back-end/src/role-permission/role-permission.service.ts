@@ -91,6 +91,7 @@ export class RolePermissionService {
         .leftJoinAndSelect('roleHasFunctions.roles', 'roles')
         .leftJoinAndSelect('roleHasFunctions.functions', 'functions')
         .where('roleHasFunctions.deletedAt is null')
+        .andWhere('roleHasFunctions.isActive is true')
         .andWhere('roles.codeName = :codeName', {codeName : roleCodeName})
         .getMany();
 

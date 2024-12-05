@@ -49,7 +49,7 @@ export class NotificationController {
     return plainToInstance(Notification, data);
   }
   @UseGuards(PermissionsGuard)
-  @Permissions("GET_USER_NOTIFICATIONS")
+  @Permissions("GET_NOTIFICATIONS")
   @Get('user')
   allNotificationByAccount(
     @Req() request: Request,

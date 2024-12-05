@@ -271,27 +271,28 @@ export const Cart = () => {
                     >
                       {cart.productAttributes.sellPrice.toLocaleString("vi-VN")}{" "}
                       VNĐ
-                      {" | "}
                     </span>
                     {cart.productAttributes.products.productDiscount.length >
                     0 ? (
                       <span className=" text-lg font-medium font-['Gordita'] leading-relaxed">
                         {" | "}
-                        {cart.productAttributes.sellPrice -
-                          (cart.productAttributes.products.productDiscount[0]
-                            .value /
-                            100) *
-                            cart.productAttributes.sellPrice <
-                        0
-                          ? 0
-                          : cart.productAttributes.sellPrice -
-                            (cart.productAttributes.products.productDiscount[0]
-                              .value /
-                              100) *
-                              cart.productAttributes.sellPrice.toLocaleString(
-                                "vi-VN"
-                              )}{" "}
-                        VNĐ
+                        {(() => {
+                          const discountValue =
+                            cart.productAttributes.products?.productDiscount
+                              ?.length > 0
+                              ? cart.productAttributes.products
+                                  .productDiscount[0].value
+                              : 0;
+
+                          const discountedPrice =
+                            cart.productAttributes.sellPrice -
+                            (discountValue / 100) *
+                              cart.productAttributes.sellPrice;
+
+                          const finalPrice = Math.max(0, discountedPrice);
+
+                          return `${finalPrice.toLocaleString("vi-VN")} VNĐ`;
+                        })()}
                         {" | "}
                       </span>
                     ) : (
@@ -468,7 +469,7 @@ export const Cart = () => {
           ></p>
         </div>
 
-        <div className={cx("w-full flex justify-between")}>
+        {/* <div className={cx("w-full flex justify-between")}>
           <div className={cx("w-1/2 flex items-center")}>
             <p
               style={{
@@ -497,7 +498,6 @@ export const Cart = () => {
               <div className="w-1/2 flex flex-col">
                 <div className="flex mb-2">
                   {" "}
-                  {/* Thêm div này để chứa input */}
                   <input
                     ref={refVoucher}
                     onChange={(e) => setCodeVoucher(e.target.value)}
@@ -523,7 +523,7 @@ export const Cart = () => {
                 </p>
               </div>
             ))}
-        </div>
+        </div> */}
 
         <div className={cx("w-full flex justify-between")}></div>
         <div className={cx("border-t border-gray-300 pt-4")}>

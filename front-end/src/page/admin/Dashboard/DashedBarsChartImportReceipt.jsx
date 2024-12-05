@@ -15,25 +15,30 @@ import {
   Rectangle,
 } from "recharts";
 import {
-  initDataRevenue,
+  initDataImportReceipt,
   initError,
 } from "~/redux/features/Statistical/statisticalSlice";
-import { GetStatisticalRevenueAPI } from "~/services/StatisticalService";
+import { GetStatisticalImportReceiptAPI } from "~/services/StatisticalService";
 import { HandleApiError } from "~/Utils/HandleApiError";
 
-export const DashedBarsChart = () => {
+export const DashedBarsChartImportReceipt = () => {
   const dispatch = useDispatch();
-  const dataRevenue = useSelector((state) => state.statistical.dataRevenue);
+  const dataImportReceipt = useSelector(
+    (state) => state.statistical.dataImportReceipt
+  );
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         let startDate = "2024-10-1";
-        let endDate = "2024-10-30";
-        const response = await GetStatisticalRevenueAPI(startDate, endDate);
+        let endDate = "2024-11-30";
+        const response = await GetStatisticalImportReceiptAPI(
+          startDate,
+          endDate
+        );
         if (response && response.status === 201) {
           console.log(response);
-          dispatch(initDataRevenue({ data: response.data }));
+          dispatch(initDataImportReceipt({ data: response.data }));
         }
       } catch (error) {
         const { message, status } = HandleApiError(error);
@@ -42,7 +47,7 @@ export const DashedBarsChart = () => {
         }
       }
     };
-    if (!dataRevenue || dataRevenue.length === 0) {
+    if (!dataImportReceipt || dataImportReceipt.length === 0) {
       fetchData();
     }
   }, []);
@@ -52,7 +57,7 @@ export const DashedBarsChart = () => {
       <BarChart
         width={500}
         height={300}
-        data={dataRevenue}
+        data={dataImportReceipt}
         margin={{
           top: 5,
           right: 30,
@@ -65,19 +70,9 @@ export const DashedBarsChart = () => {
         <YAxis />
         <Tooltip />
         <Bar
-          dataKey="Doanh thu"
+          dataKey="Tổng"
           fill="#FF9800" // Green for Revenue
           activeBar={<Rectangle stroke="#FF9800" />}
-        />
-        <Bar
-          dataKey="Chi phí"
-          fill="#F44336" // Red for Expense
-          activeBar={<Rectangle stroke="#F44336" />}
-        />
-        <Bar
-          dataKey="Lợi nhuận"
-          fill="#4CAF50" // Orange for Profit
-          activeBar={<Rectangle stroke="#4CAF50" />}
         />
       </BarChart>
     </ResponsiveContainer>

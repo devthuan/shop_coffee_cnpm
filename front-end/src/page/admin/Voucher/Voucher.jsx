@@ -9,6 +9,7 @@ import {
 import {
   clearDataVoucher,
   initDataVoucher,
+  initErrorVoucher,
   removeVoucher,
   updateStatusVoucher
 } from "~/redux/features/Vouchers/voucherSlice";
@@ -178,10 +179,12 @@ export const Voucher = () => {
         //   dispatch(initDataVoucher(response.data));
         // }
       } catch (error) {
-        const { message, status } = HandleApiError(error);
-        if (status === "error") {
-          dispatch(initDataVoucher({ error: message }));
-        }
+        const result = HandleApiError(error);
+        result
+          ? toast.error(result)
+          : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+
+          dispatch(initErrorVoucher({ error: result.message }));
       }
     };
     dispatch(clearDataVoucher());

@@ -282,9 +282,15 @@ export class BillService extends BaseService<Bills> {
     // Kiểm tra trạng thái hợp lệ
     if (bill.status === 'pending' && status === 'delivery') {
       bill.status = status;
-    } else if (bill.status === 'delivery' && status === 'success') {
+    } 
+    else if (bill.status === 'delivery' && status === 'success' ) {
       bill.status = status;
-    } else if ((bill.status === 'pending' || bill.status === 'delivery') && status === 'cancelled') {
+    } 
+    else if (bill.status === 'delivery' && status === 'failed' ) {
+      bill.status = status;
+      await this.restoreStock(bill, queryRunner); // Khôi phục số lượng hàng tồn nếu hủy
+    } 
+    else if ((bill.status === 'pending' || bill.status === 'delivery') && status === 'cancelled') {
       bill.status = status;
       await this.restoreStock(bill, queryRunner); // Khôi phục số lượng hàng tồn nếu hủy
     } else {

@@ -60,24 +60,19 @@ import { ToastContainer, toast } from "react-toastify";
 
 export const HandleApiError = (err) => {
   if (err.response) {
-    const {
-      status,
-      data: { statusCode, message },
-    } = err.response;
-
-    // Default error message if no message is provided
-    const defaultErrorMessage = "Đã xảy ra lỗi không mong muốn.";
+    const { status, data } = err.response;
+    const message = data?.message || "Đã xảy ra lỗi không mong muốn."; // Fallback to a default message
 
     // Define a message depending on status or statusCode
     const getErrorMessage = () => {
       if (Array.isArray(message)) {
         return message[0]; // Use the first message if it's an array
       }
-      return message || defaultErrorMessage;
+      return message;
     };
 
     // Handle different HTTP status codes
-    switch (status || statusCode) {
+    switch (status) {
       case 400:
         toast.error(
           getErrorMessage() || "Bad request, please check your data."
@@ -88,10 +83,17 @@ export const HandleApiError = (err) => {
           getErrorMessage() ||
             "Unauthorized | Không được phép, vui lòng đăng nhập lại."
         );
-        break;
+        return {
+          status: "error",
+          message: "Unauthorized | Không được phép, vui lòng đăng nhập lại.",
+        };
+
       case 403:
         toast.error(getErrorMessage() || "Forbidden | bạn không có quyền.");
-        break;
+        return {
+          status: "error",
+          message: "Forbidden | bạn không có quyền.",
+        };
       case 404:
         toast.error(getErrorMessage() || "Resource not found.");
         break;
@@ -99,7 +101,10 @@ export const HandleApiError = (err) => {
         toast.error(
           getErrorMessage() || "Server error, please try again later."
         );
-        break;
+        return {
+          status: "error",
+          message: "Không có phản hồi từ server",
+        };
       default:
         toast.error(getErrorMessage());
     }

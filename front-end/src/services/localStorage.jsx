@@ -29,6 +29,9 @@ function getItemWithExpiration(key) {
 }
 function removeToken() {
   localStorage.removeItem("token");
+  localStorage.removeItem("role");
+  localStorage.removeItem("permissions");
+  localStorage.removeItem("email");
 }
 
-export { setItemWithExpiration, getItemWithExpiration, removeToken};
+export { setItemWithExpiration, getItemWithExpiration, removeToken };

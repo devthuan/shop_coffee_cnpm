@@ -107,7 +107,6 @@ export const Permission = () => {
       }
     };
 
-
     // if (dataRole.length === 0) {
     setTimeout(() => {
       fetchAPI();

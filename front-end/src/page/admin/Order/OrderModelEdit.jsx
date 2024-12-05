@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { GetBill_IDAPI } from "~/services/BillService";
+import { ChangeStatus, GetBill_IDAPI } from "~/services/BillService";
 import {
   clearDataIdBillDetail,
   initDataIdBillDetail,
@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { toast } from "react-toastify";
 import {
+  changeStatusBill,
   initDetailBill,
   initErrorBill,
 } from "~/redux/features/Bill/billSilice";
@@ -29,7 +30,22 @@ export const OrderModelEdit = ({ data }) => {
   ];
 
   //  hàm xử lý sự kiện cập nhật
-  const handleBtnUpdate = () => {};
+  const handleStatusBill = async (status) => {
+    try {
+      const response = await ChangeStatus(data.id, { status });
+      if (response && response.status === 200) {
+        toast.success("Cập nhật trạng thái thành công");
+        dispatch(changeStatusBill({
+          id: data.id,
+          status: status,
+        }));
+      } else {
+        toast.error("Cập nhật trạng thái thất bại");
+      }
+    } catch (error) {
+      HandleApiError(error);
+    }
+  };
 
   const handleOpenChange = (isOpen) => {
     if (isOpen) {
@@ -129,7 +145,7 @@ export const OrderModelEdit = ({ data }) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {dataDetail?.billDetails?.map((item) =>  {
+                      {dataDetail?.billDetails?.map((item) => {
                         return (
                           <tr>
                             <td className="px-4 py-2 border-b">
@@ -214,12 +230,18 @@ export const OrderModelEdit = ({ data }) => {
             </Dialog.Description>
             <div className="flex justify-end items-center gap-3 p-4 border-t">
               <Dialog.Close asChild>
-                <button className="px-6 py-2 text-base text-white bg-green-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2 ">
+                <button
+                  onClick={() => handleStatusBill("delivery")}
+                  className="px-6 py-2 text-base text-white bg-green-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2 "
+                >
                   Chấp nhận
                 </button>
               </Dialog.Close>
               <Dialog.Close asChild>
-                <button className="px-6 py-2 text-base text-white bg-red-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2 ">
+                <button
+                  onClick={() => handleStatusBill("cancelled")}
+                  className="px-6 py-2 text-base text-white bg-red-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2 "
+                >
                   Huỷ
                 </button>
               </Dialog.Close>

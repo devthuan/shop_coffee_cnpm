@@ -38,7 +38,7 @@ export const Product = () => {
 
   const [selectedAttribute, setSelectedAttribute] = useState(null);
   const reviews = useSelector((state) => state.reviews.data);
-  console.log(reviews)
+  console.log(reviews);
   const dispatch = useDispatch();
 
   const handleAddToCart = async (ProductAttributesId, quantity = 1) => {
@@ -186,13 +186,17 @@ export const Product = () => {
                       </p> */}
 
                       <p className="text-[#323134] text-[17px] font-semibold font-['Gordita'] leading-relaxed pr-2">
-                        {reviews && reviews[0]?.reviews.length > 0 ? (
-                          (reviews[0].reviews.reduce((total, review) => total + review.rating, 0) / reviews[0].reviews.length).toFixed(2)
-                        ) : (
-                          0 // Nếu không có review, trả về 0
-                        )}
+                        {
+                          reviews && reviews[0]?.reviews.length > 0
+                            ? (
+                                reviews[0].reviews.reduce(
+                                  (total, review) => total + review.rating,
+                                  0
+                                ) / reviews[0].reviews.length
+                              ).toFixed(2)
+                            : 0 // Nếu không có review, trả về 0
+                        }
                       </p>
-
                     </div>
                     <div className="flex items-end gap-x-2">
                       <p className="text-[#323134] text-[17px] font-normal font-['Gordita'] leading-relaxed pr-2">
@@ -242,38 +246,36 @@ export const Product = () => {
                 <div className="flex justify-start items-start gap-5 ">
                   {selectedAttribute && (
                     <div className="text-black text-[26px] font-medium font-['Gordita'] leading-9">
-                      {selectedAttribute.sellPrice -
-                        ((productDetail?.product?.productDiscount.length > 0
-                          ? productDetail?.product.productDiscount[0].value
-                          : 0) /
-                          100) *
-                        selectedAttribute.sellPrice <
-                        0
-                        ? 0
-                        : selectedAttribute.sellPrice -
-                        ((productDetail?.product?.productDiscount.length > 0
-                          ? productDetail?.product.productDiscount[0].value
-                          : 0) /
-                          100) *
-                        selectedAttribute.sellPrice.toLocaleString(
-                          "vi-VN"
-                        )}{" "}
-                      VNĐ
+                      {(() => {
+                        const discountValue =
+                          productDetail?.product?.productDiscount?.length > 0
+                            ? productDetail.product.productDiscount[0].value
+                            : 0;
+
+                        const discountedPrice =
+                          selectedAttribute.sellPrice -
+                          (discountValue / 100) * selectedAttribute.sellPrice;
+
+                        const finalPrice = Math.max(0, discountedPrice);
+
+                        return `${finalPrice.toLocaleString("vi-VN")} VNĐ`;
+                      })()}
                     </div>
                   )}
                   <div className="justify-start items-start gap-2.5 inline-flex">
                     {productDetail?.product.productDiscount.length > 0 && (
                       <>
                         <div
-                          className={`xt-black text-[20px] font-medium font-['Gordita'] leading-normal ${productDetail?.product?.productDiscount.length > 0
-                            ? "line-through"
-                            : ""
-                            }`}
+                          className={`xt-black text-[20px] font-medium font-['Gordita'] leading-normal ${
+                            productDetail?.product?.productDiscount.length > 0
+                              ? "line-through"
+                              : ""
+                          }`}
                         >
                           {selectedAttribute?.sellPrice
                             ? selectedAttribute?.sellPrice.toLocaleString(
-                              "vi-VN"
-                            )
+                                "vi-VN"
+                              )
                             : 0}{" "}
                           vnđ
                         </div>
@@ -313,9 +315,10 @@ export const Product = () => {
                     onClick={() => handleAttributeChange(item.id)}
                     className={`cursor-pointer flex justify-center items-center bg-white w-[150px] h-14  text-[20px] font-['Gordita'] leading-snug border border-gray-200 rounded-tr rounded-br px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
                       
-                      ${selectedAttribute?.id === item.id
-                        ? "border-green-500 text-green-500"
-                        : ""
+                      ${
+                        selectedAttribute?.id === item.id
+                          ? "border-green-500 text-green-500"
+                          : ""
                       }
                       
                       `}
@@ -340,8 +343,8 @@ export const Product = () => {
                       selectedAttribute
                         ? handleAddToCart(selectedAttribute.id)
                         : toast.error(
-                          "Vui lòng chọn loại sản phẩm cần thêm vào giỏ hàng"
-                        )
+                            "Vui lòng chọn loại sản phẩm cần thêm vào giỏ hàng"
+                          )
                     }
                     className=" cursor-pointer text-[#1a162e] text-lg font-medium font-['Gordita'] leading-relaxed"
                   >
@@ -366,7 +369,8 @@ export const Product = () => {
           <p
             onClick={() => clickDescription()}
             className={cx(
-              `text-[20px] cursor-pointer text-${textDescription === "gray" ? "gray" : "black"
+              `text-[20px] cursor-pointer text-${
+                textDescription === "gray" ? "gray" : "black"
               }-500`
             )}
           >
@@ -376,20 +380,23 @@ export const Product = () => {
           <div
             onClick={() => clickFeedBack()}
             className={cx(
-              `text-[20px] flex items-center cursor-pointer text-${textFeedBack === "gray" ? "gray" : "black"
+              `text-[20px] flex items-center cursor-pointer text-${
+                textFeedBack === "gray" ? "gray" : "black"
               }-500`
             )}
           >
-            <p>Review</p>
-            ({reviews && reviews.length > 0 && (
+            <p>Review</p>(
+            {reviews && reviews.length > 0 && (
               <p>{reviews[0].reviews.length}</p>
-            )})
+            )}
+            )
           </div>
 
           <p
             onClick={() => clickComment()}
             className={cx(
-              `text-[20px] cursor-pointer text-${textComment === "gray" ? "gray" : "black"
+              `text-[20px] cursor-pointer text-${
+                textComment === "gray" ? "gray" : "black"
               }-500`
             )}
           >

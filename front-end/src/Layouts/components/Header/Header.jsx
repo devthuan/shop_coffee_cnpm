@@ -26,6 +26,8 @@ const cx = classNames.bind(styles);
 
 function Header() {
   const dispatch = useDispatch();
+  const isLoginToken = getItemWithExpiration("token") || null;
+
   const carts = useSelector((state) => state.cart.data);
 
   const [isLogin, setIsLogin] = useState(false);
@@ -60,7 +62,14 @@ function Header() {
 
   useEffect(() => {
     const fetchData = async () => {
+
+       if (!isLoginToken) {
+         return;
+       }
+
       try {
+
+
         const response = await GetCartOfUser();
         console.log(response.data);
         if (response.status === 200 && response.data) {

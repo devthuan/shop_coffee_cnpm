@@ -1,55 +1,60 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
-    total : 0,
-    currentPage : 0,
-    totalPage : 0,
-    limit : 0,
-    data : [],
-    isLoading : true,
-    error : null
-}
+  total: 0,
+  currentPage: 0,
+  totalPage: 0,
+  limit: 0,
+  data: [],
+  isLoading: true,
+  error: null,
+};
 
 export const ReviewsSlice = createSlice({
-    name : "reviews",
-    initialState,
-    reducers : {
-        initDataReview : (state, action) => {
-            state.total = action.payload.total
-            state.currentPage = action.payload.currentPage
-            state.totalPage = action.payload.totalPage
-            state.limit = action.payload.limit
-            state.data = action.payload.data
-            state.isLoading = action.payload.isLoading
-            state.error = action.payload.error
-        }, 
+  name: "reviews",
+  initialState,
+  reducers: {
+    initDataReview: (state, action) => {
+      state.total = action.payload.total;
+      state.currentPage = action.payload.currentPage;
+      state.totalPage = action.payload.totalPage;
+      state.limit = action.payload.limit;
+      state.data = action.payload.data;
+      state.isLoading = action.payload.isLoading;
+      state.error = action.payload.error;
+    },
 
-        addReview : (state, action) => {
-            state.data.push(action.payload)
-        }, 
+    addReview: (state, action) => {
+      // Ensure the reviews array exists
+      if (!state.data.reviews) {
+        state.data.reviews = [];
+      }
 
-        updateReview : (state, action) => {
-            const id = action.payload.id 
-            const reivewIndex = state.data.findIndex(review => review.id === id)
-            if(reivewIndex !== -1)
-            {
-                state.data[reivewIndex] = {
-                    ...state.data[reivewIndex],
-                    rating : action.payload.rating,
-                    comment : action.payload.comment
-                }
-            }
-        }, 
+      // Add the review to the reviews array
+      state.data.reviews.push(action.payload.review);
+    },
 
-        deleteReview : (state, action) => {
-            const id = action.payload.id 
-            const isExistReview = state.data.find(review => review.id === id)
-            if(isExistReview)
-            {
-                state.data = state.data.filter(review => review.id !== id)
-            }
-        }
-    }
-})
+    updateReview: (state, action) => {
+      const id = action.payload.id;
+      const reivewIndex = state.data.findIndex((review) => review.id === id);
+      if (reivewIndex !== -1) {
+        state.data[reivewIndex] = {
+          ...state.data[reivewIndex],
+          rating: action.payload.rating,
+          comment: action.payload.comment,
+        };
+      }
+    },
 
-export const {initDataReview, addReview, updateReview, deleteReview} = ReviewsSlice.actions
-export default ReviewsSlice.reducer
+    deleteReview: (state, action) => {
+      const id = action.payload.id;
+      const isExistReview = state.data.find((review) => review.id === id);
+      if (isExistReview) {
+        state.data = state.data.filter((review) => review.id !== id);
+      }
+    },
+  },
+});
+
+export const { initDataReview, addReview, updateReview, deleteReview } =
+  ReviewsSlice.actions;
+export default ReviewsSlice.reducer;

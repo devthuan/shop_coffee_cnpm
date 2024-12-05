@@ -9,6 +9,7 @@ const initialState = {
   dataRevenue: [],
   dataBillings: [],
   dataProducts: [],
+  dataImportReceipt: [],
   loading: true,
   error: null,
 };
@@ -34,6 +35,9 @@ export const statisticalSlice = createSlice({
     initDataProducts: (state, action) => {
       state.dataProducts = action.payload?.data;
     },
+    initDataImportReceipt: (state, action) => {
+      state.dataImportReceipt = action.payload?.data;
+    },
 
     initError: (state, action) => {
       state.error = action.payload?.error;
@@ -56,6 +60,7 @@ export const {
   initDataProducts,
   initDataBillings,
   initDataRevenue,
+  initDataImportReceipt,
   initDataStatistical,
   clearDataStatistical,
   initError,

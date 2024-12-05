@@ -23,7 +23,7 @@ export class RoleController {
   }
 
   @UseGuards(PermissionsGuard)
-  @Permissions("GET_ROLES")
+  // @Permissions("GET_ROLES")
   @Get('')
   getAllRoles(
     @Query('search') search: string,

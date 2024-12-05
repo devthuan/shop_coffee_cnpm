@@ -123,7 +123,7 @@ export const Login = () => {
 
       if (token) {
         console.log("Token received from popup:", token);
-        localStorage.setItem("authToken", token); // Lưu token
+        // localStorage.setItem("authToken", token); // Lưu token
 
         // Giải mã token
         const { id, email, role, username } = jwtDecode(token);
@@ -270,10 +270,7 @@ export const Login = () => {
                     />
                     Đồng ý tất cả điều khoản
                   </label>
-                  <a
-                    href="/recoverypass"
-                    className={cx("text-blue-500")}
-                  >
+                  <a href="/recoverypass" className={cx("text-blue-500")}>
                     Recovery Password
                   </a>
                 </div>

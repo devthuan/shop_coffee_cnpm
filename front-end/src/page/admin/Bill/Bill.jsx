@@ -1,16 +1,14 @@
-
 import { useSelector } from "react-redux";
 import Loading from "~/components/Loading/Loading";
 import { useEffect, useState } from "react";
 import { GetAllBillAPI } from "~/services/BillService";
-import { clearDataBill, initDataBill } from "~/redux/features/Bill/billSilice";
+import { clearDataBill, initDataBill, initErrorBill } from "~/redux/features/Bill/billSilice";
 import { useDispatch } from "react-redux";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { toast, ToastContainer } from "react-toastify";
 import { Pagination } from "~/components/Pagination/Pagination";
-import BillDetails from "~/page/admin/Bill/BillDetails";
+import { BillDetails } from "./BillDetails";
 export const Bill = () => {
-
   const dispatch = useDispatch();
   const BillsData = useSelector((state) => state.bill.data);
   const total = useSelector((state) => state.bill.total);
@@ -25,9 +23,13 @@ export const Bill = () => {
     currentPage: 1,
     limit: 10,
   });
-
- 
-
+  const listStatus = {
+    pending: "Đang xử lý",
+    delivery: "Đang giao hàng",
+    success: "Thành công",
+    failed: "Thất bại",
+    cancelled: "Huỷ",
+  };
 
   const filterItems = [
     { value: "createdAt_ASC", label: "sắp xếp theo ngày tạo tăng dần" },
@@ -36,13 +38,14 @@ export const Bill = () => {
 
   const titleColumn = [
     "id",
-    "Username",
-    "deliverPhone",
-    "deliverAddress",
-    "total",
-    "status",
-    "note",
-    "Hành động"
+    "Người đặt",
+    "Số điện thoại nhận hàng",
+    "Tổng đơn hàng",
+    "Trạng thái",
+    "Cập nhật cuối",
+    "Ngày đặt",
+
+    "Hành động",
   ];
   const handleFilter = async (e) => {
     if (e === "createdAt_ASC") {
@@ -76,13 +79,12 @@ export const Bill = () => {
         const response = await GetAllBillAPI(queryParams);
         dispatch(initDataBill(response.data));
       } catch (error) {
-        if (error.request) {
-          dispatch(initDataBill({ error: "không có phản hồi từ server..." }));
-        }
         const result = HandleApiError(error);
         result
           ? toast.error(result)
           : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+
+        dispatch(initErrorBill({ error: result.message }));
       }
     };
 
@@ -120,12 +122,12 @@ export const Bill = () => {
 
   return (
     <>
-      {showBillDetails && (
+      {/* {showBillDetails && (
         <BillDetails
           billsID={showBillDetails}
           handleClickToggle={handleToggleBill}
         />
-      )}
+      )} */}
       {isError ? (
         <div className="w-full h-full flex justify-center items-center">
           {isError}
@@ -190,9 +192,7 @@ export const Bill = () => {
                 <tbody className="text-gray-600 divide-y">
                   {BillsData?.map((item, idx) => (
                     <tr key={idx}>
-                      <td
-                        className="px-2 py-4 whitespace-nowrap w-[20px] "
-                      >
+                      <td className="px-2 py-4 whitespace-nowrap w-[20px] ">
                         {item.id.slice(0, 8)} ...
                       </td>
                       <td className="px-2 py-4 whitespace-nowrap">
@@ -202,40 +202,38 @@ export const Bill = () => {
                         {item.deliverPhone}
                       </td>
                       <td className="px-2 py-4 whitespace-nowrap">
-                        {item.deliverAddress}
-                      </td>
-                      <td className="px-2 py-4 whitespace-nowrap">
                         {item.total}
                       </td>
                       <td className="px-2 py-4 whitespace-nowrap">
                         <span
-                          className={`px-3 py-2 rounded-full font-semibold text-xs ${item.status === "success"
+                          className={`px-3 py-2 rounded-full font-semibold text-xs ${
+                            item.status === "success"
                               ? "text-green-600 bg-green-50"
                               : item.status === "pending"
-                                ? "text-yellow-600 bg-yellow-50"
-                                : item.status === "delivery" 
-                                ?  "text-orange-400 bg-red-50"
-                                : "text-red-600 bg-red-50"
-                            }`}
+                              ? "text-yellow-600 bg-yellow-50"
+                              : item.status === "delivery"
+                              ? "text-blue-400 bg-blue-50"
+                              : item.status === "cancelled"
+                              ? "text-gray-600 bg-gray-50"
+                              : "text-red-600 bg-red-50"
+                          }`}
                         >
-                          {item.status}
+                          {listStatus[item.status]}
                         </span>
                       </td>
-                      {/* <td className="px-2 py-4 whitespace-nowrap">
-                        {item.shippingMethod}
-                      </td>       */}
 
-                      {/* <td className="px-2 py-4 whitespace-nowrap">
-                      {new Date(item.createdAt).toLocaleString()}
+                      <td className="px-2 py-4 whitespace-nowrap">
+                        {new Date(item.updatedAt).toLocaleString()}
                       </td>
                       <td className="px-2 py-4 whitespace-nowrap">
-                      {new Date(item.updatedAt).toLocaleString() || ""}
-                      </td> */}
-                      <td className="px-2 py-4 whitespace-nowrap">
-                        {item.note}
+                        {new Date(item.createdAt).toLocaleString()}
                       </td>
-                      <td className="px-2 py-4 whitespace-nowrap text-blue-500 hover:underline cursor-pointer" onClick={() => handleClickIDBill(item.id)}>
-                        chi tiết
+                      <td
+                        className="px-2 py-4 whitespace-nowrap text-blue-500 hover:underline cursor-pointer"
+                        onClick={() => handleClickIDBill(item.id)}
+                      >
+                        {/* chi tiết */}
+                        <BillDetails data={item} />
                       </td>
                     </tr>
                   ))}
