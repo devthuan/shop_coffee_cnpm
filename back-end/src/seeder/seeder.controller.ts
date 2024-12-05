@@ -13,5 +13,9 @@ export class SeederController {
   createRoleHasFunction(){
     return this.seederService.createRoleHasFunction()
   }
+  @Post('init-data')
+  initData(){
+    return this.seederService.initData()
+  }
 
 }

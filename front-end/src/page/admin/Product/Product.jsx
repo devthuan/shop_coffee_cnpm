@@ -23,10 +23,38 @@ export const Product = () => {
   const currentPage = useSelector((state) => state.productss.currentPage);
   const limit = useSelector((state) => state.productss.limit);
   const isLoading = useSelector((state) => state.productss.isLoading);
+  const [sortOption, setSortOption] = useState("");
+
   const [optionLimit, setOptionLimit] = useState({
     currentPage: 1,
     limit: 10,
   });
+
+  const listOptionSorts = [
+    { value: "createdAt_ASC", label: "sắp xếp theo ngày tạo tăng dần" },
+    { value: "createdAt_DESC", label: "sắp xếp theo ngày tạo giảm dần" },
+  ];
+
+  const handleSort = async (e) => {
+    setSortOption(e);
+    fetchProducts(e); // Pass both sort and filter options
+  };
+
+  const fetchProducts = async (sortOption) => {
+    let queryParams = `limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
+
+    const sortOptionsMap = {
+      createdAt_ASC: "&sortBy=createdAt&sortOrder=ASC",
+      createdAt_DESC: "&sortBy=createdAt&sortOrder=DESC",
+    };
+
+    if (sortOptionsMap[sortOption]) {
+      queryParams += sortOptionsMap[sortOption];
+    }
+
+    const result = await GetAllProduct(queryParams);
+    dispatch(initDataProduct(result.data));
+  };
 
   const [selectSearch, setSelectedSearch] = useState(0);
   const [search, setSearch] = useState("");
@@ -121,7 +149,7 @@ export const Product = () => {
       <div className="flex items-start justify-between ">
         <div className="flex gap-x-3">
           {/* box filter */}
-          <div className="relative w-52 max-w-full ">
+          <div className="relative w-60 max-w-full ">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="absolute top-0 bottom-0 w-5 h-5 my-auto text-gray-400 right-3"
@@ -135,11 +163,20 @@ export const Product = () => {
               />
             </svg>
             <select
-              onChange={(e) => setSelectedSearch(e.target.value)}
+              onChange={(e) => {
+                handleSort(e.target.value);
+              }}
               className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
             >
-              <option value="0">Id</option>
-              <option value="1">Name</option>
+              {listOptionSorts &&
+                listOptionSorts.length > 0 &&
+                listOptionSorts.map((item) => {
+                  return (
+                    <option key={item.value} value={item.value}>
+                      {item.label}
+                    </option>
+                  );
+                })}
             </select>
           </div>
           {/* box input search */}

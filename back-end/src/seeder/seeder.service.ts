@@ -1,14 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Attributes } from 'src/attribute/entities/attributes.entity';
 import { AuthService } from 'src/auth/auth.service';
 import { Accounts } from 'src/auth/entities/accounts.entity';
 import { BillService } from 'src/bill/bill.service';
 import { CreateBillDto } from 'src/bill/dto/create-bill.dto';
+import { Categories } from 'src/categories/entities/category.entity';
 import { CommonException } from 'src/common/exception';
 import { Functions } from 'src/function/entities/functions.entity';
+import { Payments } from 'src/payment/entities/payment.entity';
 import { Products } from 'src/product/entities/products.entity';
 import { RoleHasFunctions } from 'src/role-permission/entities/roles_has_functions.entity';
 import { Roles } from 'src/role/entities/roles.entity';
+import { Supplier } from 'src/supplier/entities/supplier.entity';
+import { Vouchers } from 'src/voucher/entities/vouchers.entity';
 import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
@@ -22,6 +27,21 @@ export class SeederService {
         private functionsRepository: Repository<Functions>,  
         @InjectRepository(RoleHasFunctions)
         private roleHasFunctionsRepository: Repository<RoleHasFunctions>,  
+        
+        @InjectRepository(Categories)
+        private categoriesRepository: Repository<Categories>,  
+
+        @InjectRepository(Vouchers)
+        private vouchersRepository: Repository<Vouchers>,
+
+        @InjectRepository(Attributes)
+        private attributesRepository: Repository<Attributes>,  
+
+        @InjectRepository(Payments)
+        private paymentsRepository: Repository<Payments>,  
+
+        @InjectRepository(Supplier)
+        private supplierRepository: Repository<Supplier>,  
 
   
         private readonly dataSource: DataSource
@@ -681,6 +701,219 @@ export class SeederService {
             }
         } catch (error) {
             await queryRunner.rollbackTransaction();
+            CommonException.handle(error)
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+
+    async initData() : Promise<any> {
+        const queryRunner =  this.dataSource.createQueryRunner()
+        try {
+            await queryRunner.connect()
+            await queryRunner.startTransaction()
+
+            // check data source
+            const categories = await this.categoriesRepository.find()
+            const attribute = await this.attributesRepository.find()
+            const voucher = await this.vouchersRepository.find()
+            const payment = await this.paymentsRepository.find()
+            const supplier = await this.supplierRepository.find()
+
+          
+            if (categories.length > 0 || attribute.length > 0 || voucher.length > 0 || payment.length > 0 || supplier.length > 0) {
+                return {message: "Xoá tất cả dữ liệu cũ trong database trước khi khởi tạo dữ liệu mới!"}
+            }
+
+
+            //  init cateogries
+            const listCategories = [
+                {
+                    name: 'Starbucks',
+                    description: 'Starbucks'
+                },
+                {
+                    name: 'LavAzza',
+                    description: 'LavAzza'
+                },
+                {
+                    name: 'Costa Coffee',
+                    description: 'Costa Coffee'
+                },
+                {
+                    name: 'Nescafe',
+                    description: 'Nescafe'
+                },
+            ]
+            for (const category of listCategories) {
+                const newRole =  this.categoriesRepository.create(category);
+                await queryRunner.manager.save(newRole);
+            }
+
+            // init voucher
+            const listVouchers = [
+                {
+                    code: 'VOUCHER10k',
+                    name: '10k Off',
+                    value: 10000,
+                    quantity: 100,
+                    description: '10% off for all products',
+                    startDate: new Date(),
+                    endDate: new Date(new Date().getDate() + 30),
+                    status: 'active',
+                },
+                {
+                    code: 'VOUCHER15k',
+                    name: '15k Off',
+                    value: 15000,
+                    quantity: 100,
+                    description: '10% off for all products',
+                    startDate: new Date(),
+                    endDate: new Date(new Date().getDate() + 30),
+                    status: 'active',
+                },
+                {
+                    code: 'VOUCHER25k',
+                    name: '25k Off New Year',
+                    value: 25000,
+                    quantity: 100,
+                    description: '25% off for all products during New Year',
+                    startDate: new Date(),
+                    endDate: new Date(new Date().getDate() + 30),
+                    status: 'active',
+                },
+                {
+                    code: 'VOUCHER20k',
+                    name: '20k Off Summer Sale',
+                    value: 20000,
+                    quantity: 100,
+                    description: '20% off for all products during Summer Sale',
+                    startDate: new Date(),
+                    endDate: new Date(new Date().getDate() + 30),
+                    status: 'active',
+                }
+            ]
+             for (const voucher of listVouchers) {
+                const newVoucher =  this.vouchersRepository.create(voucher);
+                await queryRunner.manager.save(newVoucher);
+            }
+
+            // init attribute
+            const listAttributes = [
+                {
+                    name: '200g',
+                    description: '200 gram',                    
+                },
+                {
+                    name: '300g',
+                    description: '300 gram',                    
+                },
+                {
+                    name: '500g',
+                    description: '500 gram',                    
+                },
+                {
+                    name: '1kg',
+                    description: '1kg',                    
+                }    
+            ]
+            for (const attribute of listAttributes) {
+                const newAttribute =  this.attributesRepository.create(attribute);
+                await queryRunner.manager.save(newAttribute);
+            }
+
+            // init payment methods
+            const listPaymentMethods = [
+                {
+                    name: 'VNPAY',
+                    description: 'thanh toán qua cổng vnpay',                    
+                },
+                {
+                    name: 'Thanh toán khi nhận hàng',
+                    description: 'Thanh toán khi nhận hàng',                    
+                },
+                
+            ]
+            for (const paymentMethod of listPaymentMethods) {
+                const newPaymentMethod =  this.paymentsRepository.create(paymentMethod);
+                await queryRunner.manager.save(newPaymentMethod);
+            }
+
+            // init supplier
+            const listSuppliers = [
+                {
+                    name: "Nhà cung cấp 1",
+                    email: "ncc1@gmail.com",
+                    phone: "+84945986611",
+                    address: "Số 123, Đường Lê Lợi, Quận 1, TP.HCM",
+                    description: "Chuyên cung cấp thực phẩm sạch đạt chuẩn VietGAP.",
+                    logo: "https://example.com/logos/abc_logo.png",
+                    website: "https://abcfoods.vn",
+                    bankAccountNumber: "123456789",
+                    bankName: "Ngân hàng Ngoại thương Việt Nam (Vietcombank)",
+                    bankAddress: "Chi nhánh TP.HCM",                 
+                },
+                {
+                    name: "Nhà cung cấp 2",
+                    email: "support@digitalsuppliers.com",
+                    phone: "+84901234567",
+                    address: "Tòa nhà Kỹ thuật Số, Quận Cầu Giấy, Hà Nội",
+                    description: "Nhà phân phối thiết bị công nghệ hàng đầu tại Việt Nam.",
+                    logo: "https://example.com/logos/digitalsuppliers_logo.png",
+                    website: "https://digitalsuppliers.com",
+                    bankAccountNumber: "234567890",
+                    bankName: "Ngân hàng Á Châu (ACB)",
+                    bankAddress: "Chi nhánh Hà Nội",
+                },
+                {
+                    name: "Nhà cung cấp 3",
+                    email: "sales@southernsteel.vn",
+                    phone: "+84876543210",
+                    address: "KCN Long Thành, Đồng Nai",
+                    description: "Cung cấp vật liệu xây dựng chất lượng cao, đặc biệt là thép.",
+                    logo: "https://example.com/logos/southernsteel_logo.png",
+                    website: "https://southernsteel.vn",
+                    bankAccountNumber: "345678901",
+                    bankName: "Ngân hàng Đầu tư và Phát triển Việt Nam (BIDV)",
+                    bankAddress: "Chi nhánh Đồng Nai",
+                },
+                {
+                    name: "Nhà cung cấp 4",
+                    email: "info@homedecor.vn",
+                    phone: "+84765432109",
+                    address: "Số 45, Đường Hoa Mai, Quận Phú Nhuận, TP.HCM",
+                    description: "Nhà cung cấp các sản phẩm nội thất hiện đại và tiện nghi.",
+                    logo: "https://example.com/logos/homedecor_logo.png",
+                    website: "https://homedecor.vn",
+                    bankAccountNumber: "456789012",
+                    bankName: "Ngân hàng Công Thương Việt Nam (VietinBank)",
+                    bankAddress: "Chi nhánh TP.HCM",
+                },
+                {
+                    name: "Nhà cung cấp 5",
+                    email: "sales@minhlongpackaging.com",
+                    phone: "+84654321098",
+                    address: "Lô 12, KCN Bình Dương, Bình Dương",
+                    description: "Chuyên sản xuất bao bì chất lượng cao cho ngành thực phẩm và dược phẩm.",
+                    logo: "https://example.com/logos/minhlong_logo.png",
+                    website: "https://minhlongpackaging.com",
+                    bankAccountNumber: "567890123",
+                    bankName: "Ngân hàng Kỹ Thương Việt Nam (Techcombank)",
+                    bankAddress: "Chi nhánh Bình Dương",
+                },
+               
+                
+            ]
+            for (const supplier of listSuppliers) {
+                const newSupplier =  this.supplierRepository.create(supplier);
+                await queryRunner.manager.save(newSupplier);
+            }
+
+
+            
+        } catch (error) {
+           await queryRunner.rollbackTransaction();
             CommonException.handle(error)
         } finally {
             await queryRunner.release();

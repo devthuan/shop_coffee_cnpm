@@ -62,14 +62,11 @@ function Header() {
 
   useEffect(() => {
     const fetchData = async () => {
-
-       if (!isLoginToken) {
-         return;
-       }
+      if (!isLoginToken) {
+        return;
+      }
 
       try {
-
-
         const response = await GetCartOfUser();
         console.log(response.data);
         if (response.status === 200 && response.data) {
@@ -110,14 +107,16 @@ function Header() {
           {!isLogin ? (
             <div className={cx("header_btn")}>
               <Link to="/login" className={cx("btn_login_text")}>
-                Log in
+                Đăng nhập
+              </Link>
+              /
+              <Link to="/register" className={cx("btn_login_text")}>
+                Đăng ký
               </Link>
             </div>
           ) : (
-           
-
             <div className={cx("content")}>
-               <Notification />
+              <Notification />
 
               <div className={cx("btn_search")} onClick={handleCLickSearch}>
                 <FontAwesomeIcon icon={faMagnifyingGlass} />

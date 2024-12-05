@@ -37,7 +37,7 @@ export const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (setAsDefaultCard === false) {
-      alert("please check");
+      alert("Vui lòng đồng ý tất cả điều khoản");
       return;
     }
     try {
@@ -204,14 +204,14 @@ export const Login = () => {
               </h1>
             </div>
             <div className={cx("title-1")}>
-              <h1 className={cx(" font-bold mb-6")}>Sign Up</h1>
+              <h1 className={cx(" font-bold mb-6")}>Đăng nhập</h1>
             </div>
 
             <form onSubmit={handleSubmit}>
               <div className="relative mb-6">
                 <input
                   type="text"
-                  placeholder="example@gmail.com" // Sử dụng placeholder động
+                  placeholder="Username hoặc email" // Sử dụng placeholder động
                   className={cx(
                     "w-full mb-6 p-4 border rounded-md text-base outline-none transition-all duration-300 ease-in-out",
                     {
@@ -240,7 +240,7 @@ export const Login = () => {
                 </span>
                 <input
                   type="password"
-                  placeholder="Password"
+                  placeholder="Mật khẩu"
                   className={cx(
                     "w-full mb-6 p-4 border rounded-md text-base outline-none transition-all duration-300 ease-in-out ",
                     {
@@ -271,7 +271,7 @@ export const Login = () => {
                     Đồng ý tất cả điều khoản
                   </label>
                   <a href="/recoverypass" className={cx("text-blue-500")}>
-                    Recovery Password
+                    Khôi phục mật khẩu
                   </a>
                 </div>
                 <button
@@ -279,7 +279,7 @@ export const Login = () => {
                     "w-full bg-yellow-500 text-white py-4 rounded-md mb-6"
                   )}
                 >
-                  Sign Up
+                  Đăng nhập
                 </button>
               </div>
             </form>
@@ -290,13 +290,13 @@ export const Login = () => {
               )}
             >
               <img src={google} alt="Gmail" className={cx("mr-2")} />
-              Sign in with Gmail
+              Đăng nhập bằng google
             </button>
             <div className={cx("bot-title")}>
               <p className={cx("text-sm mt-6  ")}>
-                <span>You have an account yet?</span>
+                <span>Bạn chưa có tài khoản ? </span>
                 <Link to="/register" className={cx("text-blue-500")}>
-                  Sign In
+                  Đăng ký
                 </Link>
               </p>
             </div>
