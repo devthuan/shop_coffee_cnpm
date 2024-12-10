@@ -188,7 +188,7 @@ export class BillService extends BaseService<Bills> {
         .andWhere('bills.deletedAt IS NULL');
 
          if (search) {
-            bills.andWhere('entity.name LIKE :search', { search: `%${search}%` });
+            bills.andWhere('bills.fullName LIKE :search', { search: `%${search}%` });
           }
 
         // Filter conditions
@@ -255,6 +255,62 @@ export class BillService extends BaseService<Bills> {
       } catch (error) {
         CommonException.handle(error)
       }
+  }
+
+  async findAll(
+      search: string,
+      page : number = 1,
+      limit : number = 10,
+      sortBy : string = 'createdAt',
+      sortOrder: 'ASC' | 'DESC' = 'ASC',
+      filters: Record<string, any> = {} // Nhận filters từ controller
+    ): Promise<{ total: number;  currentPage: number; totalPage: number; limit : number; data: Bills[]}>
+    { 
+    try {
+        const queryBuilder = this.billsRepository.createQueryBuilder('bills')
+    
+          .where('bills.deletedAt IS NULL')
+
+          if (search) {
+            queryBuilder.andWhere('bills.fullName LIKE :search or bills.deliverPhone LIKE :search', { search: `%${search}%` });
+          }
+
+           // Filter conditions
+            Object.keys(filters).forEach((key) => {
+              if (filters[key] !== undefined && filters[key] !== null) {
+                let value = filters[key];
+                
+                // Chuyển đổi giá trị 'true' hoặc 'false' thành boolean
+                if (value === 'true') value = true;
+                if (value === 'false') value = false;
+
+                queryBuilder.andWhere(`bills.${key} = :${key}`, { [key]: value });
+              }
+            });
+
+          // count total
+          const total = await queryBuilder.getCount();
+
+         // pagination page
+          const data = await queryBuilder
+            .skip((page - 1) * limit) // Bỏ qua các bản ghi đã được hiển thị
+            .take(limit) // Giới hạn số bản ghi trả về
+            .orderBy(`bills.${sortBy}`, sortOrder) // Sắp xếp theo trường chỉ định
+            .getMany(); // Lấy danh sách bản ghi
+
+
+      const totalPage = Math.ceil(total / limit);
+
+      return {
+        total,
+        totalPage,
+        currentPage: +page,
+        limit: +limit,
+        data
+      }
+    } catch (error) {
+      CommonException.handle(error)
+    }
   }
 
   async updateStatus(billId: string, status: string): Promise<{ message: string }> {

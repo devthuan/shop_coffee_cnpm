@@ -1,4 +1,4 @@
-import { Injectable, CanActivate, ExecutionContext, Inject, forwardRef } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, Inject, forwardRef, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { PERMISSIONS_KEY } from './permission.decorator';
 import { AuthService } from './auth.service';
@@ -26,11 +26,18 @@ export class PermissionsGuard implements CanActivate {
     const rolePermissions = await this.authService.getPermissionByRole(user.role);
 
     // Kiểm tra xem có bất kỳ quyền nào của user khớp với requiredPermissions hay không
-    return rolePermissions.some(item => 
+    let hasPermission =  rolePermissions.some(item => 
       requiredPermissions.some(permission => 
         item.functions.codeName?.includes(permission)
       )
     );
+    if (!hasPermission) {
+      throw new ForbiddenException(
+        `Bạn không có quyền sử dụng chức năng này!`
+      );
+    }
+
+    return true;
   }
 
   

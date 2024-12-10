@@ -14,8 +14,14 @@ export const GetDetailSupplierAPI = async (id) => {
 export const CreateSupplierAPI = async (data) => {
   return await api.post(`supplier`, data);
 };
+export const AddDetailSupplierAPI = async (data) => {
+  return await api.post(`supplier/detail-supplier`, data);
+};
 export const DeleteSupplierAPI = async (id) => {
   return await api.delete(`supplier/${id}`);
+};
+export const DeleteSupplierDetailAPI = async (id) => {
+  return await api.delete(`supplier/detail/${id}`);
 };
 export const UpdateSupplierAPI = async (id, data) => {
   return await api.patch(`supplier/${id}`, data);

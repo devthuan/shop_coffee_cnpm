@@ -2,7 +2,11 @@ import { useSelector } from "react-redux";
 import Loading from "~/components/Loading/Loading";
 import { useEffect, useState } from "react";
 import { GetAllBillAPI } from "~/services/BillService";
-import { clearDataBill, initDataBill, initErrorBill } from "~/redux/features/Bill/billSilice";
+import {
+  clearDataBill,
+  initDataBill,
+  initErrorBill,
+} from "~/redux/features/Bill/billSilice";
 import { useDispatch } from "react-redux";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { toast, ToastContainer } from "react-toastify";
@@ -59,18 +63,18 @@ export const Bill = () => {
     }
   };
 
-  // const handleSearch = async (e) => {
-  //   try {
-  //     let queryParams = `search=${e}&limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
-  //     const result = await GetAllBillAPI(queryParams);
-  //     dispatch(initDataBill(result.data));
-  //   } catch (error) {
-  //     const result = HandleApiError(error);
-  //     result
-  //       ? toast.error(result)
-  //       : toast.error("Có lỗi xảy ra, vui lòng thử lại");
-  //   }
-  // };
+  const handleSearch = async (e) => {
+    try {
+      let queryParams = `search=${e}&limit=${optionLimit.limit}&page=${optionLimit.currentPage}`;
+      const result = await GetAllBillAPI(queryParams);
+      dispatch(initDataBill(result.data));
+    } catch (error) {
+      const result = HandleApiError(error);
+      result
+        ? toast.error(result)
+        : toast.error("Có lỗi xảy ra, vui lòng thử lại");
+    }
+  };
 
   useEffect(() => {
     const fetchDataBill = async () => {
@@ -134,8 +138,11 @@ export const Bill = () => {
         </div>
       ) : (
         <div className="mx-auto  md:pr-5">
+          <div className="w-full flex justify-center py-3">
+            <h3 className="text-3xl my-4">Quản lý đơn hàng</h3>
+          </div>
           <div className=" ">
-            <div className="flex justify-between mt-7">
+            <div className="flex justify-start gap-x-7 mt-7">
               <div className="relative w-72 ">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -166,6 +173,31 @@ export const Bill = () => {
                     })}
                 </select>
               </div>
+              <div className="max-w-lg">
+                <div className="relative">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 left-3"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                  <input
+                    onChange={(e) => handleSearch(e.target.value)}
+                    type="text"
+                    placeholder="Tìm kiếm"
+                    className="w-72 max-w-md py-2 pl-12 pr-4 text-sm text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
+                  />
+                </div>
+              </div>
+
             </div>
           </div>
           {isLoading ? (

@@ -413,9 +413,10 @@ const Sidebar = () => {
     <div className="fixed  top-0 left-0 bottom-0 h-full">
       <nav className=" w-full  h-screen border-r bg-white space-y-1 ">
         <div className="flex flex-col h-full">
-          <div className="h-20 flex items-center px-4">
+          <div className="h-20 flex justify-center items-center px-4">
             <a href="#" className="flex-none">
-              Welcome to
+              Welcome to <br />
+              {role}
             </a>
           </div>
           <div className="flex-1 flex flex-col h-full overflow-auto">

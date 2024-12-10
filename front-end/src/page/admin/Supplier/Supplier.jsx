@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { toast, ToastContainer } from "react-toastify";
 import Loading from "~/components/Loading/Loading";
+import { SupplierModelAddDetail } from "./SupplierModelAddDetail";
 
 const cx = classNames.bind(styles);
 export const Supplier = () => {
@@ -36,7 +37,7 @@ export const Supplier = () => {
     "ID",
     "Tên nhà cung cấp",
     "Email",
-    "Địa chỉ",
+    // "Địa chỉ",
     "Số điện thoại",
     "Số sản phẩm",
     "Ngày tạo",
@@ -272,14 +273,14 @@ export const Supplier = () => {
                           <td className="pr-6 py-4 whitespace-nowrap">
                             {item.email}
                           </td>
-                          <td className="pr-6 py-4 whitespace-nowrap">
+                          {/* <td className="pr-6 py-4 whitespace-nowrap">
                             {item.address}
-                          </td>
+                          </td> */}
                           <td className="pr-6 py-4 whitespace-nowrap">
                             {item.phone}
                           </td>
                           <td className="pr-6 py-4 whitespace-nowrap">
-                            {item.detailSupplier.length}
+                            {item.detailSupplier?.length}
                           </td>
                           <td className="pr-6 py-4 whitespace-nowrap">
                             {new Date(item.createdAt).toLocaleString()}
@@ -288,6 +289,9 @@ export const Supplier = () => {
                             <div className="max-w-5 flex justify-center items-center">
                               <p className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
                                 <SupplierModelEdit data={item} />
+                              </p>
+                              <p className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
+                                <SupplierModelAddDetail data={item} />
                               </p>
                               <p
                                 onClick={() => handleDeleteItem(item.id)}

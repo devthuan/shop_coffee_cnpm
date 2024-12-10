@@ -91,6 +91,35 @@ export class RolePermissionService {
         .leftJoinAndSelect('roleHasFunctions.roles', 'roles')
         .leftJoinAndSelect('roleHasFunctions.functions', 'functions')
         .where('roleHasFunctions.deletedAt is null')
+        // .andWhere('roleHasFunctions.isActive is true')
+        .andWhere('roles.codeName = :codeName', {codeName : roleCodeName})
+        .getMany();
+
+        return {
+            statusCode: 200,
+            status:'success',
+            message: 'Role Permissions fetched successfully',
+            data: data
+        }
+
+        
+       } catch (error) {
+        return {
+            statusCode: 500,
+            status: 'error',
+            message: 'Internal Server Error',
+            data: null
+        }
+       }
+    }
+    async getRolePermissionsByRoleForUser(roleCodeName: string): Promise<RespondInterfacePOST> {
+       try {
+        const data = await  this.dataSource
+        .getRepository(RoleHasFunctions)
+        .createQueryBuilder('roleHasFunctions')
+        .leftJoinAndSelect('roleHasFunctions.roles', 'roles')
+        .leftJoinAndSelect('roleHasFunctions.functions', 'functions')
+        .where('roleHasFunctions.deletedAt is null')
         .andWhere('roleHasFunctions.isActive is true')
         .andWhere('roles.codeName = :codeName', {codeName : roleCodeName})
         .getMany();

@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { UpdateSupplierAPI } from "~/services/SupplierService";
+import {
+  AddDetailSupplierAPI,
+  UpdateSupplierAPI,
+} from "~/services/SupplierService";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 export const SupplierModelEdit = ({ data }) => {
+  const inventoriesData = useSelector((item) => item.inventories.data);
+
   const [formData, setFormData] = useState({
     id: "",
     name: "",
@@ -16,6 +22,47 @@ export const SupplierModelEdit = ({ data }) => {
     createdAt: "",
     detailSupplier: [],
   });
+  const [dataForm, setDataForm] = useState([
+    {
+      productAttributeId: "0",
+      price: 0,
+    },
+  ]);
+  const handleChoseProductAttribute = (e, index) => {
+    const selectedId = e.target.value;
+
+    // Cập nhật giá trị productAttributeId cho hàng tại index cụ thể
+    setDataForm((prevDataForm) =>
+      prevDataForm.map((row, i) =>
+        i === index ? { ...row, productAttributeId: selectedId } : row
+      )
+    );
+  };
+
+  const handleQuantityChange = (idx, e) => {
+    const price = parseInt(e.target.value) || 0;
+
+    // Cập nhật price cho hàng dựa trên chỉ mục `idx`
+    setDataForm((prevDataForm) =>
+      prevDataForm.map((row, i) => (i === idx ? { ...row, price } : row))
+    );
+  };
+
+  const handleDecreaseDataForm = () => {
+    if (dataForm.length > 1) {
+      setDataForm(dataForm.slice(0, -1));
+    }
+  };
+
+  const handleIncreaseDataForm = () => {
+    const newDataForm = [...dataForm];
+    newDataForm.push({
+      id: newDataForm.length,
+      productAttributeId: "",
+      price: 0,
+    });
+    setDataForm(newDataForm);
+  };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -67,6 +114,13 @@ export const SupplierModelEdit = ({ data }) => {
     }
   };
 
+  const handleAddDetailSupplier = async () => {
+    try {
+      dataForm.supplierId = dataForm.id;
+
+      const response = await AddDetailSupplierAPI(dataForm);
+    } catch (error) {}
+  };
   useEffect(() => {
     if (data) {
       setFormData(data);
@@ -76,7 +130,7 @@ export const SupplierModelEdit = ({ data }) => {
   return (
     <Dialog.Root>
       {/* title button */}
-      <Dialog.Trigger>Edit</Dialog.Trigger>
+      <Dialog.Trigger>Sửa</Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 w-full h-full bg-black opacity-40" />
         {/* chỉnh kính thước modal ở max-w-lg các option [max-w-xl,max-w-2xl, max-w-3xl... ] */}
@@ -219,7 +273,7 @@ export const SupplierModelEdit = ({ data }) => {
                         <td className="">
                           <div className="  ">
                             <input
-                              value={item.productAttribute?.products.name}
+                              value={`${item.productAttribute?.products.name} | ${item.productAttribute?.attributes.name}`}
                               type="text"
                               placeholder="Nhập giá nhập"
                               className="w-full pl-12 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
@@ -229,18 +283,13 @@ export const SupplierModelEdit = ({ data }) => {
                         <td className="">
                           <div className="  ">
                             <input
-                              onChange={(e) => handleUpdatePrice(e, item)}
+                              // onChange={(e) => handleUpdatePrice(e, item)}
                               value={item.price}
                               type="text"
                               placeholder="Nhập giá nhập"
                               className="w-full pl-12 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                             />
                           </div>
-                        </td>
-                        <td className="">
-                          <button className="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg cursor-pointer">
-                            Xoá
-                          </button>
                         </td>
                       </tr>
                     ))}
@@ -249,12 +298,33 @@ export const SupplierModelEdit = ({ data }) => {
               </div>
             </Dialog.Description>
             <div className="flex justify-end items-center gap-3 p-4 border-t">
+              <button
+                // onClick={() => handleBtnUpdate()}
+                // onClick={() => handleIncreaseDataForm()}
+
+                className="px-6 py-2 text-base text-gray-800 border rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2"
+              >
+                <div className="flex justify-end items-center">
+                  <h1
+                    onClick={() => handleDecreaseDataForm()}
+                    className="  pr-3 text-[40px] text-red-600 cursor-pointer"
+                  >
+                    -
+                  </h1>
+                  <h1
+                    onClick={() => handleIncreaseDataForm()}
+                    className="  pr-3 text-[35px] text-green-600 cursor-pointer"
+                  >
+                    +
+                  </h1>
+                </div>
+              </button>
               <Dialog.Close asChild>
                 <button
                   onClick={() => handleBtnUpdate()}
                   className="px-6 py-2 text-base text-white bg-indigo-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2 "
                 >
-                  Update
+                  Cập nhật
                 </button>
               </Dialog.Close>
 
@@ -263,7 +333,7 @@ export const SupplierModelEdit = ({ data }) => {
                   className="px-6 py-2 text-base text-gray-800 border rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2"
                   aria-label="Close"
                 >
-                  Cancel
+                  Đóng
                 </button>
               </Dialog.Close>
             </div>

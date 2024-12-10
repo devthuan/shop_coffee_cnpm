@@ -256,6 +256,8 @@ export class SupplierService extends BaseService<Supplier> {
           (detail) => detail.productAttribute.id === updateDetail.productAttributeId
         );
 
+
+
         if (detailSupplier) {
           // Update existing detailSupplier
           detailSupplier.price = updateDetail.price;
@@ -380,13 +382,21 @@ export class SupplierService extends BaseService<Supplier> {
   async deleteSoftDetailSupplier(detailSupplierId: string): Promise<{message: string}> {
     try {
       const detailSupplier = await this.detailSupplierRepository.createQueryBuilder('detailSupplier')
+      .leftJoinAndSelect('detailSupplier.productAttribute', 'productAttribute')
         .where('detailSupplier.id = :detailSupplierId', { detailSupplierId })
         .andWhere('detailSupplier.deletedAt IS NULL')
         .getOne();
 
+      
+
       if (!detailSupplier) {
         throw new BadRequestException('Detail supplier not found');
       }
+
+      if(detailSupplier.productAttribute.quantity > 0) {
+        throw new BadRequestException('sản phẩm còn số lượng không thể xoá');
+      }
+
       
       detailSupplier.deletedAt = new Date();
       await this.detailSupplierRepository.save(detailSupplier)

@@ -29,6 +29,15 @@ export const suppliersSlice = createSlice({
       state.loading = false;
     },
 
+    addDetailSupplier: (state, action) => {
+      state.data = state.data.map((supplier) => {
+        if (supplier.id === action.payload.id) {
+          return { ...supplier, ...action.payload.detail }; // Merge existing supplier with new details
+        }
+        return supplier; // Return unchanged supplier
+      });
+    },
+
     initErrorSupplier(state, action) {
       state.error = action.payload;
       state.loading = false;
@@ -37,6 +46,20 @@ export const suppliersSlice = createSlice({
     removeSupplier: (state, action) => {
       state.data = state.data.filter((item) => item.id !== action.payload.id);
       state.loading = false;
+    },
+
+    removeDetailSupplier: (state, action) => {
+      state.data = state.data.map((supplier) => {
+        if (supplier.id === action.payload.id) {
+          return {
+            ...supplier,
+            detailSupplier: supplier.detailSupplier.filter(
+              (detail) => detail.id !== action.payload.detailId
+            ),
+          };
+        }
+        return supplier;
+      });
     },
 
     clearDataSupplier: (state, action) => {
@@ -55,6 +78,7 @@ export const suppliersSlice = createSlice({
 export const {
   initDataSupplier,
   initErrorSupplier,
+  removeDetailSupplier,
   addSupplier,
   removeSupplier,
   clearDataSupplier,

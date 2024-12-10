@@ -49,6 +49,15 @@ export class RolePermissionController {
     const data =  this.rolePermissionService.getRolePermissionsByRole(roleCodeName);
     return plainToInstance(RoleHasFunctions, data);
   }
+  @UseGuards(PermissionsGuard)
+  // @Permissions("GET_PERMISSION_BY_ROLE")
+  @Get('by-role-client/:role')
+  getRolePermissionsByRoleForUser(
+    @Param('role') roleCodeName: string
+  ) {
+    const data =  this.rolePermissionService.getRolePermissionsByRoleForUser(roleCodeName);
+    return plainToInstance(RoleHasFunctions, data);
+  }
 
 
 

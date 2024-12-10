@@ -505,7 +505,7 @@ export class AuthService {
 
 
   async getPermissionByRole(codeNameRole: string): Promise<any>{
-    const {data} = await this.rolePermissionService.getRolePermissionsByRole(codeNameRole)
+    const {data} = await this.rolePermissionService.getRolePermissionsByRoleForUser(codeNameRole)
     return data;
   }
   

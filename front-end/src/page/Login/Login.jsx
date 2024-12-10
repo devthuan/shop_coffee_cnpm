@@ -18,7 +18,7 @@ import { setItemWithExpiration } from "~/services/localStorage";
 import { HandleApiError } from "~/Utils/HandleApiError";
 import { jwtDecode } from "jwt-decode";
 
-import { GetAllPermissionByRoleAPI } from "~/services/PermissionService";
+import { GetAllPermissionByRoleClientAPI } from "~/services/PermissionService";
 import validator from "validator"; // Thư viện để kiểm tra định dạng email
 import { Tooltip } from "react-tooltip";
 const cx = classNames.bind(styles);
@@ -63,7 +63,9 @@ export const Login = () => {
           setItemWithExpiration("token", accessToken, 2);
           setItemWithExpiration("email", email, 2);
 
-          const responsePermission = await GetAllPermissionByRoleAPI(role);
+          const responsePermission = await GetAllPermissionByRoleClientAPI(
+            role
+          );
           // lưu quyền vào Redux store
           if (responsePermission && responsePermission.data) {
             console.log(responsePermission.data);
@@ -140,7 +142,7 @@ export const Login = () => {
         setItemWithExpiration("email", email, 2);
 
         // Lấy quyền từ API theo role
-        const responsePermission = await GetAllPermissionByRoleAPI(role);
+        const responsePermission = await GetAllPermissionByRoleClientAPI(role);
 
         // Lưu quyền vào Redux store
         if (responsePermission && responsePermission.data) {

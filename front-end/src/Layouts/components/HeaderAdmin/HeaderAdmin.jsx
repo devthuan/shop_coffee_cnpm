@@ -14,12 +14,11 @@ function HeaderAdmin() {
     <div className=" w-full mx-auto px-2 md:px-4 ">
       <div className="items-start justify-between py-2 border-b md:flex">
         <div>
-          <h3 className="text-gray-800 text-2xl font-bold">Analytics</h3>
         </div>
         <div className="items-center gap-x-3 mt-6 md:mt-0 sm:flex">
           <Notification />
           <div className="block px-4 py-2 mt-3 text-center text-gray-700 duration-150 font-medium rounded-lg border hover:bg-gray-50 active:bg-gray-100 sm:mt-0 md:text-sm">
-            <NavLink to="/">Back to home</NavLink>
+            <NavLink to="/">Quay về trang người dùng</NavLink>
           </div>
         </div>
       </div>
