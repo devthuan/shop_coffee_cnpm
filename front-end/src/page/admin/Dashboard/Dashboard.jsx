@@ -74,7 +74,7 @@ export const Dashboard = () => {
       case "bill":
         setDateBill((prev) => ({ ...prev, [field]: value }));
         break;
-      case "import":
+      case "importReceipt":
         setDateImport((prev) => ({ ...prev, [field]: value }));
         break;
       case "product":
@@ -98,26 +98,25 @@ export const Dashboard = () => {
         break;
       case "bill":
         setChooseDateBill(dateBill);
-         fetchingData(
-           dateBill.startDate,
-           dateBill.endDate,
-           GetStatisticalBillsAPI,
-           initDataBillings
-           
-         );
+        fetchingData(
+          dateBill.startDate,
+          dateBill.endDate,
+          GetStatisticalBillsAPI,
+          initDataBillings
+        );
         break;
-      case "import":
+      case "importReceipt":
         setChooseDateImport(dateImport);
-         fetchingData(
-           dateImport.startDate,
-           dateImport.endDate,
-           GetStatisticalImportReceiptAPI,
-           initDataImportReceipt
-         );
+        fetchingData(
+          dateImport.startDate,
+          dateImport.endDate,
+          GetStatisticalImportReceiptAPI,
+          initDataImportReceipt
+        );
         break;
       case "product":
         setChooseDateProduct(dateProduct);
-         fetchingData(
+        fetchingData(
           dateProduct.startDate,
           dateProduct.endDate,
           GetStatisticalProductsAPI,
@@ -131,7 +130,6 @@ export const Dashboard = () => {
 
   const fetchingData = async (startDate, endDate, CallBack, dataRedux) => {
     try {
-   
       const response = await CallBack(startDate, endDate);
       if (response && response.status === 201) {
         console.log(response);
@@ -187,7 +185,7 @@ export const Dashboard = () => {
               Tổng số đơn hàng
             </h3>
             <p>
-              <CountUp end={totalBills ? totalBills : 0} duration={2000} />
+              <CountUp end={totalAccount ? totalAccount : 0} duration={2000} />
             </p>
           </div>
         </div>
@@ -199,7 +197,7 @@ export const Dashboard = () => {
               Tổng số sản phẩm
             </h3>
             <p>
-              <CountUp end={totalProduct ? totalProduct : 0} duration={2000} />
+              <CountUp end={totalBills ? totalBills : 0} duration={2000} />
             </p>
           </div>
         </div>
@@ -210,7 +208,7 @@ export const Dashboard = () => {
               Tổng số người dùng
             </h3>
             <p>
-              <CountUp end={totalAccount ? totalAccount : 0} duration={2000} />
+              <CountUp end={totalProduct ? totalProduct : 0} duration={2000} />
             </p>
           </div>
         </div>
@@ -254,7 +252,7 @@ export const Dashboard = () => {
           </div>
         </div>
         <div className="">
-          <DashedBarsChart  />
+          <DashedBarsChart />
         </div>
       </div>
       {/* box chart statistical order*/}
@@ -294,7 +292,7 @@ export const Dashboard = () => {
             </button>
           </div>
         </div>
-        <DashedLinesChartOrder  />
+        <DashedLinesChartOrder />
       </div>
       {/* box chart statistical import receipt*/}
       <div className="mt-5 w-full pr-10 mx-auto">
@@ -317,7 +315,7 @@ export const Dashboard = () => {
             <h3 className="w-32">Đến ngày: </h3>
             <input
               onChange={(e) =>
-                handleInputChange("importReceipt", "startDate", e.target.value)
+                handleInputChange("importReceipt", "endDate", e.target.value)
               }
               type="date"
               placeholder="Enter your email"
@@ -333,7 +331,7 @@ export const Dashboard = () => {
             </button>
           </div>
         </div>
-        <DashedBarsChartImportReceipt  />
+        <DashedBarsChartImportReceipt />
       </div>
 
       {/* box chart statistical product*/}
@@ -357,7 +355,7 @@ export const Dashboard = () => {
             <h3 className="w-32">Đến ngày: </h3>
             <input
               onChange={(e) =>
-                handleInputChange("product", "startDate", e.target.value)
+                handleInputChange("product", "endDate", e.target.value)
               }
               type="date"
               placeholder="Enter your email"
@@ -373,7 +371,7 @@ export const Dashboard = () => {
             </button>
           </div>
         </div>
-        <DashedPieChart  />
+        <DashedPieChart />
       </div>
     </div>
   );

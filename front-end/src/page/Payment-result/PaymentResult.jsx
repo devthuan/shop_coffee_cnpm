@@ -46,7 +46,7 @@ const PaymentResult = () => {
     };
 
     fetchAndAddBill();
-  }, [status]);
+  }, []);
 
   return (
     <main>

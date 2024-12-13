@@ -16,11 +16,13 @@ import item_cf from "~/assets/images/item_cf.png";
 import { Pagination } from "~/components/Pagination/Pagination";
 import Loading from "~/components/Loading/Loading";
 import {
+  changeStatusBillAccount,
   clearDataBillAccount,
   initDataBillAccount,
 } from "~/redux/features/BillAccount/billAccountSlice";
-import { GetBill_AccountAPI } from "~/services/BillService";
+import { ChangeStatus, GetBill_AccountAPI } from "~/services/BillService";
 import BillDetails from "~/page/Profile/Bougth/BillDetails";
+import { changeStatusBill } from "~/redux/features/Bill/billSilice";
 
 const cx = classNames.bind(styles);
 function Bougth() {
@@ -95,6 +97,25 @@ function Bougth() {
   const handleSort = async (e) => {
     setSortOption(e);
     fetchNotification(e); // Pass both sort and filter options
+  };
+
+  const handleCancelledBill = async (item) => {
+    try {
+      const response = await ChangeStatus(item.id, { status: "cancelled" });
+      if (response && response.status === 200) {
+        toast.success("Cập nhật trạng thái thành công");
+        dispatch(
+          changeStatusBillAccount({
+            id: item.id,
+            status: "cancelled",
+          })
+        );
+      } else {
+        toast.error("Cập nhật trạng thái thất bại");
+      }
+    } catch (error) {
+      HandleApiError(error);
+    }
   };
 
   const fetchNotification = async (sortOption) => {
@@ -224,11 +245,23 @@ function Bougth() {
                           {new Date(item.createdAt).toLocaleString()}
                         </td>
 
-                        <td
-                          className="px-2 py-4 whitespace-nowrap text-blue-500 hover:underline cursor-pointer"
-                          onClick={() => handleToggleDetail(item.id)}
-                        >
-                          chi tiết
+                        <td className="flex gap-x-5 px-2 py-4 whitespace-nowrap text-blue-500 ">
+                          <div
+                            className="hover:underline  cursor-pointer"
+                            onClick={() => handleToggleDetail(item.id)}
+                          >
+                            chi tiết
+                          </div>
+                          {item.status === "pending" ? (
+                            <div
+                              onClick={(e) => handleCancelledBill(item)}
+                              className="hover:underline text-red-500  cursor-pointer"
+                            >
+                              huỷ
+                            </div>
+                          ) : (
+                            ""
+                          )}
                         </td>
                       </tr>
                     ))}

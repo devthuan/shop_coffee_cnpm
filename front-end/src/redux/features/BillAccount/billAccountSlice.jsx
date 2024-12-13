@@ -10,10 +10,10 @@ const initialState = {
   };
   
   export const billAccountSlice = createSlice({
-    name: 'billAccount',
+    name: "billAccount",
     initialState,
     reducers: {
-     initDataBillAccount: (state,action) => {
+      initDataBillAccount: (state, action) => {
         state.data = action.payload?.data;
         state.total = action.payload?.total;
         state.currentPage = action.payload?.currentPage;
@@ -21,19 +21,35 @@ const initialState = {
         state.limit = action.payload?.limit;
         state.loading = false;
         state.error = action.payload?.error;
-     },
-     clearDataBillAccount: (state, action) => {
-      state.data = [];
-      state.total = 0;
-      state.currentPage = 0;
-      state.totalPage = 0;
-      state.limit = 0;
-      state.loading = true;
-      state.error = null;
-    },
+      },
+      clearDataBillAccount: (state, action) => {
+        state.data = [];
+        state.total = 0;
+        state.currentPage = 0;
+        state.totalPage = 0;
+        state.limit = 0;
+        state.loading = true;
+        state.error = null;
+      },
+
+      changeStatusBillAccount: (state, action) => {
+        let billIndex = state?.data.findIndex(
+          (item) => item.id === action.payload.id
+        );
+        console.log(billIndex);
+        if (billIndex !== -1) {
+          state.data[billIndex] = {
+            ...state.data[billIndex],
+            status: action.payload.status,
+          };
+        } else {
+          console.log("không có bill này");
+        }
+      },
     },
   });
 
-  export const { initDataBillAccount,clearDataBillAccount } = billAccountSlice.actions;
+  export const { changeStatusBillAccount, initDataBillAccount, clearDataBillAccount } =
+    billAccountSlice.actions;
 
 export default billAccountSlice.reducer;

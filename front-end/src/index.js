@@ -6,18 +6,17 @@ import GlobalStyle from "~/components/GlobalStyle";
 import "react-toastify/dist/ReactToastify.css";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
- import "react-toastify/dist/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
-    <React.StrictMode>
-      <GlobalStyle>
-        <App />
-      </GlobalStyle>
-    </React.StrictMode>
-   
+    {/* <React.StrictMode> */}
+    <GlobalStyle>
+      <App />
+    </GlobalStyle>
+    {/* </React.StrictMode> */}
   </Provider>
 );
 
